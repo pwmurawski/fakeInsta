@@ -1,4 +1,4 @@
-import { NavLink, Routes, Route } from "react-router-dom";
+import { NavLink, Routes, Route, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProfilEdit from "../../../components/ProfilEdit/ProfilEdit";
 import ProfilChangePass from "../../../components/ProfilChangePass/ProfilChangePass";
@@ -59,7 +59,16 @@ const NavLinkStyleOff = styled(NavLink)`
   }
 `;
 
+interface ILocationState {
+  state?: {
+    background: string;
+  };
+}
+
 export default function ProfilSettings() {
+  const { state } = useLocation() as ILocationState;
+  const background = state?.background;
+
   return (
     <Wrapper>
       <Container>
@@ -74,7 +83,7 @@ export default function ProfilSettings() {
           </Ul>
         </Menu>
         <Content>
-          <Routes>
+          <Routes location={background}>
             <Route path="edit" element={<ProfilEdit />} />
             <Route path="password/change" element={<ProfilChangePass />} />
           </Routes>

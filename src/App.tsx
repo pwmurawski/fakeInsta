@@ -1,4 +1,6 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+/* eslint-disable react/jsx-no-useless-fragment */
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useState } from "react";
 import Layout from "./components/Layout/Layout";
 import Header from "./components/Layout/Header/Header";
 import Menu from "./components/Layout/Menu/Menu";
@@ -13,6 +15,8 @@ import Profil from "./Page/Profil/Profil";
 import InboxMessage from "./Page/InboxMessage/InboxMessage";
 import AddNewMessage from "./Page/AddNewMessage/AddNewMessage";
 import ProfilSettings from "./Page/Profil/ProfilSettings/ProfilSettings";
+import Login from "./Page/Auth/Login/Login";
+import Register from "./Page/Auth/Register/Register";
 
 interface ILocationState {
   state?: {
@@ -23,7 +27,18 @@ interface ILocationState {
 export default function App() {
   const { state } = useLocation() as ILocationState;
   const background = state?.background;
+  const [isAuth, setIsAuth] = useState(false);
 
+  const auth = (
+    <Routes>
+      <Route index element={<Login setIsAuth={setIsAuth} />} />
+      <Route
+        path="accounts/emailsignup"
+        element={<Register setIsAuth={setIsAuth} />}
+      />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+  );
   const header = (
     <Header>
       <Menu />
@@ -39,6 +54,7 @@ export default function App() {
         <Route path="accounts/*" element={<ProfilSettings />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+
       {background ? (
         <Routes>
           <Route path="p/:id" element={<Post />} />
@@ -51,5 +67,13 @@ export default function App() {
   );
   const footer = <Footer />;
 
-  return <Layout header={header} content={content} footer={footer} />;
+  return (
+    <Layout
+      isAuth={isAuth}
+      auth={auth}
+      header={header}
+      content={content}
+      footer={footer}
+    />
+  );
 }

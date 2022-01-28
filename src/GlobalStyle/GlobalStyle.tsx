@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle, css } from "styled-components";
+import { Link } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
     body {
@@ -15,7 +16,7 @@ const GlobalStyle = createGlobalStyle`
 interface ILinkProps {
   gray?: boolean;
 }
-export const Link = styled.a`
+export const LinkPost = styled(Link)`
   text-decoration: none;
   color: ${({ gray }: ILinkProps) => (gray ? "gray" : "black")};
 `;
@@ -209,6 +210,88 @@ export const SubmitBtn = styled.button`
   color: white;
   font-weight: 600;
   cursor: pointer;
+`;
+
+export const WrapperAuth = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 98vh;
+`;
+export const AuthSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 350px;
+  height: 700px;
+`;
+export const AuthContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: ${({ height }: { height?: string }) => height ?? "320px"};
+  padding: 10px 0;
+  margin: 0 0 10px;
+  background-color: white;
+  border: 1px solid lightgray;
+`;
+export const Logo = styled.img`
+  width: 175px;
+  height: 51px;
+  margin: 22px 86px 12px;
+`;
+export const AuthForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 24px;
+  height: fit-content;
+`;
+export const AuthFormInput = styled.input`
+  box-sizing: border-box;
+  height: 38px;
+  margin: 0 40px 6px;
+  padding: 9px 0 7px 8px;
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  background-color: whitesmoke;
+  font-size: 12px;
+  :focus {
+    border: 1px solid gray;
+    outline: none;
+  }
+`;
+export const AuthFormSubmitBtn = styled.button`
+  height: 30px;
+  margin: 8px 40px;
+  border: 0;
+  border-radius: 4px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  background-color: #0095f6;
+  cursor: pointer;
+`;
+export const AltOption = styled.section`
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 63px;
+  padding: 10px 0;
+  margin: 0 0 10px;
+  background-color: white;
+  border: 1px solid lightgray;
+  font-size: 14px;
+`;
+export const AuthLinkStyle = styled(Link)`
+  color: #0095f6;
+  text-decoration: none;
+  font-weight: 600;
 `;
 
 export default GlobalStyle;

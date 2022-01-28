@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {
-  Link,
+  LinkPost,
   TextDesc,
   UserNameDesc,
   UserLogo,
@@ -30,7 +30,7 @@ export default function Comment({ user, content }: ICommentProps) {
       <UserLogo stories={user.storiesActive} src={user.userLogo} />
       <TextDesc>
         <UserNameDesc>
-          <Link href="/">{user.userName}</Link>
+          <LinkPost to="/">{user.userName}</LinkPost>
         </UserNameDesc>{" "}
         {content}
       </TextDesc>
