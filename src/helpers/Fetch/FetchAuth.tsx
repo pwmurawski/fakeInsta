@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
 export default async function FetchAuth(
   url: string,
   options: RequestInit,
-  fnc: (res: Array<object> | object) => void
+  fnc: (res: any) => void
 ) {
   try {
     const request = await fetch(url, options);

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   WrapperAuth,
   AuthSection,
@@ -13,6 +14,7 @@ import {
 } from "../../../GlobalStyle/GlobalStyle";
 import logo from "../../../assets/logo.png";
 import FetchAuth from "../../../helpers/Fetch/FetchAuth";
+import useAuth from "../../../hooks/useAuth";
 
 const Info = styled.h2`
   text-align: center;
@@ -27,12 +29,18 @@ const Desc = styled.p`
   margin: 10px 40px;
 `;
 
-export default function Register({
-  setIsAuth,
-}: {
-  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const apiKey = "AIzaSyCKGa9b1EB7uMT-j-ekzW9VFK8Jd4d5_uE";
+interface IRes {
+  email: string;
+  idToken: string;
+  localId: string;
+  error: object;
+}
+
+export default function Register() {
+  const registerUrl = process.env.REACT_APP_DATABASE_REGISTER;
+  const keyApi = process.env.REACT_APP_KEYAPI;
+  const [auth, setAuth] = useAuth();
+  const navigate = useNavigate();
   const [registerData, setRegisterData] = useState({
     email: "",
     password: "",
@@ -47,7 +55,7 @@ export default function Register({
     e.preventDefault();
 
     FetchAuth(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
+      `${registerUrl}${keyApi}`,
       {
         method: "POST",
         headers: {
@@ -55,9 +63,16 @@ export default function Register({
         },
         body: JSON.stringify(registerData),
       },
-      (res) => {
-        console.log(res);
-        console.log(userData);
+      (res: IRes) => {
+        if (!res.error) {
+          setAuth(true, {
+            email: res.email,
+            token: res.idToken,
+            userId: res.localId,
+          });
+          navigate("/");
+          console.log(userData);
+        }
       }
     );
   };

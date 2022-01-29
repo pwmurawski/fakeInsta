@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useReducer } from "react";
+import { reducer, initialState } from "./reducer";
 import Layout from "./components/Layout/Layout";
 import Header from "./components/Layout/Header/Header";
 import Menu from "./components/Layout/Menu/Menu";
@@ -17,6 +17,8 @@ import AddNewMessage from "./Page/AddNewMessage/AddNewMessage";
 import ProfilSettings from "./Page/Profil/ProfilSettings/ProfilSettings";
 import Login from "./Page/Auth/Login/Login";
 import Register from "./Page/Auth/Register/Register";
+import ReducerContext from "./context/ReducerContext";
+import AuthContext from "./context/AuthContext";
 
 interface ILocationState {
   state?: {
@@ -24,18 +26,36 @@ interface ILocationState {
   };
 }
 
+interface ISetAuth {
+  email: string;
+  token: string;
+  userId: string;
+}
+
 export default function App() {
-  const { state } = useLocation() as ILocationState;
-  const background = state?.background;
-  const [isAuth, setIsAuth] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const location = useLocation() as ILocationState;
+  const background = location.state?.background;
+  const authMemo = useMemo(
+    () => ({
+      user: state.user,
+      login: (user: ISetAuth) => dispatch({ type: "login", user }),
+      logout: () => dispatch({ type: "logout" }),
+    }),
+    [state, dispatch]
+  );
+  const reducerMemo = useMemo(
+    () => ({
+      state,
+      dispatch,
+    }),
+    [state, dispatch]
+  );
 
   const auth = (
     <Routes>
-      <Route index element={<Login setIsAuth={setIsAuth} />} />
-      <Route
-        path="accounts/emailsignup"
-        element={<Register setIsAuth={setIsAuth} />}
-      />
+      <Route index element={<Login />} />
+      <Route path="accounts/emailsignup" element={<Register />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
@@ -68,12 +88,10 @@ export default function App() {
   const footer = <Footer />;
 
   return (
-    <Layout
-      isAuth={isAuth}
-      auth={auth}
-      header={header}
-      content={content}
-      footer={footer}
-    />
+    <AuthContext.Provider value={authMemo}>
+      <ReducerContext.Provider value={reducerMemo}>
+        <Layout auth={auth} header={header} content={content} footer={footer} />
+      </ReducerContext.Provider>
+    </AuthContext.Provider>
   );
 }

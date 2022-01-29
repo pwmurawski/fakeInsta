@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { ReactElement } from "react";
+import useAuth from "../../hooks/useAuth";
 import { Wrapper, Header, Content, FooterContainer } from "./Layout_styles";
 
 interface ILayoutProps {
-  isAuth: boolean;
   auth: ReactElement;
   header: ReactElement;
   content: ReactElement;
@@ -11,15 +11,16 @@ interface ILayoutProps {
 }
 
 export default function Layout({
-  isAuth,
   auth,
   header,
   content,
   footer,
 }: ILayoutProps) {
+  const [isAuth] = useAuth();
+
   return (
     <>
-      {isAuth ? (
+      {isAuth?.token && isAuth.userId ? (
         <Wrapper>
           <Header>{header}</Header>
           <Content>{content}</Content>

@@ -12,13 +12,19 @@ import {
 } from "../../../GlobalStyle/GlobalStyle";
 import logo from "../../../assets/logo.png";
 import FetchAuth from "../../../helpers/Fetch/FetchAuth";
+import useAuth from "../../../hooks/useAuth";
 
-export default function Login({
-  setIsAuth,
-}: {
-  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const apiKey = "AIzaSyCKGa9b1EB7uMT-j-ekzW9VFK8Jd4d5_uE";
+interface IRes {
+  email: string;
+  idToken: string;
+  localId: string;
+  error: object;
+}
+
+export default function Login() {
+  const loginUrl = process.env.REACT_APP_DATABASE_LOGIN;
+  const keyApi = process.env.REACT_APP_KEYAPI;
+  const [auth, setAuth] = useAuth();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -28,7 +34,7 @@ export default function Login({
     e.preventDefault();
 
     FetchAuth(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
+      `${loginUrl}${keyApi}`,
       {
         method: "POST",
         headers: {
@@ -36,8 +42,14 @@ export default function Login({
         },
         body: JSON.stringify(loginData),
       },
-      (res) => {
-        console.log(res);
+      (res: IRes) => {
+        if (!res.error) {
+          setAuth(true, {
+            email: res.email,
+            token: res.idToken,
+            userId: res.localId,
+          });
+        }
       }
     );
   };

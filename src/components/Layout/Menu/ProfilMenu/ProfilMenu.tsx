@@ -6,6 +6,7 @@ import {
   SettingsSvg,
   SwitchAccountSvg,
 } from "../../../SvgIcon/ProfilMenu_SvgIcon";
+import useAuth from "../../../../hooks/useAuth";
 
 const HiddenProfilMenu = styled.div`
   position: fixed;
@@ -79,6 +80,8 @@ interface IProfilMenuProps {
 }
 
 export default function ProfilMenu({ setProfilMenu }: IProfilMenuProps) {
+  const [auth, setAuth] = useAuth();
+
   return (
     <>
       <ProfilMenuContainer
@@ -137,6 +140,7 @@ export default function ProfilMenu({ setProfilMenu }: IProfilMenuProps) {
           to="/Login/"
           onClick={() => {
             setProfilMenu(false);
+            setAuth(false);
           }}
         >
           Wyloguj się
