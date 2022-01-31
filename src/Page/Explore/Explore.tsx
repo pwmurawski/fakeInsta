@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
-import img from "../../assets/2.jpg";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray/objectToArray";
 
@@ -25,6 +24,7 @@ interface IPostsData {
   img: string;
   likes: number;
   comments: number;
+  date: string;
   user: {
     userId: string;
   };
@@ -42,6 +42,10 @@ export default function Explore() {
     });
   };
 
+  const sortPosts = (post1: IPostsData, post2: IPostsData): number => {
+    return new Date(post2.date).getTime() - new Date(post1.date).getTime();
+  };
+
   useEffect(() => {
     getPosts();
 
@@ -53,7 +57,10 @@ export default function Explore() {
   return (
     <Wrapper>
       <Container>
-        <ImgPosts postsData={postsData} customLayOut />
+        <ImgPosts
+          postsData={postsData.sort((post1, post2) => sortPosts(post1, post2))}
+          customLayOut
+        />
       </Container>
     </Wrapper>
   );

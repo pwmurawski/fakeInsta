@@ -11,17 +11,17 @@ export const User = styled.div`
   padding: 14px 4px 14px 0;
   overflow: hidden;
 `;
-export const Container = styled.section`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
 export const UserName = styled.h2`
   display: flex;
   font-size: 14px;
   font-weight: bold;
   margin: 0 0 0 14px;
   cursor: pointer;
+`;
+export const Container = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 export const Location = styled.a`
   font-size: 11px;
