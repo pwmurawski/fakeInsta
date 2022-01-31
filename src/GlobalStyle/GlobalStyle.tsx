@@ -32,7 +32,7 @@ export const LikeContainer = styled.div`
 `;
 export const TimeContainer = styled(LikeContainer)`
   color: gray;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
 `;
 export const Btn = styled.button`
@@ -66,6 +66,7 @@ export const TextDesc = styled.p`
   font-size: 14px;
   line-height: 20px;
   margin: 0;
+  word-wrap: break-word;
 `;
 export const DescriptionPost = styled.section`
   display: flex;

@@ -1,7 +1,11 @@
 import { NavLink, Routes, Route, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
 import ProfilEdit from "../../../components/ProfilEdit/ProfilEdit";
 import ProfilChangePass from "../../../components/ProfilChangePass/ProfilChangePass";
+import useAuth from "../../../hooks/useAuth";
+import Fetch from "../../../helpers/Fetch/Fetch";
+import objectToArray from "../../../helpers/objectToArray/objectToArray";
 
 const Wrapper = styled.section`
   display: flex;
@@ -65,9 +69,70 @@ interface ILocationState {
   };
 }
 
+interface IUserAuthData {
+  id: string;
+  email: string;
+  userFullName: string;
+  userId: string;
+  userName: string;
+  logo?: string;
+  website?: string;
+  bio?: string;
+  number?: string;
+  sex?: string;
+}
+interface IUserData {
+  id: string;
+  email: string;
+  userFullName: string;
+  userId: string;
+  userName: string;
+  logo?: string;
+  website: string;
+  bio: string;
+  number: string;
+  sex: string;
+}
+
 export default function ProfilSettings() {
+  const abortController = new AbortController();
+  const s = abortController.signal;
   const { state } = useLocation() as ILocationState;
   const background = state?.background;
+  const [auth] = useAuth();
+  const [userData, setUserData] = useState<IUserData>({
+    id: "",
+    email: "",
+    userFullName: "",
+    userId: "",
+    userName: "",
+    logo: "",
+    website: "",
+    bio: "",
+    number: "",
+    sex: "",
+  });
+
+  const getUserAuthData = () => {
+    Fetch(`users/${auth?.userId}.json`, { signal: s }, (res) => {
+      const newUserData: IUserAuthData[] = objectToArray(res);
+      setUserData({
+        ...newUserData[0],
+        website: newUserData[0].website ?? userData.website,
+        bio: newUserData[0].bio ?? userData.bio,
+        number: newUserData[0].number ?? userData.number,
+        sex: newUserData[0].sex ?? userData.sex,
+      });
+    });
+  };
+
+  useEffect(() => {
+    getUserAuthData();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
 
   return (
     <Wrapper>
@@ -84,8 +149,20 @@ export default function ProfilSettings() {
         </Menu>
         <Content>
           <Routes location={background}>
-            <Route path="edit" element={<ProfilEdit />} />
-            <Route path="password/change" element={<ProfilChangePass />} />
+            <Route
+              path="edit"
+              element={
+                <ProfilEdit userData={userData} setUserData={setUserData} />
+              }
+            />
+            <Route
+              path="password/change"
+              element={
+                <ProfilChangePass
+                  user={{ userName: userData.userName, logo: userData.logo }}
+                />
+              }
+            />
           </Routes>
         </Content>
       </Container>

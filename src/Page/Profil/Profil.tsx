@@ -26,10 +26,10 @@ import {
   TaggedSvg,
   SavedSvg,
 } from "../../components/SvgIcon/ProfilPage_SvgIcon";
-import img from "../../assets/2.jpg";
-import img2 from "../../assets/3.jpg";
-import img3 from "../../assets/1.jpg";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
+import Fetch from "../../helpers/Fetch/Fetch";
+import objectToArray from "../../helpers/objectToArray/objectToArray";
+import useAuth from "../../hooks/useAuth";
 
 interface ILocationState {
   state?: {
@@ -37,81 +37,40 @@ interface ILocationState {
   };
 }
 
+interface IUserAuthPostsData {
+  id: string;
+  img: string;
+  likes: number;
+  comments: number;
+  user: {
+    userId: string;
+  };
+}
+
+interface IUserAuthData {
+  id: string;
+  email: string;
+  userFullName: string;
+  userId: string;
+  userName: string;
+  usersWatched?: string[];
+}
+
 export default function Profil() {
-  const [postsData, setPostsData] = useState([
-    {
-      id: 1,
-      img,
-      likes: 64,
-      comments: 32,
-    },
-    {
-      id: 2,
-      img: img2,
-      likes: 345,
-      comments: 45,
-    },
-    {
-      id: 3,
-      img,
-      likes: 789,
-      comments: 543,
-    },
-    {
-      id: 4,
-      img: img2,
-      likes: 123,
-      comments: 89,
-    },
-    {
-      id: 5,
-      img,
-      likes: 917,
-      comments: 132,
-    },
-    {
-      id: 6,
-      img: img3,
-      likes: 999,
-      comments: 129,
-    },
-    {
-      id: 7,
-      img,
-      likes: 83,
-      comments: 89,
-    },
-    {
-      id: 8,
-      img,
-      likes: 433,
-      comments: 89,
-    },
-    {
-      id: 9,
-      img: img2,
-      likes: 123,
-      comments: 89,
-    },
-    {
-      id: 10,
-      img: img2,
-      likes: 1221,
-      comments: 829,
-    },
-    {
-      id: 11,
-      img: img2,
-      likes: 3,
-      comments: 19,
-    },
-    {
-      id: 12,
-      img: img3,
-      likes: 123,
-      comments: 89,
-    },
-  ]);
+  const abortController = new AbortController();
+  const s = abortController.signal;
+  const [auth] = useAuth();
+  const [userData, setUserData] = useState<IUserAuthData>({
+    email: "",
+    id: "",
+    userFullName: "",
+    userId: "",
+    userName: "",
+  });
+  const [postsData, setPostsData] = useState<IUserAuthPostsData[]>([]);
+  const [postsSavedData, setPostsSavedData] = useState([]);
+  const [postsTaggedData, setPostsTaggedData] = useState([]);
+
   const { state } = useLocation() as ILocationState;
   const background = state?.background;
   const media = window.matchMedia("(max-width: 735px)");
@@ -125,11 +84,29 @@ export default function Profil() {
     }
   };
 
+  const getUserAuthData = () => {
+    Fetch(`users/${auth?.userId}.json`, { signal: s }, (res) => {
+      const userAuthData: IUserAuthData[] = objectToArray(res);
+      setUserData(userAuthData[0]);
+    });
+  };
+
+  const getPostsData = () => {
+    Fetch(`posts/${auth?.userId}.json`, { signal: s }, (res) => {
+      const posts: IUserAuthPostsData[] = objectToArray(res);
+      setPostsData(posts.reverse());
+    });
+  };
+
   useEffect(() => {
     window.addEventListener("resize", resizeHandler);
 
+    getUserAuthData();
+    getPostsData();
+
     return () => {
       window.removeEventListener("resize", resizeHandler);
+      abortController.abort();
     };
   }, []);
 
@@ -142,39 +119,41 @@ export default function Profil() {
           </UserImg>
           <ContentHeader>
             <User>
-              <UserName>pwmurawski123</UserName>
+              <UserName>{userData.userName}</UserName>
               <UserEditLink to="/accounts/edit/">Edytuj profil</UserEditLink>
             </User>
             {isMediaMatches ? null : (
               <>
                 <UserStats>
                   <Stat>
-                    Posty: <StatValue>0</StatValue>
+                    Posty: <StatValue>{postsData.length}</StatValue>
                   </Stat>
                   <Stat>
-                    <StatValue>30</StatValue> obserwujących
+                    <StatValue>0</StatValue> obserwujących
                   </Stat>
                   <Stat>
-                    Obserwowani: <StatValue>176</StatValue>
+                    Obserwowani:{" "}
+                    <StatValue>{userData.usersWatched?.length ?? 0}</StatValue>
                   </Stat>
                 </UserStats>
-                <UserFullName>Paweł Murawski</UserFullName>
+                <UserFullName>{userData.userFullName}</UserFullName>
               </>
             )}
           </ContentHeader>
         </Header>
         {isMediaMatches ? (
           <>
-            <UserFullName>Paweł Murawski</UserFullName>
+            <UserFullName>{userData.userFullName}</UserFullName>
             <UserStats>
               <Stat>
-                Posty: <StatValue>0</StatValue>
+                Posty: <StatValue>{postsData.length}</StatValue>
               </Stat>
               <Stat>
-                <StatValue>30</StatValue> obserwujących
+                <StatValue>0</StatValue> obserwujących
               </Stat>
               <Stat>
-                Obserwowani: <StatValue>176</StatValue>
+                Obserwowani:{" "}
+                <StatValue>{userData.usersWatched?.length ?? 0}</StatValue>
               </Stat>
             </UserStats>
           </>
@@ -220,20 +199,14 @@ export default function Profil() {
                 <SavedPostsInfo>
                   Tylko Ty widzisz zapisane elementy
                 </SavedPostsInfo>
-                <ImgPosts
-                  postsData={[
-                    {
-                      id: 12,
-                      img: img3,
-                      likes: 123,
-                      comments: 89,
-                    },
-                  ]}
-                />
+                <ImgPosts postsData={postsSavedData} />
               </>
             }
           />
-          <Route path="tagged" element={<ImgPosts postsData={[]} />} />
+          <Route
+            path="tagged"
+            element={<ImgPosts postsData={postsTaggedData} />}
+          />
         </Routes>
       </ProfilContainer>
     </Wrapper>

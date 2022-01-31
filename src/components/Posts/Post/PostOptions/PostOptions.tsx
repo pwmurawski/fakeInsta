@@ -8,16 +8,20 @@ import {
 } from "../../../SvgIcon/PostOptions_SvgIcon";
 
 interface IPostOptionsProps {
-  postId: number;
+  postId?: string;
+  userId?: string;
   commentBtnOff?: boolean;
 }
 
 const defaultProps = {
   commentBtnOff: false,
+  postId: undefined,
+  userId: undefined,
 };
 
 export default function PostOptions({
   postId,
+  userId,
   commentBtnOff,
 }: IPostOptionsProps) {
   const { pathname } = useLocation();
@@ -31,7 +35,7 @@ export default function PostOptions({
         {commentBtnOff ? (
           <CommentSvg />
         ) : (
-          <Link to={`/p/${postId}/`} state={{ background: pathname }}>
+          <Link to={`/p/${userId}/${postId}/`} state={{ background: pathname }}>
             <CommentSvg />
           </Link>
         )}

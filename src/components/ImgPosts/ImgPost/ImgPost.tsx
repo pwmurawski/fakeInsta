@@ -57,10 +57,11 @@ const Hover = styled(Link)`
 `;
 
 interface IImgPostProps {
-  id: number;
+  id: string;
   img: string;
   likes: number;
   comments: number;
+  userId: string;
   customLayOut?: boolean;
 }
 
@@ -73,6 +74,7 @@ export default function ImgPost({
   img,
   likes,
   comments,
+  userId,
   customLayOut,
 }: IImgPostProps) {
   const { pathname } = useLocation();
@@ -80,7 +82,7 @@ export default function ImgPost({
   return (
     <ImgPostContainer customLayOut={customLayOut}>
       <Hover
-        to={`/p/${id}/`}
+        to={`/p/${userId}/${id}/`}
         state={{ background: pathname }}
         likes={likes}
         comments={comments}

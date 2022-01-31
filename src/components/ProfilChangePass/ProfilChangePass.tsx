@@ -13,13 +13,20 @@ import {
 } from "../../GlobalStyle/GlobalStyle";
 import userLogo from "../../assets/user.jpg";
 
-export default function ProfilChangePass() {
+interface IProfilChangePassProps {
+  user: {
+    userName: string;
+    logo?: string;
+  };
+}
+
+export default function ProfilChangePass({ user }: IProfilChangePassProps) {
   return (
     <>
       <HeaderProfilSet marginBottom="32px">
-        <UserLogo width="38px" height="38px" src={userLogo} />
+        <UserLogo width="38px" height="38px" src={user.logo ?? userLogo} />
         <UserNameContainer>
-          <UserName fontSize="24px">pwmurawski123</UserName>
+          <UserName fontSize="24px">{user.userName}</UserName>
         </UserNameContainer>
       </HeaderProfilSet>
       <Form>

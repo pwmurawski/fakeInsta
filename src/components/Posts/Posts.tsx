@@ -2,18 +2,20 @@ import Post from "./Post/Post";
 
 interface IPostsProps {
   postsData: {
-    id: number;
+    id: string;
+    comments: number;
+    desc: string;
+    img: string;
+    likes: number;
+    location: string;
+    date: string;
     user: {
-      id: number;
+      userFullName: string;
+      userId: string;
       userName: string;
-      logo: string;
+      logo?: string;
       storiesActive?: boolean;
     };
-    img: string;
-    like: number;
-    description: string;
-    comments: number;
-    time: number;
   }[];
 }
 
@@ -24,12 +26,13 @@ export default function Posts({ postsData }: IPostsProps) {
         <Post
           key={post.id}
           id={post.id}
-          user={post.user}
           img={post.img}
-          like={post.like}
-          description={post.description}
+          likes={post.likes}
+          description={post.desc}
           comments={post.comments}
-          time={post.time}
+          location={post.location}
+          date={post.date}
+          user={post.user}
         />
       ))}
     </>

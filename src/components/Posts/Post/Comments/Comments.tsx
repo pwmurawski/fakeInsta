@@ -2,7 +2,7 @@ import Comment from "./Comment/Comment";
 
 interface ICommentsProps {
   comments: {
-    id: number;
+    id: string;
     user: {
       userName: string;
       userLogo: string;

@@ -14,16 +14,7 @@ import logo from "../../../assets/logo.png";
 import FetchAuth from "../../../helpers/Fetch/FetchAuth";
 import useAuth from "../../../hooks/useAuth";
 
-interface IRes {
-  email: string;
-  idToken: string;
-  localId: string;
-  error: object;
-}
-
 export default function Login() {
-  const loginUrl = process.env.REACT_APP_DATABASE_LOGIN;
-  const keyApi = process.env.REACT_APP_KEYAPI;
   const [auth, setAuth] = useAuth();
   const [loginData, setLoginData] = useState({
     email: "",
@@ -34,7 +25,7 @@ export default function Login() {
     e.preventDefault();
 
     FetchAuth(
-      `${loginUrl}${keyApi}`,
+      "accounts:signInWithPassword",
       {
         method: "POST",
         headers: {
@@ -42,7 +33,7 @@ export default function Login() {
         },
         body: JSON.stringify(loginData),
       },
-      (res: IRes) => {
+      (res) => {
         if (!res.error) {
           setAuth(true, {
             email: res.email,

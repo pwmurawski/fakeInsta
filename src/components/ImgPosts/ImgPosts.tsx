@@ -21,10 +21,13 @@ const ImgPostsContainer = styled.section`
 
 interface IImgPostsProps {
   postsData: {
-    id: number;
+    id: string;
     img: string;
     likes: number;
     comments: number;
+    user: {
+      userId: string;
+    };
   }[];
   customLayOut?: boolean;
 }
@@ -40,6 +43,7 @@ export default function ImgPosts({ postsData, customLayOut }: IImgPostsProps) {
         <ImgPost
           key={post.id}
           id={post.id}
+          userId={post.user.userId}
           img={post.img}
           likes={post.likes}
           comments={post.comments}

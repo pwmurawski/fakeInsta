@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Wrapper,
   Content,
@@ -9,61 +9,104 @@ import Posts from "../../components/Posts/Posts";
 import Stories from "../../components/Stories/Stories";
 import Footer from "../../components/Layout/Footer/Footer";
 import Aside from "../../components/Layout/Aside/Aside";
-import userImg from "../../assets/user.jpg";
-import Img3 from "../../assets/3.jpg";
+import Fetch from "../../helpers/Fetch/Fetch";
+import objectToArray from "../../helpers/objectToArray/objectToArray";
+import useAuth from "../../hooks/useAuth";
+
+interface IPostsData {
+  id: string;
+  comments: number;
+  desc: string;
+  img: string;
+  likes: number;
+  location: string;
+  date: string;
+  user: {
+    userFullName: string;
+    userId: string;
+    userName: string;
+    logo?: string;
+    storiesActive?: boolean;
+  };
+}
+
+interface IUserData {
+  usersWatched?: string[];
+}
 
 export default function Home() {
-  const [postsData, setPostsData] = useState([
-    {
-      id: 1,
-      user: {
-        id: 1,
-        userName: "kowal.adam",
-        logo: userImg,
-      },
-      img: Img3,
-      like: 10,
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-      comments: 5,
-      time: 35,
-    },
-    {
-      id: 2,
-      user: {
-        id: 1,
-        userName: "murawski123",
-        logo: userImg,
-        storiesActive: true,
-      },
-      img: Img3,
-      like: 1000,
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-      comments: 352,
-      time: 5,
-    },
-    {
-      id: 3,
-      user: {
-        id: 1,
-        userName: "nowwwwaak",
-        logo: userImg,
-      },
-      img: Img3,
-      like: 98,
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-      comments: 7,
-      time: 45,
-    },
-  ]);
+  const abortController = new AbortController();
+  const s = abortController.signal;
+  const [auth] = useAuth();
+  const [idUsersWatched, setIdUsersWatched] = useState<string[] | undefined>(
+    []
+  );
+  const [postsData, setPostsData] = useState<IPostsData[]>([]);
+  const [postsAuthUser, setPostsAuthUser] = useState<IPostsData[]>([]);
+  const [postsWatchedUsers, setPostsWatchedUsers] = useState<IPostsData[]>([]);
+
+  const getPostsAuthUser = () => {
+    Fetch(`posts/${auth?.userId}.json`, { signal: s }, (res) => {
+      const posts: IPostsData[] = objectToArray(res);
+      setPostsAuthUser(posts);
+      setPostsData([...postsData, ...posts]);
+    });
+  };
+
+  const getUsersWatched = () => {
+    Fetch(`users/${auth?.userId}.json`, { signal: s }, (res) => {
+      const user: IUserData[] = objectToArray(res);
+      setIdUsersWatched(user[0].usersWatched);
+    });
+  };
+
+  const getPostsWatchedUsers = () => {
+    getUsersWatched();
+
+    if (idUsersWatched?.length !== 0) {
+      Fetch("posts.json", { signal: s }, (res) => {
+        const posts = objectToArray(res, false).flatMap((e) =>
+          objectToArray(e)
+        );
+        const newPostsDataWatchedUsers: IPostsData[][] = [];
+        idUsersWatched?.forEach((idUserWatched) => {
+          newPostsDataWatchedUsers.push(
+            posts.filter((post) => post.user.userId === idUserWatched)
+          );
+        });
+        setPostsWatchedUsers(newPostsDataWatchedUsers.flatMap((e) => e));
+      });
+    }
+  };
+
+  const sortPosts = (post1: IPostsData, post2: IPostsData): number => {
+    return new Date(post2.date).getTime() - new Date(post1.date).getTime();
+  };
+
+  useEffect(() => {
+    getPostsAuthUser();
+    getPostsWatchedUsers();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [idUsersWatched?.length]);
+
+  useEffect(() => {
+    setPostsData([...postsAuthUser, ...postsWatchedUsers]);
+
+    return () => {
+      abortController.abort();
+    };
+  }, [postsWatchedUsers, postsAuthUser]);
 
   return (
     <Wrapper>
       <Content>
         <Stories />
-        <Posts postsData={postsData} />
+        <Posts
+          postsData={postsData.sort((post1, post2) => sortPosts(post1, post2))}
+        />
       </Content>
       <AsideContainer>
         <Aside />

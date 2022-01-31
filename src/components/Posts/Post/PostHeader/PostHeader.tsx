@@ -1,10 +1,17 @@
-import { Header, User, UserName } from "./PostHeader_styles";
+import {
+  Header,
+  User,
+  UserName,
+  Container,
+  Location,
+} from "./PostHeader_styles";
 import { Btn, UserLogo } from "../../../../GlobalStyle/GlobalStyle";
 import OptionsSvg from "../../../SvgIcon/PostHeader_SvgIcon";
 
 interface IPostHeaderProps {
   userName: string;
   userLogo: string;
+  location: string;
   storiesActive?: boolean;
 }
 
@@ -15,13 +22,17 @@ const defaultProps = {
 export default function PostHeader({
   userName,
   userLogo,
+  location,
   storiesActive,
 }: IPostHeaderProps) {
   return (
     <Header>
       <User>
         <UserLogo stories={storiesActive} src={userLogo} />
-        <UserName>{userName}</UserName>
+        <Container>
+          <UserName>{userName}</UserName>
+          <Location>{location}</Location>
+        </Container>
       </User>
       <Btn>
         <OptionsSvg />

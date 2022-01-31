@@ -26,15 +26,16 @@ import Comments from "../../components/Posts/Post/Comments/Comments";
 import Modal from "../../hoc/Modal";
 
 interface IPostData {
-  id: number;
+  id?: string;
   user: {
     userName: string;
     userLogo: string;
+    location: string;
     storiesActive?: boolean;
   };
   img: string;
   comments: {
-    id: number;
+    id: string;
     user: {
       userName: string;
       userLogo: string;
@@ -51,15 +52,16 @@ function Post() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [postData, setPostData] = useState<IPostData>({
-    id: id ? parseFloat(id) : 0,
+    id,
     user: {
       userName: "simeas",
       userLogo: imgUser,
+      location: "location",
     },
     img,
     comments: [
       {
-        id: 1,
+        id: "1",
         user: {
           userName: "elooo",
           userLogo: imgUser,
@@ -68,7 +70,7 @@ function Post() {
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text",
       },
       {
-        id: 2,
+        id: "2",
         user: {
           userName: "elooo",
           userLogo: imgUser,
@@ -77,7 +79,7 @@ function Post() {
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text",
       },
       {
-        id: 3,
+        id: "3",
         user: {
           userName: "ziomek",
           userLogo: imgUser,
@@ -87,7 +89,7 @@ function Post() {
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text",
       },
       {
-        id: 4,
+        id: "4",
         user: {
           userName: "kowalaaaaaa",
           userLogo: imgUser,
@@ -119,6 +121,7 @@ function Post() {
         <Content>
           <PostHeader
             userName={postData.user.userName}
+            location={postData.user.userName}
             userLogo={postData.user.userLogo}
             storiesActive={postData.user.storiesActive}
           />

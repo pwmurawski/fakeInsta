@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Btn,
   ModalWindowWrapper,
@@ -13,6 +13,9 @@ import {
 } from "../../components/SvgIcon/CreateNewPost_SvgIcon";
 import userImg from "../../assets/user.jpg";
 import Modal from "../../hoc/Modal";
+import Fetch from "../../helpers/Fetch/Fetch";
+import useAuth from "../../hooks/useAuth";
+import objectToArray from "../../helpers/objectToArray/objectToArray";
 
 const NewPostContainer = styled.section`
   background-color: white;
@@ -140,10 +143,86 @@ interface ILocationState {
   };
 }
 
+interface IUserAuth {
+  userFullName: string;
+  userId: string;
+  userName: string;
+  logo?: string;
+  storiesActive?: boolean;
+}
+
+interface IPostData {
+  img: string | undefined;
+  desc: string;
+  location: string;
+  likes: number;
+  comments: number;
+  date: Date;
+  user: {
+    userFullName: string;
+    userId: string;
+    userName: string;
+    logo?: string;
+    storiesActive?: boolean;
+  };
+}
+
 function DetailsNewPost() {
+  const abortController = new AbortController();
+  const s = abortController.signal;
   const [descTextLength, setDescTextLength] = useState(0);
   const navigate = useNavigate();
   const { state } = useLocation() as ILocationState;
+  const [auth] = useAuth();
+  const actualTime = new Date();
+  const [newPostData, setNewPostData] = useState<IPostData>({
+    img: state?.uploadImg,
+    desc: "",
+    location: "",
+    likes: 0,
+    comments: 0,
+    date: actualTime,
+    user: {
+      userFullName: "",
+      userId: "",
+      userName: "",
+    },
+  });
+
+  const getUserAuth = () => {
+    Fetch(`users/${auth?.userId}.json`, { signal: s }, (res) => {
+      const user: IUserAuth[] = objectToArray(res);
+      setNewPostData({
+        ...newPostData,
+        user: {
+          userFullName: user[0].userFullName,
+          userId: user[0].userId,
+          userName: user[0].userName,
+          logo: user[0].logo,
+          storiesActive: user[0].storiesActive,
+        },
+      });
+    });
+  };
+
+  const createNewPost = () => {
+    Fetch(`posts/${auth?.userId}.json`, {
+      method: "POST",
+      signal: s,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPostData),
+    });
+  };
+
+  useEffect(() => {
+    getUserAuth();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
 
   return (
     <ModalWindowWrapper
@@ -165,7 +244,14 @@ function DetailsNewPost() {
             <BackSvg />
           </Btn>
           <H1>Utwórz nowy post</H1>
-          <ShareBtn>Udostępnij</ShareBtn>
+          <ShareBtn
+            onClick={() => {
+              createNewPost();
+              navigate(-2);
+            }}
+          >
+            Udostępnij
+          </ShareBtn>
         </HeaderCreatePost>
         <Container>
           <ImgContainer>
@@ -173,12 +259,13 @@ function DetailsNewPost() {
           </ImgContainer>
           <Content>
             <User>
-              <UserImg src={userImg} />
-              pwmurawski123
+              <UserImg src={newPostData.user.logo ?? userImg} />
+              {newPostData.user.userName}
             </User>
             <AddDescription
               onChange={(e) => {
                 setDescTextLength(e.target.textLength);
+                setNewPostData({ ...newPostData, desc: e.target.value });
               }}
               placeholder="Dodaj opis…"
               spellCheck={false}
@@ -189,7 +276,12 @@ function DetailsNewPost() {
               <NumberChar>{`${descTextLength}/2 200`}</NumberChar>
             </FooterDesc>
             <AddLocations>
-              <Input placeholder="Dodaj lokalizację" />
+              <Input
+                placeholder="Dodaj lokalizację"
+                onChange={(e) => {
+                  setNewPostData({ ...newPostData, location: e.target.value });
+                }}
+              />
               <LocationSvg />
             </AddLocations>
           </Content>

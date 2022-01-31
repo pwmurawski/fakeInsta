@@ -14,6 +14,7 @@ import {
   SubmitBtn,
 } from "../../GlobalStyle/GlobalStyle";
 import userLogo from "../../assets/user.jpg";
+import Fetch from "../../helpers/Fetch/Fetch";
 
 const InputArea = styled.textarea`
   box-sizing: border-box;
@@ -40,23 +41,63 @@ const HeadText = styled.h2`
   margin: 0 0 4px;
 `;
 
-export default function ProfilEdit() {
+interface IUserData {
+  id: string;
+  email: string;
+  userFullName: string;
+  userId: string;
+  userName: string;
+  logo?: string;
+  website: string;
+  bio: string;
+  number: string;
+  sex: string;
+}
+
+interface IProfilEditProps {
+  userData: IUserData;
+  setUserData: React.Dispatch<React.SetStateAction<IUserData>>;
+}
+
+export default function ProfilEdit({
+  userData,
+  setUserData,
+}: IProfilEditProps) {
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    Fetch(`users/${userData.userId}/${userData.id}.json`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...userData, id: undefined }),
+    });
+  };
+
   return (
     <>
       <HeaderProfilSet>
-        <UserLogo width={38} height={38} src={userLogo} />
+        <UserLogo width={38} height={38} src={userData.logo ?? userLogo} />
         <UserNameContainer>
-          <UserName>pwmurawski123</UserName>
+          <UserName>{userData.userName}</UserName>
           <EditUserImgBtn>Zmień zdjęcie profilowe</EditUserImgBtn>
         </UserNameContainer>
       </HeaderProfilSet>
-      <Form>
+      <Form onSubmit={submit}>
         <EditContainer>
           <Aside>
             <Label htmlFor="userFullName">Imię i nazwisko</Label>
           </Aside>
           <InputContainer>
-            <Input id="userFullName" placeholder="Imię i nazwisko" />
+            <Input
+              id="userFullName"
+              placeholder="Imię i nazwisko"
+              value={userData.userFullName}
+              onChange={(e) =>
+                setUserData({ ...userData, userFullName: e.target.value })
+              }
+            />
             <Description>
               Pomóż ludziom odkryć Twoje konto, korzystając ze znanej im nazwy —
               może to być Twoje imię i nazwisko, nick lub nazwa firmy. Nazwę
@@ -69,7 +110,14 @@ export default function ProfilEdit() {
             <Label htmlFor="userName">Nazwa użytkownika</Label>
           </Aside>
           <InputContainer>
-            <Input id="userName" placeholder="Nazwa użytkownika" />
+            <Input
+              id="userName"
+              placeholder="Nazwa użytkownika"
+              value={userData.userName}
+              onChange={(e) =>
+                setUserData({ ...userData, userName: e.target.value })
+              }
+            />
             <Description>
               W większości przypadków będzie można zmienić nazwę użytkownika z
               powrotem na pwmurawski123 na kolejne 14 dni. Więcej informacji
@@ -81,7 +129,14 @@ export default function ProfilEdit() {
             <Label htmlFor="website">Witryna internetowa</Label>
           </Aside>
           <InputContainer>
-            <Input id="website" placeholder="Witryna internetowa" />
+            <Input
+              id="website"
+              placeholder="Witryna internetowa"
+              value={userData.website}
+              onChange={(e) =>
+                setUserData({ ...userData, website: e.target.value })
+              }
+            />
           </InputContainer>
         </EditContainer>
         <EditContainer>
@@ -89,7 +144,13 @@ export default function ProfilEdit() {
             <Label htmlFor="bio">Biogram</Label>
           </Aside>
           <InputContainer>
-            <InputArea id="bio" />
+            <InputArea
+              id="bio"
+              value={userData.bio}
+              onChange={(e) =>
+                setUserData({ ...userData, bio: e.target.value })
+              }
+            />
           </InputContainer>
         </EditContainer>
         <EditContainer>
@@ -108,7 +169,14 @@ export default function ProfilEdit() {
             <Label htmlFor="e-mail">Adres e-mail</Label>
           </Aside>
           <InputContainer>
-            <Input id="e-mail" placeholder="Adres e-mail" />
+            <Input
+              id="e-mail"
+              placeholder="Adres e-mail"
+              value={userData.email}
+              onChange={(e) =>
+                setUserData({ ...userData, email: e.target.value })
+              }
+            />
           </InputContainer>
         </EditContainer>
         <EditContainer>
@@ -116,7 +184,14 @@ export default function ProfilEdit() {
             <Label htmlFor="num">Numer telefonu</Label>
           </Aside>
           <InputContainer>
-            <Input id="num" placeholder="Numer telefonu" />
+            <Input
+              id="num"
+              placeholder="Numer telefonu"
+              value={userData.number}
+              onChange={(e) =>
+                setUserData({ ...userData, number: e.target.value })
+              }
+            />
           </InputContainer>
         </EditContainer>
         <EditContainer>
@@ -124,7 +199,14 @@ export default function ProfilEdit() {
             <Label htmlFor="sex">Płeć</Label>
           </Aside>
           <InputContainer>
-            <Input id="sex" placeholder="Płeć" />
+            <Input
+              id="sex"
+              placeholder="Płeć"
+              value={userData.sex}
+              onChange={(e) =>
+                setUserData({ ...userData, sex: e.target.value })
+              }
+            />
           </InputContainer>
         </EditContainer>
         <EditContainer>

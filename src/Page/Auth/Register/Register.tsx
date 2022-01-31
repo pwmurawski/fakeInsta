@@ -14,6 +14,7 @@ import {
 } from "../../../GlobalStyle/GlobalStyle";
 import logo from "../../../assets/logo.png";
 import FetchAuth from "../../../helpers/Fetch/FetchAuth";
+import Fetch from "../../../helpers/Fetch/Fetch";
 import useAuth from "../../../hooks/useAuth";
 
 const Info = styled.h2`
@@ -37,8 +38,6 @@ interface IRes {
 }
 
 export default function Register() {
-  const registerUrl = process.env.REACT_APP_DATABASE_REGISTER;
-  const keyApi = process.env.REACT_APP_KEYAPI;
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
   const [registerData, setRegisterData] = useState({
@@ -55,7 +54,7 @@ export default function Register() {
     e.preventDefault();
 
     FetchAuth(
-      `${registerUrl}${keyApi}`,
+      `accounts:signUp`,
       {
         method: "POST",
         headers: {
@@ -70,8 +69,18 @@ export default function Register() {
             token: res.idToken,
             userId: res.localId,
           });
+          Fetch(`users/${res.localId}.json`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...userData,
+              email: res.email,
+              userId: res.localId,
+            }),
+          });
           navigate("/");
-          console.log(userData);
         }
       }
     );
