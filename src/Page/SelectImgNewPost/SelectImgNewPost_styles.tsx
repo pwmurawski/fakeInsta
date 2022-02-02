@@ -26,6 +26,7 @@ export const Content = styled.section`
   width: 100%;
   height: calc(100% - 43px);
   padding: 24px;
+  position: relative;
 `;
 export const H2 = styled.h2`
   height: 26px;
@@ -46,7 +47,11 @@ export const BtnChooseFile = styled.button`
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
+  z-index: 1;
 `;
 export const Input = styled.input`
-  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 `;

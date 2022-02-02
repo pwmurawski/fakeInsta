@@ -70,7 +70,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="direct/*" element={<InboxMessage />} />
         <Route path="explore" element={<Explore />} />
-        <Route path=":userName/*" element={<Profil />} />
+        <Route path="profile/*" element={<Profil />} />
         <Route path="accounts/*" element={<ProfilSettings />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

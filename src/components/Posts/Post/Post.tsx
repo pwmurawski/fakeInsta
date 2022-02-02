@@ -1,4 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import userLogo from "../../../assets/user.jpg";
 import { Wrapper, Img, Content, CommentsLink } from "./Post_styles";
 import PostHeader from "./PostHeader/PostHeader";
@@ -10,14 +11,16 @@ import {
   DescriptionPost,
   TextDesc,
   UserNameDesc,
+  LinkPost,
 } from "../../../GlobalStyle/GlobalStyle";
+import modifyDate from "../../../helpers/modifyDate";
 
 interface IPostProps {
   id: string;
-  comments: number;
+  comments?: string[];
   description: string;
   img: string;
-  likes: number;
+  likes?: string[];
   location: string;
   date: string;
   user: {
@@ -28,6 +31,11 @@ interface IPostProps {
     storiesActive?: boolean;
   };
 }
+
+const defaultProps = {
+  likes: [],
+  comments: [],
+};
 
 export default function Post({
   id,
@@ -40,7 +48,13 @@ export default function Post({
   user,
 }: IPostProps) {
   const { pathname } = useLocation();
-  const newDate = new Date(date);
+  const [likesData, setLikesData] = useState<string[]>();
+
+  useEffect(() => {
+    if (likes?.length !== 0) {
+      setLikesData(likes);
+    }
+  }, [likes]);
 
   return (
     <Wrapper>
@@ -52,28 +66,32 @@ export default function Post({
       />
       <Img src={img} />
       <Content>
-        <PostOptions postId={id} userId={user.userId} />
-        <LikeContainer>Liczba polubień: {likes}</LikeContainer>
+        <PostOptions
+          postId={id}
+          userId={user.userId}
+          likesData={likesData}
+          setLikesData={setLikesData}
+        />
+        <LikeContainer>Liczba polubień: {likesData?.length ?? 0}</LikeContainer>
         <DescriptionPost>
           <TextDesc>
             <UserNameDesc>{user.userName}</UserNameDesc> {description}
           </TextDesc>
         </DescriptionPost>
         <CommentsLink>
-          <Link
+          <LinkPost
             to={`/p/${user.userId}/${id}/`}
             state={{ background: pathname }}
+            color="gray"
           >
-            Zobacz komentarze: {comments}
-          </Link>
+            Zobacz komentarze: {comments?.length}
+          </LinkPost>
         </CommentsLink>
-        <TimeContainer>
-          {`${newDate.getDate()}.${
-            newDate.getMonth() + 1
-          }.${newDate.getFullYear()}   ${newDate.getHours()}:${newDate.getMinutes()}`}
-        </TimeContainer>
+        <TimeContainer>{modifyDate(date)}</TimeContainer>
         <PostAddComment />
       </Content>
     </Wrapper>
   );
 }
+
+Post.defaultProps = defaultProps;

@@ -23,8 +23,8 @@ interface IImgPostsProps {
   postsData: {
     id: string;
     img: string;
-    likes: number;
-    comments: number;
+    likes?: string[];
+    comments?: string[];
     user: {
       userId: string;
     };

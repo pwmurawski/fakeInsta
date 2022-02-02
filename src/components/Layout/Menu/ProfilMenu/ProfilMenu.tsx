@@ -93,7 +93,7 @@ export default function ProfilMenu({ setProfilMenu }: IProfilMenuProps) {
           <Arrow />
         </ArrowContainer>
         <MenuLink
-          to="/pwmurawski123/"
+          to="/profile/"
           onClick={() => {
             setProfilMenu(false);
           }}
@@ -104,7 +104,7 @@ export default function ProfilMenu({ setProfilMenu }: IProfilMenuProps) {
           Profil
         </MenuLink>
         <MenuLink
-          to="/pwmurawski123/saved/"
+          to="/profile/saved/"
           onClick={() => {
             setProfilMenu(false);
           }}
@@ -126,7 +126,7 @@ export default function ProfilMenu({ setProfilMenu }: IProfilMenuProps) {
           Ustawienia
         </MenuLink>
         <MenuLink
-          to="/pwmurawski123/"
+          to="/profile/"
           onClick={() => {
             setProfilMenu(false);
           }}
@@ -137,7 +137,7 @@ export default function ProfilMenu({ setProfilMenu }: IProfilMenuProps) {
           Przełącz konto
         </MenuLink>
         <MenuLink
-          to="/Login/"
+          to="/"
           onClick={() => {
             setProfilMenu(false);
             setAuth(false);

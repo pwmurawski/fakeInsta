@@ -5,7 +5,7 @@ import ProfilEdit from "../../../components/ProfilEdit/ProfilEdit";
 import ProfilChangePass from "../../../components/ProfilChangePass/ProfilChangePass";
 import useAuth from "../../../hooks/useAuth";
 import Fetch from "../../../helpers/Fetch/Fetch";
-import objectToArray from "../../../helpers/objectToArray/objectToArray";
+import objectToArray from "../../../helpers/objectToArray";
 
 const Wrapper = styled.section`
   display: flex;

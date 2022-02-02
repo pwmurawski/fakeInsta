@@ -27,7 +27,7 @@ interface ICommentProps {
 export default function Comment({ user, content }: ICommentProps) {
   return (
     <Wrapper>
-      <UserLogo stories={user.storiesActive} src={user.userLogo} />
+      <UserLogo storiesActive={user.storiesActive} src={user.userLogo} />
       <TextDesc>
         <UserNameDesc>
           <LinkPost to="/">{user.userName}</LinkPost>

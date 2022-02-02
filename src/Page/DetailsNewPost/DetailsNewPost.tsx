@@ -15,7 +15,7 @@ import userImg from "../../assets/user.jpg";
 import Modal from "../../hoc/Modal";
 import Fetch from "../../helpers/Fetch/Fetch";
 import useAuth from "../../hooks/useAuth";
-import objectToArray from "../../helpers/objectToArray/objectToArray";
+import objectToArray from "../../helpers/objectToArray";
 
 const NewPostContainer = styled.section`
   background-color: white;
@@ -155,8 +155,6 @@ interface IPostData {
   img: string | undefined;
   desc: string;
   location: string;
-  likes: number;
-  comments: number;
   date: Date;
   user: {
     userFullName: string;
@@ -169,7 +167,7 @@ interface IPostData {
 
 function DetailsNewPost() {
   const abortController = new AbortController();
-  const s = abortController.signal;
+  const { signal } = abortController;
   const [descTextLength, setDescTextLength] = useState(0);
   const navigate = useNavigate();
   const { state } = useLocation() as ILocationState;
@@ -179,8 +177,6 @@ function DetailsNewPost() {
     img: state?.uploadImg,
     desc: "",
     location: "",
-    likes: 0,
-    comments: 0,
     date: actualTime,
     user: {
       userFullName: "",
@@ -190,7 +186,7 @@ function DetailsNewPost() {
   });
 
   const getUserAuth = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal: s }, (res) => {
+    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
       const user: IUserAuth[] = objectToArray(res);
       setNewPostData({
         ...newPostData,
@@ -208,7 +204,7 @@ function DetailsNewPost() {
   const createNewPost = () => {
     Fetch(`posts/${auth?.userId}.json`, {
       method: "POST",
-      signal: s,
+      signal,
       headers: {
         "Content-Type": "application/json",
       },

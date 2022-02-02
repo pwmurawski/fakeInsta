@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
 import Fetch from "../../helpers/Fetch/Fetch";
-import objectToArray from "../../helpers/objectToArray/objectToArray";
+import objectToArray from "../../helpers/objectToArray";
+import sortPostsByDate from "../../helpers/sortPostsByDate";
 
 const Wrapper = styled.section`
   display: flex;
@@ -22,8 +23,8 @@ const Container = styled.section`
 interface IPostsData {
   id: string;
   img: string;
-  likes: number;
-  comments: number;
+  likes?: string[];
+  comments?: string[];
   date: string;
   user: {
     userId: string;
@@ -32,18 +33,14 @@ interface IPostsData {
 
 export default function Explore() {
   const abortController = new AbortController();
-  const s = abortController.signal;
+  const { signal } = abortController;
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
 
   const getPosts = () => {
-    Fetch("posts.json", { signal: s }, (res) => {
+    Fetch("posts.json", { signal }, (res) => {
       const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
-      setPostsData(posts.reverse());
+      setPostsData(posts);
     });
-  };
-
-  const sortPosts = (post1: IPostsData, post2: IPostsData): number => {
-    return new Date(post2.date).getTime() - new Date(post1.date).getTime();
   };
 
   useEffect(() => {
@@ -58,7 +55,9 @@ export default function Explore() {
     <Wrapper>
       <Container>
         <ImgPosts
-          postsData={postsData.sort((post1, post2) => sortPosts(post1, post2))}
+          postsData={postsData.sort((post1, post2) =>
+            sortPostsByDate(post1, post2)
+          )}
           customLayOut
         />
       </Container>

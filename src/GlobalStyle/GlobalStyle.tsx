@@ -13,12 +13,10 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-interface ILinkProps {
-  gray?: boolean;
-}
 export const LinkPost = styled(Link)`
   text-decoration: none;
-  color: ${({ gray }: ILinkProps) => (gray ? "gray" : "black")};
+  font-size: 13px;
+  color: ${({ color }) => color ?? "black"};
 `;
 export const LikeContainer = styled.div`
   box-sizing: border-box;
@@ -53,8 +51,8 @@ export const UserLogo = styled.img`
   height: ${({ height }) => height ?? "42px"};
   border-radius: 150px;
   cursor: pointer;
-  border: ${({ stories }: { stories?: boolean }) =>
-    stories ? "2px solid violet" : "null"};
+  border: ${({ storiesActive }: { storiesActive?: boolean }) =>
+    storiesActive ? "2px solid violet" : "null"};
 `;
 export const UserNameDesc = styled.span`
   font-size: 14px;

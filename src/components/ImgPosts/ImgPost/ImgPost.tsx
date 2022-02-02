@@ -31,8 +31,8 @@ const ImgPostContainer = styled.div`
     `}
 `;
 interface IHoverProps {
-  likes: number;
-  comments: number;
+  likes?: number;
+  comments?: number;
 }
 const Hover = styled(Link)`
   position: absolute;
@@ -59,14 +59,16 @@ const Hover = styled(Link)`
 interface IImgPostProps {
   id: string;
   img: string;
-  likes: number;
-  comments: number;
+  likes?: string[];
+  comments?: string[];
   userId: string;
   customLayOut?: boolean;
 }
 
 const defaultProps = {
   customLayOut: undefined,
+  likes: [],
+  comments: [],
 };
 
 export default function ImgPost({
@@ -84,8 +86,8 @@ export default function ImgPost({
       <Hover
         to={`/p/${userId}/${id}/`}
         state={{ background: pathname }}
-        likes={likes}
-        comments={comments}
+        likes={likes?.length}
+        comments={comments?.length}
       />
       <ImgContainer>
         <Img src={img} />

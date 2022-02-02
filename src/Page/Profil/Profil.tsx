@@ -28,8 +28,9 @@ import {
 } from "../../components/SvgIcon/ProfilPage_SvgIcon";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
 import Fetch from "../../helpers/Fetch/Fetch";
-import objectToArray from "../../helpers/objectToArray/objectToArray";
+import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
+import sortPostsByDate from "../../helpers/sortPostsByDate";
 
 interface ILocationState {
   state?: {
@@ -37,44 +38,44 @@ interface ILocationState {
   };
 }
 
-interface IUserAuthPostsData {
+interface IPostsData {
   id: string;
   img: string;
-  likes: number;
-  comments: number;
+  likes?: string[];
+  comments?: string[];
+  date: string;
   user: {
     userId: string;
   };
 }
 
 interface IUserAuthData {
-  id: string;
   email: string;
   userFullName: string;
   userId: string;
   userName: string;
+  logo?: string;
   usersWatched?: string[];
+  storiesActive?: boolean;
 }
 
 export default function Profil() {
   const abortController = new AbortController();
-  const s = abortController.signal;
+  const { signal } = abortController;
+  const { state } = useLocation() as ILocationState;
+  const background = state?.background;
+  const media = window.matchMedia("(max-width: 735px)");
   const [auth] = useAuth();
+  const [isMediaMatches, setIsMediaMatches] = useState(!!media.matches);
+  const [postsData, setPostsData] = useState<IPostsData[]>([]);
+  const [postsSavedData, setPostsSavedData] = useState([]);
+  const [postsTaggedData, setPostsTaggedData] = useState([]);
   const [userData, setUserData] = useState<IUserAuthData>({
     email: "",
-    id: "",
     userFullName: "",
     userId: "",
     userName: "",
   });
-  const [postsData, setPostsData] = useState<IUserAuthPostsData[]>([]);
-  const [postsSavedData, setPostsSavedData] = useState([]);
-  const [postsTaggedData, setPostsTaggedData] = useState([]);
-
-  const { state } = useLocation() as ILocationState;
-  const background = state?.background;
-  const media = window.matchMedia("(max-width: 735px)");
-  const [isMediaMatches, setIsMediaMatches] = useState(!!media.matches);
 
   const resizeHandler = () => {
     if (media.matches) {
@@ -85,16 +86,16 @@ export default function Profil() {
   };
 
   const getUserAuthData = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal: s }, (res) => {
-      const userAuthData: IUserAuthData[] = objectToArray(res);
+    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
+      const userAuthData: IUserAuthData[] = objectToArray(res, false);
       setUserData(userAuthData[0]);
     });
   };
 
   const getPostsData = () => {
-    Fetch(`posts/${auth?.userId}.json`, { signal: s }, (res) => {
-      const posts: IUserAuthPostsData[] = objectToArray(res);
-      setPostsData(posts.reverse());
+    Fetch(`posts/${auth?.userId}.json`, { signal }, (res) => {
+      const posts: IPostsData[] = objectToArray(res);
+      setPostsData(posts);
     });
   };
 
@@ -115,7 +116,10 @@ export default function Profil() {
       <ProfilContainer>
         <Header>
           <UserImg>
-            <Img src={userImg} />
+            <Img
+              storiesActive={userData.storiesActive}
+              src={userData.logo ?? userImg}
+            />
           </UserImg>
           <ContentHeader>
             <User>
@@ -159,7 +163,7 @@ export default function Profil() {
           </>
         ) : null}
         <Options>
-          <OptionsLink to="/pwmurawski123/">
+          <OptionsLink to="/profile/">
             {({ isActive }) => (
               <>
                 <Svg>
@@ -191,7 +195,16 @@ export default function Profil() {
           </OptionsLink>
         </Options>
         <Routes location={background}>
-          <Route index element={<ImgPosts postsData={postsData} />} />
+          <Route
+            index
+            element={
+              <ImgPosts
+                postsData={postsData.sort((post1, post2) =>
+                  sortPostsByDate(post1, post2)
+                )}
+              />
+            }
+          />
           <Route
             path="saved"
             element={

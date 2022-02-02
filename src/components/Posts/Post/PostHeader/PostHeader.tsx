@@ -28,7 +28,7 @@ export default function PostHeader({
   return (
     <Header>
       <User>
-        <UserLogo stories={storiesActive} src={userLogo} />
+        <UserLogo storiesActive={storiesActive} src={userLogo} />
         <Container>
           <UserName>{userName}</UserName>
           <Location>{location}</Location>

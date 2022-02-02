@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Link, NavLink } from "react-router-dom";
+import { UserLogo } from "../../GlobalStyle/GlobalStyle";
 
 export const Wrapper = styled.section`
   display: flex;
@@ -54,7 +55,7 @@ export const UserImg = styled.div`
     margin-right: 28px;
   }
 `;
-export const Img = styled.img`
+export const Img = styled(UserLogo)`
   width: 150px;
   height: 150px;
   border-radius: 150px;

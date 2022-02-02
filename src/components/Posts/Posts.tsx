@@ -3,10 +3,10 @@ import Post from "./Post/Post";
 interface IPostsProps {
   postsData: {
     id: string;
-    comments: number;
+    comments?: string[];
     desc: string;
     img: string;
-    likes: number;
+    likes?: string[];
     location: string;
     date: string;
     user: {
