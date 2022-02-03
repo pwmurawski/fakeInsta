@@ -1,14 +1,26 @@
-export default function ExitSvg() {
+interface IExitSvgProps {
+  color?: string;
+  width?: string;
+  height?: string;
+}
+
+const defaultProps = {
+  color: "#262626",
+  width: "18",
+  height: "18",
+};
+
+export default function ExitSvg({ color, width, height }: IExitSvgProps) {
   return (
     <svg
       aria-label="Zamknij"
       className="_8-yf5 "
-      color="#262626"
-      fill="#262626"
-      height="18"
+      color={color}
+      fill={color}
+      height={height}
       role="img"
       viewBox="0 0 24 24"
-      width="18"
+      width={width}
     >
       <polyline
         fill="none"
@@ -32,3 +44,5 @@ export default function ExitSvg() {
     </svg>
   );
 }
+
+ExitSvg.defaultProps = defaultProps;

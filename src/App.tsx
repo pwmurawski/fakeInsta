@@ -13,7 +13,7 @@ import SelectImgNewPost from "./Page/SelectImgNewPost/SelectImgNewPost";
 import DetailsNewPost from "./Page/DetailsNewPost/DetailsNewPost";
 import Profil from "./Page/Profil/Profil";
 import InboxMessage from "./Page/InboxMessage/InboxMessage";
-import AddNewMessage from "./Page/AddNewMessage/AddNewMessage";
+import AddNewMessage from "./Page/AddNewConversation/AddNewConversation";
 import ProfilSettings from "./Page/Profil/ProfilSettings/ProfilSettings";
 import Login from "./Page/Auth/Login/Login";
 import Register from "./Page/Auth/Register/Register";

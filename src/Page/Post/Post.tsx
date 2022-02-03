@@ -16,6 +16,7 @@ import {
   UserNameDesc,
   UserLogo,
   ModalWindowWrapper,
+  ExitBtnModalWindow,
 } from "../../GlobalStyle/GlobalStyle";
 import userLogo from "../../assets/user.jpg";
 import PostHeader from "../../components/Posts/Post/PostHeader/PostHeader";
@@ -26,6 +27,7 @@ import Modal from "../../hoc/Modal";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import modifyDate from "../../helpers/modifyDate";
+import ExitSvg from "../../components/SvgIcon/AddNewMessage_SvgIcon";
 
 interface IUserData {
   serFullName: string;
@@ -57,6 +59,7 @@ function Post() {
   const { signal } = abortController;
   const { userId, postId, postImg } = useParams();
   const navigate = useNavigate();
+  const [imgFullScreen, setImgFullScreen] = useState(false);
   const [likesData, setLikesData] = useState<string[]>();
   const [postData, setPostData] = useState<IPostData>({
     img: "",
@@ -104,54 +107,68 @@ function Post() {
         navigate(-1);
       }}
     >
-      <PostContainer
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        postImg={postImg === "true"}
-      >
-        <ImgContainer postImg={postImg !== "true"}>
-          <Img src={postData.img} />
-        </ImgContainer>
-        <Content postImg={postImg !== "true"}>
-          <PostHeader
-            userName={userData.userName}
-            location={postData.location}
-            userLogo={userData.logo ?? userLogo}
-            storiesActive={userData.storiesActive}
-          />
-          <CommentsContainer postImg={postImg === "true"}>
-            <DescriptionPostPage>
-              <UserLogo
-                width="32px"
-                height="32px"
-                storiesActive={userData.storiesActive}
-                src={userData.logo ?? userLogo}
-              />
-              <TextDesc>
-                <UserNameDesc>{userData.userName}</UserNameDesc> {postData.desc}
-              </TextDesc>
-            </DescriptionPostPage>
-            <Comments comments={postData.comments ?? []} />
-          </CommentsContainer>
-          <ContainerOptions>
-            {postImg === "true" ? (
-              <PostOptions
-                postId={postId}
-                likesData={likesData}
-                setLikesData={setLikesData}
-                userId={userId}
-                commentBtnOff
-              />
-            ) : null}
-            <LikeContainer>
-              Liczba polubień: {likesData?.length ?? 0}
-            </LikeContainer>
-            <TimeContainer>{modifyDate(postData.date)}</TimeContainer>
-            <PostAddComment />
-          </ContainerOptions>
-        </Content>
-      </PostContainer>
+      <ExitBtnModalWindow>
+        <ExitSvg color="white" width="25" height="25" />
+      </ExitBtnModalWindow>
+      {imgFullScreen ? (
+        <Img
+          onClick={(e) => {
+            e.stopPropagation();
+            setImgFullScreen(false);
+          }}
+          src={postData.img}
+        />
+      ) : (
+        <PostContainer
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          postImg={postImg === "true"}
+        >
+          <ImgContainer postImg={postImg !== "true"}>
+            <Img onClick={() => setImgFullScreen(true)} src={postData.img} />
+          </ImgContainer>
+          <Content postImg={postImg !== "true"}>
+            <PostHeader
+              userName={userData.userName}
+              location={postData.location}
+              userLogo={userData.logo ?? userLogo}
+              storiesActive={userData.storiesActive}
+            />
+            <CommentsContainer postImg={postImg === "true"}>
+              <DescriptionPostPage>
+                <UserLogo
+                  width="32px"
+                  height="32px"
+                  storiesActive={userData.storiesActive}
+                  src={userData.logo ?? userLogo}
+                />
+                <TextDesc>
+                  <UserNameDesc>{userData.userName}</UserNameDesc>{" "}
+                  {postData.desc}
+                </TextDesc>
+              </DescriptionPostPage>
+              <Comments comments={postData.comments ?? []} />
+            </CommentsContainer>
+            <ContainerOptions>
+              {postImg === "true" ? (
+                <PostOptions
+                  postId={postId}
+                  likesData={likesData}
+                  setLikesData={setLikesData}
+                  userId={userId}
+                  commentBtnOff
+                />
+              ) : null}
+              <LikeContainer>
+                Liczba polubień: {likesData?.length ?? 0}
+              </LikeContainer>
+              <TimeContainer>{modifyDate(postData.date)}</TimeContainer>
+              <PostAddComment />
+            </ContainerOptions>
+          </Content>
+        </PostContainer>
+      )}
     </ModalWindowWrapper>
   );
 }

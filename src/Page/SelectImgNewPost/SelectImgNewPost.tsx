@@ -1,9 +1,11 @@
 import React, { useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import ExitSvg from "../../components/SvgIcon/AddNewMessage_SvgIcon";
 import { SelectImgSvg } from "../../components/SvgIcon/CreateNewPost_SvgIcon";
 import {
   ModalWindowWrapper,
   HeaderCreatePost,
+  ExitBtnModalWindow,
 } from "../../GlobalStyle/GlobalStyle";
 import Modal from "../../hoc/Modal";
 import {
@@ -50,6 +52,9 @@ function SelectImgNewPost() {
         navigate(-1);
       }}
     >
+      <ExitBtnModalWindow>
+        <ExitSvg color="white" width="25" height="25" />
+      </ExitBtnModalWindow>
       <NewPostContainer
         onClick={(e) => {
           e.stopPropagation();

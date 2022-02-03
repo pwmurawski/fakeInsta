@@ -11,6 +11,7 @@ export const PostContainer = styled.article`
   background-color: white;
   border-radius: 3px;
   transition: max-height 1000ms;
+  position: relative;
 
   @media (max-width: 1389px) {
     max-height: 95%;
@@ -29,6 +30,7 @@ export const Img = styled.img`
   max-width: 100%;
   max-height: 100%;
   height: auto;
+  cursor: pointer;
 `;
 export const ImgContainer = styled.div`
   display: flex;
@@ -48,9 +50,7 @@ export const ImgContainer = styled.div`
     `}
 `;
 export const Content = styled.section`
-  max-width: 500px;
-  width: 100%;
-  min-width: 400px;
+  min-width: 404px;
   height: 100%;
   position: relative;
   @media (max-width: 760px) {

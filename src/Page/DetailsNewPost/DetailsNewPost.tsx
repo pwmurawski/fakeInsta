@@ -5,6 +5,7 @@ import {
   Btn,
   ModalWindowWrapper,
   HeaderCreatePost,
+  ExitBtnModalWindow,
 } from "../../GlobalStyle/GlobalStyle";
 import {
   BackSvg,
@@ -16,6 +17,7 @@ import Modal from "../../hoc/Modal";
 import Fetch from "../../helpers/Fetch/Fetch";
 import useAuth from "../../hooks/useAuth";
 import objectToArray from "../../helpers/objectToArray";
+import ExitSvg from "../../components/SvgIcon/AddNewMessage_SvgIcon";
 
 const NewPostContainer = styled.section`
   background-color: white;
@@ -226,6 +228,9 @@ function DetailsNewPost() {
         navigate(-2);
       }}
     >
+      <ExitBtnModalWindow>
+        <ExitSvg color="white" width="25" height="25" />
+      </ExitBtnModalWindow>
       <NewPostContainer
         onClick={(e) => {
           e.stopPropagation();

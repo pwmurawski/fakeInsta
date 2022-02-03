@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: whitesmoke;
     }
 `;
+export default GlobalStyle;
 
 export const LinkPost = styled(Link)`
   text-decoration: none;
@@ -88,19 +89,21 @@ export const ModalWindowWrapper = styled.section`
   background-color: rgba(0, 0, 0, 0.8);
   transition: padding 1000ms;
   z-index: 1;
-  ::before {
-    position: fixed;
-    top: 2px;
-    right: 12px;
-    content: "🗙";
-    color: white;
-    font-size: 35px;
-    cursor: pointer;
-  }
 
   @media (max-width: 760px) {
     padding: 24px 0;
   }
+`;
+
+export const ExitBtnModalWindow = styled.button`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: fit-content;
+  height: fit-content;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
 `;
 
 export const HeaderCreatePost = styled.header`
@@ -292,5 +295,3 @@ export const AuthLinkStyle = styled(Link)`
   text-decoration: none;
   font-weight: 600;
 `;
-
-export default GlobalStyle;
