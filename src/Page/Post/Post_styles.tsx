@@ -1,12 +1,12 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { DescriptionPost } from "../../GlobalStyle/GlobalStyle";
 
 export const PostContainer = styled.article`
   display: flex;
   max-width: 100%;
   width: fit-content;
-  height: 100%;
   max-height: 100%;
+  height: 100%;
   min-height: 60%;
   background-color: white;
   border-radius: 3px;
@@ -21,8 +21,14 @@ export const PostContainer = styled.article`
   }
 
   @media (max-width: 760px) {
-    height: fit-content;
+    width: ${({ postImg }: { postImg?: boolean }) =>
+      postImg ? "100%" : "90%"};
   }
+`;
+export const Img = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
 `;
 export const ImgContainer = styled.div`
   display: flex;
@@ -30,23 +36,36 @@ export const ImgContainer = styled.div`
   justify-content: center;
   height: 100%;
   background-color: black;
-`;
-export const Img = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
+  @media (max-width: 760px) {
+    flex: 1;
+  }
+  ${({ postImg }: { postImg?: boolean }) =>
+    postImg &&
+    css`
+      @media (max-width: 760px) {
+        display: none;
+      }
+    `}
 `;
 export const Content = styled.section`
-  max-width: 100%;
-  width: 500px;
+  max-width: 500px;
+  width: 100%;
   min-width: 400px;
   height: 100%;
   position: relative;
-
   @media (max-width: 760px) {
-    width: 100%;
+    flex: 2;
     min-width: 0;
   }
+  ${({ postImg }: { postImg?: boolean }) =>
+    postImg &&
+    css`
+      @media (max-width: 760px) {
+        max-width: 100%;
+        width: 100%;
+        min-width: 0;
+      }
+    `}
 `;
 
 export const ContainerOptions = styled.div`
@@ -58,7 +77,10 @@ const heightContainerOptions = "160px";
 export const CommentsContainer = styled.section`
   box-sizing: border-box;
   width: 100%;
-  height: calc(100% - ${heightHeader} - ${heightContainerOptions});
+  height: ${({ postImg }: { postImg?: boolean }) =>
+    postImg
+      ? `calc(100% - ${heightHeader} - ${heightContainerOptions})`
+      : `calc(100% - ${heightHeader} - ${heightContainerOptions} + 54px)`};
   padding: 16px;
   border-top: 1px solid lightgray;
   overflow-y: auto;

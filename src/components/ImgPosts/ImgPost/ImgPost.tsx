@@ -84,7 +84,7 @@ export default function ImgPost({
   return (
     <ImgPostContainer customLayOut={customLayOut}>
       <Hover
-        to={`/p/${userId}/${id}/`}
+        to={`/p/${userId}/${id}/true/`}
         state={{ background: pathname }}
         likes={likes?.length}
         comments={comments?.length}

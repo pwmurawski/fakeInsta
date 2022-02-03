@@ -55,7 +55,7 @@ interface IPostData {
 function Post() {
   const abortController = new AbortController();
   const { signal } = abortController;
-  const { userId, postId } = useParams();
+  const { userId, postId, postImg } = useParams();
   const navigate = useNavigate();
   const [likesData, setLikesData] = useState<string[]>();
   const [postData, setPostData] = useState<IPostData>({
@@ -108,18 +108,19 @@ function Post() {
         onClick={(e) => {
           e.stopPropagation();
         }}
+        postImg={postImg === "true"}
       >
-        <ImgContainer>
+        <ImgContainer postImg={postImg !== "true"}>
           <Img src={postData.img} />
         </ImgContainer>
-        <Content>
+        <Content postImg={postImg !== "true"}>
           <PostHeader
             userName={userData.userName}
             location={postData.location}
             userLogo={userData.logo ?? userLogo}
             storiesActive={userData.storiesActive}
           />
-          <CommentsContainer>
+          <CommentsContainer postImg={postImg === "true"}>
             <DescriptionPostPage>
               <UserLogo
                 width="32px"
@@ -134,13 +135,15 @@ function Post() {
             <Comments comments={postData.comments ?? []} />
           </CommentsContainer>
           <ContainerOptions>
-            <PostOptions
-              postId={postId}
-              likesData={likesData}
-              setLikesData={setLikesData}
-              userId={userId}
-              commentBtnOff
-            />
+            {postImg === "true" ? (
+              <PostOptions
+                postId={postId}
+                likesData={likesData}
+                setLikesData={setLikesData}
+                userId={userId}
+                commentBtnOff
+              />
+            ) : null}
             <LikeContainer>
               Liczba polubień: {likesData?.length ?? 0}
             </LikeContainer>

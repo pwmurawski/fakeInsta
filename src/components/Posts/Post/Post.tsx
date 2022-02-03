@@ -80,7 +80,7 @@ export default function Post({
         </DescriptionPost>
         <CommentsLink>
           <LinkPost
-            to={`/p/${user.userId}/${id}/`}
+            to={`/p/${user.userId}/${id}/false/`}
             state={{ background: pathname }}
             color="gray"
           >

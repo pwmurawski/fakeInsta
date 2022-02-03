@@ -6,7 +6,9 @@ const modifyDate = (date: string): string => {
   const hours = newDate.getHours();
   const minutes = newDate.getMinutes();
 
-  return `${day}.${month}.${year}  ${hours}:${minutes}`;
+  return `${day < 10 ? 0 : ""}${day}.${month < 10 ? 0 : ""}${month}.${year}  ${
+    hours < 10 ? 0 : ""
+  }${hours}:${minutes < 10 ? 0 : ""}${minutes}`;
 };
 
 export default modifyDate;

@@ -77,7 +77,7 @@ export default function App() {
 
       {background ? (
         <Routes>
-          <Route path="p/:userId/:postId/" element={<Post />} />
+          <Route path="p/:userId/:postId/:postImg" element={<Post />} />
           <Route path="create/select" element={<SelectImgNewPost />} />
           <Route path="create/details" element={<DetailsNewPost />} />
           <Route path="direct/new" element={<AddNewMessage />} />

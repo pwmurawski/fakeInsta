@@ -78,7 +78,10 @@ export default function PostOptions({
         {commentBtnOff ? (
           <CommentSvg />
         ) : (
-          <Link to={`/p/${userId}/${postId}/`} state={{ background: pathname }}>
+          <Link
+            to={`/p/${userId}/${postId}/false/`}
+            state={{ background: pathname }}
+          >
             <CommentSvg />
           </Link>
         )}
