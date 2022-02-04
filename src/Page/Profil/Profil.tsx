@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -31,6 +32,10 @@ import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
 import sortPostsByDate from "../../helpers/sortPostsByDate";
+import NoSavedPosts from "../../components/InfoLackPosts/NoSavedPosts/NoSavedPosts";
+import NoTaggedPosts from "../../components/InfoLackPosts/NoTaggedPosts/NoTaggedPosts";
+import NoMyPosts from "../../components/InfoLackPosts/NoMyPosts/NoMyPosts";
+import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 
 interface ILocationState {
   state?: {
@@ -67,6 +72,7 @@ export default function Profil() {
   const media = window.matchMedia("(max-width: 735px)");
   const [auth] = useAuth();
   const [isMediaMatches, setIsMediaMatches] = useState(!!media.matches);
+  const [loading, setLoading] = useState(true);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
   const [postsSavedData, setPostsSavedData] = useState([]);
   const [postsTaggedData, setPostsTaggedData] = useState([]);
@@ -96,6 +102,7 @@ export default function Profil() {
     Fetch(`posts/${auth?.userId}.json`, { signal }, (res) => {
       const posts: IPostsData[] = objectToArray(res);
       setPostsData(posts);
+      setLoading(false);
     });
   };
 
@@ -198,11 +205,23 @@ export default function Profil() {
           <Route
             index
             element={
-              <ImgPosts
-                postsData={postsData.sort((post1, post2) =>
-                  sortPostsByDate(post1, post2)
+              <>
+                {loading ? (
+                  <LoadingIcon />
+                ) : (
+                  <>
+                    {postsData.length !== 0 ? (
+                      <ImgPosts
+                        postsData={postsData.sort((post1, post2) =>
+                          sortPostsByDate(post1, post2)
+                        )}
+                      />
+                    ) : (
+                      <NoMyPosts />
+                    )}
+                  </>
                 )}
-              />
+              </>
             }
           />
           <Route
@@ -212,13 +231,25 @@ export default function Profil() {
                 <SavedPostsInfo>
                   Tylko Ty widzisz zapisane elementy
                 </SavedPostsInfo>
-                <ImgPosts postsData={postsSavedData} />
+                {postsSavedData.length !== 0 ? (
+                  <ImgPosts postsData={postsSavedData} />
+                ) : (
+                  <NoSavedPosts />
+                )}
               </>
             }
           />
           <Route
             path="tagged"
-            element={<ImgPosts postsData={postsTaggedData} />}
+            element={
+              <>
+                {postsTaggedData.length !== 0 ? (
+                  <ImgPosts postsData={postsTaggedData} />
+                ) : (
+                  <NoTaggedPosts />
+                )}
+              </>
+            }
           />
         </Routes>
       </ProfilContainer>

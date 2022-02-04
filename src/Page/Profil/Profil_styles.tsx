@@ -10,7 +10,9 @@ export const Wrapper = styled.section`
   height: fit-content;
 `;
 export const ProfilContainer = styled.section`
-  width: fit-content;
+  box-sizing: border-box;
+  max-width: 935px;
+  width: 100%;
   padding: 0 20px;
   @media (max-width: 735px) {
     padding: 0;

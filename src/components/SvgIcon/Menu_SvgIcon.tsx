@@ -154,17 +154,27 @@ export function AddPostSvgActive() {
   );
 }
 
-export function ExploreSvg() {
+interface IExploreSvgProps {
+  width?: string;
+  height?: string;
+}
+
+const defaultProps = {
+  width: "24",
+  height: "24",
+};
+
+export function ExploreSvg({ width, height }: IExploreSvgProps) {
   return (
     <svg
       aria-label="Znajdź osoby"
       className="_8-yf5 "
       color="#262626"
       fill="#262626"
-      height="24"
+      height={height}
       role="img"
       viewBox="0 0 24 24"
-      width="24"
+      width={width}
     >
       <polygon
         fill="none"
@@ -191,6 +201,8 @@ export function ExploreSvg() {
     </svg>
   );
 }
+
+ExploreSvg.defaultProps = defaultProps;
 
 export function ExploreSvgActive() {
   return (

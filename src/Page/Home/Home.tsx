@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useEffect, useState } from "react";
 import {
   Wrapper,
@@ -13,6 +14,8 @@ import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
 import sortPostsByDate from "../../helpers/sortPostsByDate";
+import NoWatchedUsers from "../../components/InfoLackPosts/NoWatchedUsers/NoWatchedUsers";
+import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 
 interface IPostsData {
   id: string;
@@ -31,15 +34,13 @@ interface IPostsData {
   };
 }
 
-interface IUserData {
-  usersWatched?: string[];
-}
-
 export default function Home() {
   const abortController = new AbortController();
   const { signal } = abortController;
   const [auth] = useAuth();
+  const [loading, setLoading] = useState(true);
   const [getPostsIsComplete, setGetPostsIsComplete] = useState(false);
+  const [numberWatchedUser, setNumberWatchedUser] = useState(0);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
 
   const getPostsAuthUser = () => {
@@ -52,14 +53,16 @@ export default function Home() {
 
   const getPostsWatchedUsers = () => {
     Fetch(`users/${auth?.userId}.json`, { signal }, (resp) => {
-      const user: IUserData[] = objectToArray(resp);
+      const { usersWatched }: { usersWatched: string[] } =
+        objectToArray(resp)[0];
+      setNumberWatchedUser(usersWatched.length);
 
       Fetch("posts.json", { signal }, (res) => {
         const posts = objectToArray(res, false).flatMap((e) =>
           objectToArray(e)
         );
         const newPostsDataWatchedUsers: IPostsData[][] = [];
-        user[0].usersWatched?.forEach((idUserWatched) => {
+        usersWatched?.forEach((idUserWatched) => {
           newPostsDataWatchedUsers.push(
             posts.filter((post) => post.user.userId === idUserWatched)
           );
@@ -67,6 +70,7 @@ export default function Home() {
         setPostsData([...postsData, ...newPostsDataWatchedUsers.flat()]);
       });
     });
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -88,12 +92,22 @@ export default function Home() {
   return (
     <Wrapper>
       <Content>
-        <Stories />
-        <Posts
-          postsData={postsData.sort((post1, post2) =>
-            sortPostsByDate(post1, post2)
-          )}
-        />
+        {numberWatchedUser !== 0 ? <Stories /> : null}
+        {loading ? (
+          <LoadingIcon />
+        ) : (
+          <>
+            {postsData.length !== 0 ? (
+              <Posts
+                postsData={postsData.sort((post1, post2) =>
+                  sortPostsByDate(post1, post2)
+                )}
+              />
+            ) : (
+              <NoWatchedUsers />
+            )}
+          </>
+        )}
       </Content>
       <AsideContainer>
         <Aside />

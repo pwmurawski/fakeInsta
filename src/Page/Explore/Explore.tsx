@@ -1,9 +1,11 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import sortPostsByDate from "../../helpers/sortPostsByDate";
+import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 
 const Wrapper = styled.section`
   display: flex;
@@ -34,12 +36,14 @@ interface IPostsData {
 export default function Explore() {
   const abortController = new AbortController();
   const { signal } = abortController;
+  const [loading, setLoading] = useState(true);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
 
   const getPosts = () => {
     Fetch("posts.json", { signal }, (res) => {
       const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
       setPostsData(posts);
+      setLoading(false);
     });
   };
 
@@ -52,15 +56,21 @@ export default function Explore() {
   }, []);
 
   return (
-    <Wrapper>
-      <Container>
-        <ImgPosts
-          postsData={postsData.sort((post1, post2) =>
-            sortPostsByDate(post1, post2)
-          )}
-          customLayOut
-        />
-      </Container>
-    </Wrapper>
+    <>
+      {loading ? (
+        <LoadingIcon />
+      ) : (
+        <Wrapper>
+          <Container>
+            <ImgPosts
+              postsData={postsData.sort((post1, post2) =>
+                sortPostsByDate(post1, post2)
+              )}
+              customLayOut
+            />
+          </Container>
+        </Wrapper>
+      )}
+    </>
   );
 }

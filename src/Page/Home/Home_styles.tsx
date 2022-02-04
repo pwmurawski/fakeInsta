@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
 
   @media (max-width: 1000px) {
     grid-template-columns: minmax(0, 1fr) minmax(0, 614px) minmax(0, 1fr);
-    grid-template-rows: 90%;
+    grid-template-rows: 500%;
     grid-column-gap: 0;
     grid-template-areas: ". content .";
   }

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 
-const ImgContainer = styled.div`
+const ImgContainer = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@ const Img = styled.img`
   max-width: 100%;
   height: auto;
 `;
-const ImgPostContainer = styled.div`
+const ImgPostContainer = styled.article`
   overflow: hidden;
   position: relative;
   ${({ customLayOut }: { customLayOut?: boolean }) =>

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -28,6 +29,7 @@ import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import modifyDate from "../../helpers/modifyDate";
 import ExitSvg from "../../components/SvgIcon/AddNewMessage_SvgIcon";
+import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 
 interface IUserData {
   serFullName: string;
@@ -59,6 +61,7 @@ function Post() {
   const { signal } = abortController;
   const { userId, postId, postImg } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [imgFullScreen, setImgFullScreen] = useState(false);
   const [likesData, setLikesData] = useState<string[]>();
   const [postData, setPostData] = useState<IPostData>({
@@ -77,14 +80,6 @@ function Post() {
     storiesActive: false,
   });
 
-  const getPostData = () => {
-    Fetch(`posts/${userId}/${postId}.json`, { signal }, (res) => {
-      const post: IPostData = res;
-      setPostData(post);
-      setLikesData(post.likes);
-    });
-  };
-
   const getUserData = () => {
     Fetch(`users/${userId}.json`, { signal }, (res) => {
       const user: IUserData[] = objectToArray(res, false);
@@ -92,9 +87,18 @@ function Post() {
     });
   };
 
+  const getPostData = () => {
+    Fetch(`posts/${userId}/${postId}.json`, { signal }, (res) => {
+      const post: IPostData = res;
+      setPostData(post);
+      setLikesData(post.likes);
+      setLoading(false);
+    });
+  };
+
   useEffect(() => {
-    getPostData();
     getUserData();
+    getPostData();
 
     return () => {
       abortController.abort();
@@ -119,55 +123,64 @@ function Post() {
           src={postData.img}
         />
       ) : (
-        <PostContainer
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          postImg={postImg === "true"}
-        >
-          <ImgContainer postImg={postImg !== "true"}>
-            <Img onClick={() => setImgFullScreen(true)} src={postData.img} />
-          </ImgContainer>
-          <Content postImg={postImg !== "true"}>
-            <PostHeader
-              userName={userData.userName}
-              location={postData.location}
-              userLogo={userData.logo ?? userLogo}
-              storiesActive={userData.storiesActive}
-            />
-            <CommentsContainer postImg={postImg === "true"}>
-              <DescriptionPostPage>
-                <UserLogo
-                  width="32px"
-                  height="32px"
+        <>
+          {loading ? (
+            <LoadingIcon />
+          ) : (
+            <PostContainer
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              postImg={postImg === "true"}
+            >
+              <ImgContainer postImg={postImg !== "true"}>
+                <Img
+                  onClick={() => setImgFullScreen(true)}
+                  src={postData.img}
+                />
+              </ImgContainer>
+              <Content postImg={postImg !== "true"}>
+                <PostHeader
+                  userName={userData.userName}
+                  location={postData.location}
+                  userLogo={userData.logo ?? userLogo}
                   storiesActive={userData.storiesActive}
-                  src={userData.logo ?? userLogo}
                 />
-                <TextDesc>
-                  <UserNameDesc>{userData.userName}</UserNameDesc>{" "}
-                  {postData.desc}
-                </TextDesc>
-              </DescriptionPostPage>
-              <Comments comments={postData.comments ?? []} />
-            </CommentsContainer>
-            <ContainerOptions>
-              {postImg === "true" ? (
-                <PostOptions
-                  postId={postId}
-                  likesData={likesData}
-                  setLikesData={setLikesData}
-                  userId={userId}
-                  commentBtnOff
-                />
-              ) : null}
-              <LikeContainer>
-                Liczba polubień: {likesData?.length ?? 0}
-              </LikeContainer>
-              <TimeContainer>{modifyDate(postData.date)}</TimeContainer>
-              <PostAddComment />
-            </ContainerOptions>
-          </Content>
-        </PostContainer>
+                <CommentsContainer postImg={postImg === "true"}>
+                  <DescriptionPostPage>
+                    <UserLogo
+                      width="32px"
+                      height="32px"
+                      storiesActive={userData.storiesActive}
+                      src={userData.logo ?? userLogo}
+                    />
+                    <TextDesc>
+                      <UserNameDesc>{userData.userName}</UserNameDesc>{" "}
+                      {postData.desc}
+                    </TextDesc>
+                  </DescriptionPostPage>
+                  <Comments comments={postData.comments ?? []} />
+                </CommentsContainer>
+                <ContainerOptions>
+                  {postImg === "true" ? (
+                    <PostOptions
+                      postId={postId}
+                      likesData={likesData}
+                      setLikesData={setLikesData}
+                      userId={userId}
+                      commentBtnOff
+                    />
+                  ) : null}
+                  <LikeContainer>
+                    Liczba polubień: {likesData?.length ?? 0}
+                  </LikeContainer>
+                  <TimeContainer>{modifyDate(postData.date)}</TimeContainer>
+                  <PostAddComment />
+                </ContainerOptions>
+              </Content>
+            </PostContainer>
+          )}
+        </>
       )}
     </ModalWindowWrapper>
   );
