@@ -1,6 +1,14 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import { Route, Routes, useLocation, Link } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 import {
   Wrapper,
   User,
@@ -11,31 +19,69 @@ import {
   OptionsLink,
   OptionsLinkText,
   ProfilContainer,
-  SavedPostsInfo,
   Stat,
   StatValue,
   Svg,
-  UserEditLink,
   UserFullName,
   UserImg,
   UserName,
   UserStats,
-} from "./Profil_styles";
+} from "../Profil/Profil_styles";
 import userImg from "../../assets/user.jpg";
 import {
   PostsSvg,
   TaggedSvg,
-  SavedSvg,
 } from "../../components/SvgIcon/ProfilPage_SvgIcon";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
-import useAuth from "../../hooks/useAuth";
 import sortPostsByDate from "../../helpers/sortPostsByDate";
-import NoSavedPosts from "../../components/InfoLackPosts/NoSavedPosts/NoSavedPosts";
 import NoTaggedPosts from "../../components/InfoLackPosts/NoTaggedPosts/NoTaggedPosts";
 import NoMyPosts from "../../components/InfoLackPosts/NoMyPosts/NoMyPosts";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
+import useAuth from "../../hooks/useAuth";
+
+const FollowUserBtn = styled.button`
+  box-sizing: border-box;
+  width: 111px;
+  height: 30px;
+  padding: 0px 24px;
+  margin-left: 20px;
+  background-color: #0095f6;
+  border: 0;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+
+  @media (max-width: 735px) {
+    max-width: 250px;
+    width: 100%;
+    margin: 0;
+  }
+`;
+
+const AlreadyWatchedUserBtn = styled(FollowUserBtn)`
+  background-color: transparent;
+  width: 134px;
+  padding: 5px 9px;
+  color: black;
+  border: 1px solid lightgray;
+
+  :last-of-type {
+    font-size: 11px;
+    padding: 0;
+  }
+
+  @media (max-width: 735px) {
+    max-width: 250px;
+    width: 100%;
+    margin: 0;
+  }
+`;
 
 interface ILocationState {
   state?: {
@@ -54,32 +100,39 @@ interface IPostsData {
   };
 }
 
-interface IUserAuthData {
+interface IUserData {
   email: string;
   userFullName: string;
-  userId: string;
   userName: string;
   logo?: string;
   usersWatched?: string[];
   storiesActive?: boolean;
 }
 
-export default function Profil() {
+interface IUserAuthData {
+  id: string;
+  usersWatched?: string[];
+}
+
+export default function UserProfil() {
   const abortController = new AbortController();
   const { signal } = abortController;
   const { state } = useLocation() as ILocationState;
   const background = state?.background;
-  const media = window.matchMedia("(max-width: 735px)");
   const [auth] = useAuth();
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const media = window.matchMedia("(max-width: 735px)");
   const [isMediaMatches, setIsMediaMatches] = useState(!!media.matches);
   const [loading, setLoading] = useState(true);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
-  const [postsSavedData, setPostsSavedData] = useState([]);
   const [postsTaggedData, setPostsTaggedData] = useState([]);
-  const [userData, setUserData] = useState<IUserAuthData>({
+  const [userAuthData, setUserAuthData] = useState<IUserAuthData>({
+    id: "",
+  });
+  const [userData, setUserData] = useState<IUserData>({
     email: "",
     userFullName: "",
-    userId: "",
     userName: "",
   });
 
@@ -93,23 +146,65 @@ export default function Profil() {
 
   const getUserAuthData = () => {
     Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-      const userAuthData: IUserAuthData[] = objectToArray(res, false);
-      setUserData(userAuthData[0]);
+      const user: IUserAuthData[] = objectToArray(res);
+      setUserAuthData({ id: user[0].id, usersWatched: user[0].usersWatched });
+    });
+  };
+
+  const getUserData = () => {
+    Fetch(`users/${userId}.json`, { signal }, (res) => {
+      const user: IUserData[] = objectToArray(res, false);
+      setUserData(user[0]);
     });
   };
 
   const getPostsData = () => {
-    Fetch(`posts/${auth?.userId}.json`, { signal }, (res) => {
+    Fetch(`posts/${userId}.json`, { signal }, (res) => {
       const posts: IPostsData[] = objectToArray(res);
       setPostsData(posts);
       setLoading(false);
     });
   };
 
+  const addToWatchedUsers = () => {
+    Fetch(
+      `users/${auth?.userId}/${userAuthData.id}/usersWatched.json`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([...(userAuthData.usersWatched ?? []), userId]),
+      },
+      (res) => {
+        setUserAuthData({ ...userAuthData, usersWatched: res });
+      }
+    );
+  };
+
+  const deleteToWatchedUsers = () => {
+    const delUserWatch = userAuthData.usersWatched?.filter((e) => e !== userId);
+    Fetch(
+      `users/${auth?.userId}/${userAuthData.id}/usersWatched.json`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(delUserWatch),
+      },
+      (res) => {
+        setUserAuthData({ ...userAuthData, usersWatched: res });
+      }
+    );
+  };
+
   useEffect(() => {
+    if (userId === auth?.userId) navigate("/profile/");
     window.addEventListener("resize", resizeHandler);
 
     getUserAuthData();
+    getUserData();
     getPostsData();
 
     return () => {
@@ -125,9 +220,7 @@ export default function Profil() {
           <UserImg>
             <Link
               to={
-                userData.storiesActive
-                  ? `/stories/${auth?.userId}/`
-                  : "/profile/"
+                userData.storiesActive ? `/stories/${userId}/` : `/u/${userId}/`
               }
             >
               <Img
@@ -139,7 +232,20 @@ export default function Profil() {
           <ContentHeader>
             <User>
               <UserName>{userData.userName}</UserName>
-              <UserEditLink to="/accounts/edit/">Edytuj profil</UserEditLink>
+              {userAuthData.usersWatched?.includes(userId ?? "") ? (
+                <>
+                  <AlreadyWatchedUserBtn>
+                    Wyślij wiadomość
+                  </AlreadyWatchedUserBtn>
+                  <AlreadyWatchedUserBtn onClick={deleteToWatchedUsers}>
+                    Przestań obserwować
+                  </AlreadyWatchedUserBtn>
+                </>
+              ) : (
+                <FollowUserBtn onClick={addToWatchedUsers}>
+                  Obserwuj
+                </FollowUserBtn>
+              )}
             </User>
             {isMediaMatches ? null : (
               <>
@@ -178,23 +284,13 @@ export default function Profil() {
           </>
         ) : null}
         <Options>
-          <OptionsLink to="/profile/">
+          <OptionsLink to={`/u/${userId}/`}>
             {({ isActive }) => (
               <>
                 <Svg>
                   <PostsSvg color={isActive ? "#262626" : undefined} />
                 </Svg>
                 <OptionsLinkText>POSTY</OptionsLinkText>
-              </>
-            )}
-          </OptionsLink>
-          <OptionsLink to="saved/">
-            {({ isActive }) => (
-              <>
-                <Svg>
-                  <SavedSvg color={isActive ? "#262626" : undefined} />
-                </Svg>
-                <OptionsLinkText>ZAPISANE</OptionsLinkText>
               </>
             )}
           </OptionsLink>
@@ -228,21 +324,6 @@ export default function Profil() {
                       <NoMyPosts />
                     )}
                   </>
-                )}
-              </>
-            }
-          />
-          <Route
-            path="saved"
-            element={
-              <>
-                <SavedPostsInfo>
-                  Tylko Ty widzisz zapisane elementy
-                </SavedPostsInfo>
-                {postsSavedData.length !== 0 ? (
-                  <ImgPosts postsData={postsSavedData} />
-                ) : (
-                  <NoSavedPosts />
                 )}
               </>
             }

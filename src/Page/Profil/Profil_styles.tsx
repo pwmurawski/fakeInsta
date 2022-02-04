@@ -102,7 +102,7 @@ export const UserEditLink = styled(Link)`
   background: transparent;
   border: 1px solid lightgray;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: black;
   text-align: center;

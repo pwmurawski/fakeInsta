@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Header = styled.header`
   display: flex;
@@ -27,4 +28,9 @@ export const Location = styled.a`
   font-size: 11px;
   margin: 0 0 0 14px;
   cursor: pointer;
+`;
+
+export const LinkOffStyle = styled(Link)`
+  text-decoration: none;
+  color: black;
 `;

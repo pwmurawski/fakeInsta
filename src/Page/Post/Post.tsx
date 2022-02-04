@@ -142,6 +142,7 @@ function Post() {
               <Content postImg={postImg !== "true"}>
                 <PostHeader
                   userName={userData.userName}
+                  userId={userId}
                   location={postData.location}
                   userLogo={userData.logo ?? userLogo}
                   storiesActive={userData.storiesActive}

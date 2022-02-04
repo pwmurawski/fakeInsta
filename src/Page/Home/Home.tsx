@@ -48,6 +48,7 @@ export default function Home() {
       const posts: IPostsData[] = objectToArray(res);
       setPostsData(posts);
       setGetPostsIsComplete(true);
+      setLoading(false);
     });
   };
 
@@ -56,6 +57,7 @@ export default function Home() {
       const { usersWatched }: { usersWatched: string[] } =
         objectToArray(resp)[0];
       setNumberWatchedUser(usersWatched.length);
+      setLoading(true);
 
       Fetch("posts.json", { signal }, (res) => {
         const posts = objectToArray(res, false).flatMap((e) =>
@@ -68,9 +70,9 @@ export default function Home() {
           );
         });
         setPostsData([...postsData, ...newPostsDataWatchedUsers.flat()]);
+        setLoading(false);
       });
     });
-    setLoading(false);
   };
 
   useEffect(() => {

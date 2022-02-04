@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { ExploreSvg } from "../../SvgIcon/Menu_SvgIcon";
+import postHomeImg from "../../../assets/postHome.png";
 
 const Wrapper = styled.section`
   display: flex;
@@ -8,7 +8,7 @@ const Wrapper = styled.section`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 60%;
+  margin-top: 150px;
 `;
 
 const Desc = styled.span`
@@ -23,7 +23,7 @@ export default function NoWatchedUsers() {
   return (
     <Wrapper>
       <Link to="explore/">
-        <ExploreSvg width="100" height="100" />
+        <img src={postHomeImg} alt="post" width="200px" height="200px" />
       </Link>
       <Desc>Zacznij obserwowac innych użytkownikow aby widziec ich posty</Desc>
     </Wrapper>

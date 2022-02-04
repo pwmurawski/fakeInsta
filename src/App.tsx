@@ -19,6 +19,7 @@ import Login from "./Page/Auth/Login/Login";
 import Register from "./Page/Auth/Register/Register";
 import ReducerContext from "./context/ReducerContext";
 import AuthContext from "./context/AuthContext";
+import UserProfil from "./Page/UserProfil/UserProfil";
 
 interface ILocationState {
   state?: {
@@ -70,6 +71,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="direct/*" element={<InboxMessage />} />
         <Route path="explore" element={<Explore />} />
+        <Route path="u/:userId/*" element={<UserProfil />} />
         <Route path="profile/*" element={<Profil />} />
         <Route path="accounts/*" element={<ProfilSettings />} />
         <Route path="*" element={<NotFound />} />

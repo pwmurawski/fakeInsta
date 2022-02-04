@@ -60,6 +60,7 @@ export default function Post({
     <Wrapper>
       <PostHeader
         userName={user.userName}
+        userId={user.userId}
         location={location}
         userLogo={user.logo ?? userLogo}
         storiesActive={user.storiesActive ?? false}
