@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 80%;
+  margin-top: ${({ marginTop }: { marginTop?: string }) => marginTop};
 `;
 const Img = styled.img`
   @keyframes rotation {
@@ -20,10 +21,16 @@ const Img = styled.img`
   animation: rotation 1s infinite ease-in-out;
 `;
 
-export default function LoadingIcon() {
+const defaultProps = {
+  marginTop: "none",
+};
+
+export default function LoadingIcon({ marginTop }: { marginTop?: string }) {
   return (
-    <Wrapper>
+    <Wrapper marginTop={marginTop}>
       <Img src={loadingImg} />
     </Wrapper>
   );
 }
+
+LoadingIcon.defaultProps = defaultProps;

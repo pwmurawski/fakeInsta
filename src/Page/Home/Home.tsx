@@ -96,7 +96,7 @@ export default function Home() {
       <Content>
         {numberWatchedUser !== 0 ? <Stories /> : null}
         {loading ? (
-          <LoadingIcon />
+          <LoadingIcon marginTop="100px" />
         ) : (
           <>
             {postsData.length !== 0 ? (

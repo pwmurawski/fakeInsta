@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Options, Btn, BtnRight } from "./PostOptions_styles";
 import {
   LikeSvg,
@@ -6,9 +7,16 @@ import {
   ShareSvg,
   SavePostSvg,
   NotLikeSvg,
+  SavedPostSvg,
 } from "../../../SvgIcon/PostOptions_SvgIcon";
 import useAuth from "../../../../hooks/useAuth";
 import Fetch from "../../../../helpers/Fetch/Fetch";
+import objectToArray from "../../../../helpers/objectToArray";
+
+interface IUserAuthData {
+  id: string;
+  savedPosts?: string[];
+}
 
 interface IPostOptionsProps {
   postId?: string;
@@ -32,16 +40,32 @@ export default function PostOptions({
   setLikesData,
   commentBtnOff,
 }: IPostOptionsProps) {
+  const abortController = new AbortController();
+  const { signal } = abortController;
   const { pathname } = useLocation();
   const [auth] = useAuth();
+  const [userAuthData, setUserAuthData] = useState<IUserAuthData>({
+    id: "",
+  });
 
-  const addLike = () => {
+  const getUserAuthData = () => {
+    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
+      const newUserAuthData: IUserAuthData = objectToArray(res)[0];
+      setUserAuthData({
+        id: newUserAuthData.id,
+        savedPosts: newUserAuthData.savedPosts,
+      });
+    });
+  };
+
+  const likeHandler = () => {
     if (!likesData?.includes(auth?.userId ?? "")) {
       if (userId && postId) {
         Fetch(
           `posts/${userId}/${postId}/likes.json`,
           {
             method: "PUT",
+            signal,
             headers: {
               "Content-Type": "application/json",
             },
@@ -57,6 +81,7 @@ export default function PostOptions({
         `posts/${userId}/${postId}/likes.json`,
         {
           method: "PUT",
+          signal,
           headers: {
             "Content-Type": "application/json",
           },
@@ -69,9 +94,70 @@ export default function PostOptions({
     }
   };
 
+  const savedHandler = () => {
+    if (!userAuthData.savedPosts?.includes(postId ?? "")) {
+      Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
+        const newUserAuthData: IUserAuthData = objectToArray(res)[0];
+
+        Fetch(
+          `users/${auth?.userId}/${userAuthData.id}/savedPosts.json`,
+          {
+            method: "PUT",
+            signal,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify([
+              ...(newUserAuthData.savedPosts ?? []),
+              postId,
+            ]),
+          },
+          (resp) => {
+            setUserAuthData({
+              ...userAuthData,
+              savedPosts: resp,
+            });
+          }
+        );
+      });
+    } else {
+      Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
+        const newUserAuthData: IUserAuthData = objectToArray(res)[0];
+
+        Fetch(
+          `users/${auth?.userId}/${userAuthData.id}/savedPosts.json`,
+          {
+            method: "PUT",
+            signal,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+              newUserAuthData.savedPosts?.filter((e) => e !== postId)
+            ),
+          },
+          (resp) => {
+            setUserAuthData({
+              ...userAuthData,
+              savedPosts: resp,
+            });
+          }
+        );
+      });
+    }
+  };
+
+  useEffect(() => {
+    getUserAuthData();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
   return (
     <Options>
-      <Btn onClick={addLike}>
+      <Btn onClick={likeHandler}>
         {likesData?.includes(auth?.userId ?? "") ? <NotLikeSvg /> : <LikeSvg />}
       </Btn>
       <Btn>
@@ -90,8 +176,12 @@ export default function PostOptions({
         <ShareSvg />
       </Btn>
       <BtnRight>
-        <Btn>
-          <SavePostSvg />
+        <Btn onClick={savedHandler}>
+          {userAuthData.savedPosts?.includes(postId ?? "") ? (
+            <SavedPostSvg />
+          ) : (
+            <SavePostSvg />
+          )}
         </Btn>
       </BtnRight>
     </Options>

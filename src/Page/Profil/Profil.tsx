@@ -62,6 +62,7 @@ interface IUserAuthData {
   logo?: string;
   usersWatched?: string[];
   storiesActive?: boolean;
+  savedPosts?: string[];
 }
 
 export default function Profil() {
@@ -73,8 +74,11 @@ export default function Profil() {
   const [auth] = useAuth();
   const [isMediaMatches, setIsMediaMatches] = useState(!!media.matches);
   const [loading, setLoading] = useState(true);
+  const [loadingSaved, setLoadingSaved] = useState(true);
+  const [loadingTagged, setLoadingTagged] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
-  const [postsSavedData, setPostsSavedData] = useState([]);
+  const [postsSavedData, setPostsSavedData] = useState<IPostsData[]>([]);
   const [postsTaggedData, setPostsTaggedData] = useState([]);
   const [userData, setUserData] = useState<IUserAuthData>({
     email: "",
@@ -103,6 +107,19 @@ export default function Profil() {
       const posts: IPostsData[] = objectToArray(res);
       setPostsData(posts);
       setLoading(false);
+      setIsCompleted(true);
+    });
+  };
+
+  const getSavedPosts = () => {
+    Fetch("posts.json", { signal }, (res) => {
+      const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
+      const newSavedPosts: IPostsData[][] = [];
+      userData.savedPosts?.forEach((idSavedPost) => {
+        newSavedPosts.push(posts.filter((post) => post.id === idSavedPost));
+      });
+      setPostsSavedData([...postsSavedData, ...newSavedPosts.flat()]);
+      setLoadingSaved(false);
     });
   };
 
@@ -117,6 +134,10 @@ export default function Profil() {
       abortController.abort();
     };
   }, []);
+
+  useEffect(() => {
+    getSavedPosts();
+  }, [isCompleted]);
 
   return (
     <Wrapper>
@@ -236,13 +257,19 @@ export default function Profil() {
             path="saved"
             element={
               <>
-                <SavedPostsInfo>
-                  Tylko Ty widzisz zapisane elementy
-                </SavedPostsInfo>
-                {postsSavedData.length !== 0 ? (
-                  <ImgPosts postsData={postsSavedData} />
+                {loadingSaved ? (
+                  <LoadingIcon />
                 ) : (
-                  <NoSavedPosts />
+                  <>
+                    <SavedPostsInfo>
+                      Tylko Ty widzisz zapisane elementy
+                    </SavedPostsInfo>
+                    {postsSavedData.length !== 0 ? (
+                      <ImgPosts postsData={postsSavedData} />
+                    ) : (
+                      <NoSavedPosts />
+                    )}
+                  </>
                 )}
               </>
             }
@@ -251,10 +278,16 @@ export default function Profil() {
             path="tagged"
             element={
               <>
-                {postsTaggedData.length !== 0 ? (
-                  <ImgPosts postsData={postsTaggedData} />
+                {loadingTagged ? (
+                  <LoadingIcon />
                 ) : (
-                  <NoTaggedPosts />
+                  <>
+                    {postsTaggedData.length !== 0 ? (
+                      <ImgPosts postsData={postsTaggedData} />
+                    ) : (
+                      <NoTaggedPosts />
+                    )}
+                  </>
                 )}
               </>
             }
