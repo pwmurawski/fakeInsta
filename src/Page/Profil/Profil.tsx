@@ -76,7 +76,6 @@ export default function Profil() {
   const [loading, setLoading] = useState(true);
   const [loadingSaved, setLoadingSaved] = useState(true);
   const [loadingTagged, setLoadingTagged] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
   const [postsSavedData, setPostsSavedData] = useState<IPostsData[]>([]);
   const [postsTaggedData, setPostsTaggedData] = useState([]);
@@ -107,7 +106,6 @@ export default function Profil() {
       const posts: IPostsData[] = objectToArray(res);
       setPostsData(posts);
       setLoading(false);
-      setIsCompleted(true);
     });
   };
 
@@ -136,8 +134,12 @@ export default function Profil() {
   }, []);
 
   useEffect(() => {
-    getSavedPosts();
-  }, [isCompleted]);
+    if (userData.savedPosts) {
+      getSavedPosts();
+    } else if (userData.userId) {
+      setLoadingSaved(false);
+    }
+  }, [userData.userId]);
 
   return (
     <Wrapper>
@@ -265,7 +267,7 @@ export default function Profil() {
                       Tylko Ty widzisz zapisane elementy
                     </SavedPostsInfo>
                     {postsSavedData.length !== 0 ? (
-                      <ImgPosts postsData={postsSavedData} />
+                      <ImgPosts postsData={[...postsSavedData].reverse()} />
                     ) : (
                       <NoSavedPosts />
                     )}
