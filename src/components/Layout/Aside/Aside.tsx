@@ -10,5 +10,5 @@ const Wrapper = styled.div`
 `;
 
 export default function Aside() {
-  return <Wrapper>Siema</Wrapper>;
+  return <Wrapper>aside</Wrapper>;
 }
