@@ -5,9 +5,12 @@ const ImgContainer = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 293px;
   width: 100%;
+  min-width: 100%;
   max-height: 293px;
   height: 100%;
+  min-height: 100%;
   background-color: black;
 `;
 const Img = styled.img`
@@ -25,7 +28,12 @@ const ImgPostContainer = styled.article`
         grid-row: span 2;
 
         ${ImgContainer} {
-          max-height: 100%;
+          max-width: 614px;
+          width: 100%;
+          min-width: 100%;
+          max-height: 614px;
+          height: 100%;
+          min-height: 100%;
         }
       }
     `}
