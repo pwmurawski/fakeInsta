@@ -1,4 +1,5 @@
 npm start
+
 Uruchamia aplikację w trybie deweloperskim
 http://localhost:3000
 
