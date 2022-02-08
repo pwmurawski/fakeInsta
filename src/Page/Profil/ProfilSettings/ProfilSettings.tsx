@@ -1,8 +1,8 @@
 import { NavLink, Routes, Route, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import ProfilEdit from "../../../components/ProfilEdit/ProfilEdit";
-import ProfilChangePass from "../../../components/ProfilChangePass/ProfilChangePass";
+import ProfilEdit from "./ProfilEdit/ProfilEdit";
+import ProfilChangePass from "./ProfilChangePass/ProfilChangePass";
 import useAuth from "../../../hooks/useAuth";
 import Fetch from "../../../helpers/Fetch/Fetch";
 import objectToArray from "../../../helpers/objectToArray";
