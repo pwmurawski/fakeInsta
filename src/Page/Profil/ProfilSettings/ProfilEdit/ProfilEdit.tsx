@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 import {
   UserLogo,
   HeaderProfilSet,
@@ -12,9 +13,11 @@ import {
   InputContainer,
   Label,
   SubmitBtn,
-} from "../../GlobalStyle/GlobalStyle";
-import userLogo from "../../assets/user.jpg";
-import Fetch from "../../helpers/Fetch/Fetch";
+} from "../../../../GlobalStyle/GlobalStyle";
+import userLogo from "../../../../assets/user.jpg";
+import Fetch from "../../../../helpers/Fetch/Fetch";
+import FetchAuth from "../../../../helpers/Fetch/FetchAuth";
+import useAuth from "../../../../hooks/useAuth";
 
 const InputArea = styled.textarea`
   box-sizing: border-box;
@@ -41,6 +44,15 @@ const HeadText = styled.h2`
   margin: 0 0 4px;
 `;
 
+const Error = styled.p`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 0 30px;
+  font-size: 13px;
+  color: red;
+`;
+
 interface IUserData {
   id: string;
   email: string;
@@ -63,6 +75,9 @@ export default function ProfilEdit({
   userData,
   setUserData,
 }: IProfilEditProps) {
+  const [auth, setAuth] = useAuth();
+  const [error, setError] = useState("");
+
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -73,6 +88,30 @@ export default function ProfilEdit({
       },
       body: JSON.stringify({ ...userData, id: undefined }),
     });
+    FetchAuth(
+      "accounts:update",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken: auth?.token,
+          email: userData.email,
+          returnSecureToken: false,
+        }),
+      },
+      (res) => {
+        setAuth(true, {
+          email: res.email,
+          token: res.idToken,
+          userId: res.localId,
+        });
+        if (res.error) {
+          setError(res.error.errors[0].message);
+        }
+      }
+    );
   };
 
   return (
@@ -212,6 +251,11 @@ export default function ProfilEdit({
         <EditContainer>
           <Aside />
           <SubmitBtn type="submit">Wyślij</SubmitBtn>
+          <Error>
+            {error === "CREDENTIAL_TOO_OLD_LOGIN_AGAIN"
+              ? "Zaloguj się ponownie aby potwierdzic użytkownika."
+              : null}
+          </Error>
         </EditContainer>
       </Form>
     </>
