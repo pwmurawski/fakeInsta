@@ -13,9 +13,11 @@ import {
 import logo from "../../../assets/logo.png";
 import FetchAuth from "../../../helpers/Fetch/FetchAuth";
 import useAuth from "../../../hooks/useAuth";
+import ErrorInfo from "../../../components/ErrorInfo/ErrorInfo";
 
 export default function Login() {
   const [auth, setAuth] = useAuth();
+  const [error, setError] = useState("");
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -40,6 +42,8 @@ export default function Login() {
             token: res.idToken,
             userId: res.localId,
           });
+        } else {
+          setError(res.error.errors[0].message);
         }
       }
     );
@@ -67,6 +71,7 @@ export default function Login() {
             />
             <AuthFormSubmitBtn type="submit">Zaloguj się</AuthFormSubmitBtn>
           </AuthForm>
+          <ErrorInfo error={error} />
         </AuthContainer>
         <AltOption>
           <p>

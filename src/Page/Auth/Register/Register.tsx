@@ -16,6 +16,7 @@ import logo from "../../../assets/logo.png";
 import FetchAuth from "../../../helpers/Fetch/FetchAuth";
 import Fetch from "../../../helpers/Fetch/Fetch";
 import useAuth from "../../../hooks/useAuth";
+import ErrorInfo from "../../../components/ErrorInfo/ErrorInfo";
 
 const Info = styled.h2`
   text-align: center;
@@ -30,16 +31,10 @@ const Desc = styled.p`
   margin: 10px 40px;
 `;
 
-interface IRes {
-  email: string;
-  idToken: string;
-  localId: string;
-  error: object;
-}
-
 export default function Register() {
-  const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
+  const [auth, setAuth] = useAuth();
+  const [error, setError] = useState("");
   const [registerData, setRegisterData] = useState({
     email: "",
     password: "",
@@ -53,37 +48,43 @@ export default function Register() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    FetchAuth(
-      `accounts:signUp`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    if (userData.userFullName.length >= 3 && userData.userName.length >= 3) {
+      FetchAuth(
+        `accounts:signUp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(registerData),
         },
-        body: JSON.stringify(registerData),
-      },
-      (res: IRes) => {
-        if (!res.error) {
-          setAuth(true, {
-            email: res.email,
-            token: res.idToken,
-            userId: res.localId,
-          });
-          Fetch(`users/${res.localId}.json`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...userData,
+        (res) => {
+          if (!res.error) {
+            setAuth(true, {
               email: res.email,
+              token: res.idToken,
               userId: res.localId,
-            }),
-          });
-          navigate("/");
+            });
+            Fetch(`users/${res.localId}.json`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                ...userData,
+                email: res.email,
+                userId: res.localId,
+              }),
+            });
+            navigate("/");
+          } else {
+            setError(res.error.errors[0].message);
+          }
         }
-      }
-    );
+      );
+    } else {
+      setError("ERR_USERNAME");
+    }
   };
 
   return (
@@ -123,6 +124,7 @@ export default function Register() {
             />
             <AuthFormSubmitBtn>Dalej</AuthFormSubmitBtn>
           </AuthForm>
+          <ErrorInfo error={error} register />
           <Desc>
             Rejestrując się, akceptujesz Regulamin. Informacje o tym, jak
             zbieramy, wykorzystujemy i udostępniamy Twoje dane, zawierają nasze
