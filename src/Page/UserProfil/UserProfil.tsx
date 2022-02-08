@@ -1,12 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import {
-  Route,
-  Routes,
-  useLocation,
-  useParams,
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
@@ -15,31 +8,17 @@ import {
   ContentHeader,
   Header,
   Img,
-  Options,
-  OptionsLink,
-  OptionsLinkText,
   ProfilContainer,
-  Stat,
-  StatValue,
-  Svg,
-  UserFullName,
   UserImg,
   UserName,
-  UserStats,
 } from "../Profil/Profil_styles";
 import userImg from "../../assets/user.jpg";
-import {
-  PostsSvg,
-  TaggedSvg,
-} from "../../components/SvgIcon/ProfilPage_SvgIcon";
-import ImgPosts from "../../components/ImgPosts/ImgPosts";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
-import sortPostsByDate from "../../helpers/sortPostsByDate";
-import NoTaggedPosts from "../../components/InfoLackPosts/NoTaggedPosts/NoTaggedPosts";
-import NoMyPosts from "../../components/InfoLackPosts/NoMyPosts/NoMyPosts";
-import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 import useAuth from "../../hooks/useAuth";
+import UserInfo from "../../components/UserInfo/UserInfo";
+import UserProfilePagesLinks from "../../components/UserProfilePagesLinks/UserProfilePagesLinks";
+import UserProfileRoutes from "../../components/UserProfileRoutes/UserProfileRoutes";
 
 const FollowUserBtn = styled.button`
   box-sizing: border-box;
@@ -108,9 +87,12 @@ interface IUserData {
   email: string;
   userFullName: string;
   userName: string;
+  userId: string;
   logo?: string;
   usersWatched?: string[];
   storiesActive?: boolean;
+  bio?: string;
+  website?: string;
 }
 
 interface IUserAuthData {
@@ -138,6 +120,7 @@ export default function UserProfil() {
     email: "",
     userFullName: "",
     userName: "",
+    userId: "",
   });
 
   const resizeHandler = () => {
@@ -252,99 +235,21 @@ export default function UserProfil() {
               )}
             </User>
             {isMediaMatches ? null : (
-              <>
-                <UserStats>
-                  <Stat>
-                    Posty: <StatValue>{postsData.length}</StatValue>
-                  </Stat>
-                  <Stat>
-                    <StatValue>0</StatValue> obserwujących
-                  </Stat>
-                  <Stat>
-                    Obserwowani:{" "}
-                    <StatValue>{userData.usersWatched?.length ?? 0}</StatValue>
-                  </Stat>
-                </UserStats>
-                <UserFullName>{userData.userFullName}</UserFullName>
-              </>
+              <UserInfo userData={userData} postsData={postsData} />
             )}
           </ContentHeader>
         </Header>
         {isMediaMatches ? (
-          <>
-            <UserFullName>{userData.userFullName}</UserFullName>
-            <UserStats>
-              <Stat>
-                Posty: <StatValue>{postsData.length}</StatValue>
-              </Stat>
-              <Stat>
-                <StatValue>0</StatValue> obserwujących
-              </Stat>
-              <Stat>
-                Obserwowani:{" "}
-                <StatValue>{userData.usersWatched?.length ?? 0}</StatValue>
-              </Stat>
-            </UserStats>
-          </>
+          <UserInfo columnReverse userData={userData} postsData={postsData} />
         ) : null}
-        <Options>
-          <OptionsLink to={`/u/${userId}/`}>
-            {({ isActive }) => (
-              <>
-                <Svg>
-                  <PostsSvg color={isActive ? "#262626" : undefined} />
-                </Svg>
-                <OptionsLinkText>POSTY</OptionsLinkText>
-              </>
-            )}
-          </OptionsLink>
-          <OptionsLink to="tagged/">
-            {({ isActive }) => (
-              <>
-                <Svg>
-                  <TaggedSvg color={isActive ? "#262626" : undefined} />
-                </Svg>
-                <OptionsLinkText>Z OZNACZENIEM</OptionsLinkText>
-              </>
-            )}
-          </OptionsLink>
-        </Options>
-        <Routes location={background}>
-          <Route
-            index
-            element={
-              <>
-                {loading ? (
-                  <LoadingIcon />
-                ) : (
-                  <>
-                    {postsData.length !== 0 ? (
-                      <ImgPosts
-                        postsData={postsData.sort((post1, post2) =>
-                          sortPostsByDate(post1, post2)
-                        )}
-                      />
-                    ) : (
-                      <NoMyPosts />
-                    )}
-                  </>
-                )}
-              </>
-            }
-          />
-          <Route
-            path="tagged"
-            element={
-              <>
-                {postsTaggedData.length !== 0 ? (
-                  <ImgPosts postsData={postsTaggedData} />
-                ) : (
-                  <NoTaggedPosts />
-                )}
-              </>
-            }
-          />
-        </Routes>
+        <UserProfilePagesLinks baseUrl={`/u/${userId}/`} savedPageDisabled />
+        <UserProfileRoutes
+          background={background}
+          postsData={postsData}
+          postsTaggedData={postsTaggedData}
+          loading={loading}
+          savedPageDisabled
+        />
       </ProfilContainer>
     </Wrapper>
   );
