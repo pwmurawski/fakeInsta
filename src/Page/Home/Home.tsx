@@ -9,7 +9,7 @@ import {
 import Posts from "../../components/Posts/Posts";
 import Stories from "../../components/Stories/Stories";
 import Footer from "../../components/Layout/Footer/Footer";
-import Aside from "../../components/Layout/Aside/Aside";
+import Aside from "../../components/Aside/Aside";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
