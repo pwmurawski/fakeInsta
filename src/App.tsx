@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useMemo, useReducer } from "react";
 import { reducer, initialState } from "./reducer";
@@ -37,18 +38,18 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const location = useLocation() as ILocationState;
   const background = location.state?.background;
+  const reducerMemo = useMemo(
+    () => ({
+      state,
+      dispatch,
+    }),
+    [state, dispatch]
+  );
   const authMemo = useMemo(
     () => ({
       user: state.user,
       login: (user: ISetAuth) => dispatch({ type: "login", user }),
       logout: () => dispatch({ type: "logout" }),
-    }),
-    [state, dispatch]
-  );
-  const reducerMemo = useMemo(
-    () => ({
-      state,
-      dispatch,
     }),
     [state, dispatch]
   );
@@ -66,17 +67,19 @@ export default function App() {
     </Header>
   );
   const content = (
-    <>
-      <Routes location={background}>
-        <Route path="/" element={<Home />} />
-        <Route path="direct/*" element={<InboxMessage />} />
-        <Route path="explore" element={<Explore />} />
-        <Route path="u/:userId/*" element={<UserProfil />} />
-        <Route path="profile/*" element={<Profil />} />
-        <Route path="accounts/*" element={<ProfilSettings />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+    <Routes location={background}>
+      <Route path="/" element={<Home />} />
+      <Route path="direct/*" element={<InboxMessage />} />
+      <Route path="explore" element={<Explore />} />
+      <Route path="u/:userId/*" element={<UserProfil />} />
+      <Route path="profile/*" element={<Profil />} />
+      <Route path="accounts/*" element={<ProfilSettings />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 
+  const modals = (
+    <>
       {background ? (
         <Routes>
           <Route path="p/:userId/:postId/:postImg" element={<Post />} />
@@ -87,13 +90,20 @@ export default function App() {
       ) : null}
     </>
   );
+
   const footer = <Footer />;
 
   return (
-    <AuthContext.Provider value={authMemo}>
-      <ReducerContext.Provider value={reducerMemo}>
-        <Layout auth={auth} header={header} content={content} footer={footer} />
-      </ReducerContext.Provider>
-    </AuthContext.Provider>
+    <ReducerContext.Provider value={reducerMemo}>
+      <AuthContext.Provider value={authMemo}>
+        <Layout
+          auth={auth}
+          header={header}
+          content={content}
+          modals={modals}
+          footer={footer}
+        />
+      </AuthContext.Provider>
+    </ReducerContext.Provider>
   );
 }
