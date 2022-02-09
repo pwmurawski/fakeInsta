@@ -2,7 +2,7 @@ import UserInList from "./UserInList/UserInList";
 
 interface IUsersListProps {
   usersListData: {
-    id: number;
+    id: string;
     userName: string;
     userFullName: string;
     userImg: string;
