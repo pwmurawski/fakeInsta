@@ -8,6 +8,7 @@ interface ILayoutProps {
   header: ReactElement;
   content: ReactElement;
   footer: ReactElement;
+  modals: ReactElement;
 }
 
 export default function Layout({
@@ -15,20 +16,24 @@ export default function Layout({
   header,
   content,
   footer,
+  modals,
 }: ILayoutProps) {
   const [isAuth] = useAuth();
 
   return (
     <>
       {isAuth?.token && isAuth.userId ? (
-        <Wrapper>
-          <Header>{header}</Header>
-          <Content>{content}</Content>
-          <FooterContainer>{footer}</FooterContainer>
-        </Wrapper>
+        <>
+          <Wrapper>
+            <Header>{header}</Header>
+            <Content>{content}</Content>
+            <FooterContainer>{footer}</FooterContainer>
+          </Wrapper>
+          {modals}
+        </>
       ) : (
         <>
-          {auth}
+          <main>{auth}</main>
           <FooterContainer>{footer}</FooterContainer>
         </>
       )}
