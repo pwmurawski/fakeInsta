@@ -124,12 +124,12 @@ export default function InboxMessage() {
   const [conversationsData, setConversationsData] = useState([
     {
       id: 1,
-      userName: "pwmurawski123",
+      userName: "user1",
       userImg,
     },
     {
       id: 2,
-      userName: "simea",
+      userName: "user2",
       userImg,
     },
   ]);
@@ -139,7 +139,7 @@ export default function InboxMessage() {
       <InboxContainer>
         <Container>
           <Header>
-            <UserName>pwmurawski123</UserName>
+            <UserName>user</UserName>
             <IconLink to="/direct/new/" state={{ background: pathname }}>
               <NewMessSvg />
             </IconLink>

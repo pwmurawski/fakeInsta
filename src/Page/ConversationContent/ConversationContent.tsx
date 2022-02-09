@@ -104,26 +104,26 @@ export default function ConversationContent() {
   const [newMessageData, setNewMessageData] = useState("");
   const containerContentRef = useRef<HTMLDivElement | null>(null);
   const [messagesData, setMessagesData] = useState({
-    userName: "pwmurawski123",
+    userName: "user",
     userImg,
     messages: [
       {
         id: 1,
-        text: "siema",
+        text: "message1",
       },
       {
         id: 2,
         your: true,
-        text: "elsodadadd",
+        text: "message2",
       },
       {
         id: 3,
         your: true,
-        text: "elsodadadd",
+        text: "message3",
       },
       {
         id: 4,
-        text: "elsodadadd",
+        text: "message4",
       },
     ],
   });

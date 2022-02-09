@@ -62,14 +62,14 @@ function AddNewMessage() {
   const navigate = useNavigate();
   const [usersListData, setUsersListData] = useState([
     {
-      id: 1,
-      userName: "siema",
+      id: "1",
+      userName: "kowjan",
       userFullName: "Jan Kowalski",
       userImg,
     },
     {
-      id: 2,
-      userName: "eloelo",
+      id: "2",
+      userName: "nowak123",
       userFullName: "Adam Nowak",
       userImg,
     },
