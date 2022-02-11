@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import userImg from "../../assets/user.jpg";
+import { UserLogo } from "../../GlobalStyle/GlobalStyle";
+import Fetch from "../../helpers/Fetch/Fetch";
+import objectToArray from "../../helpers/objectToArray";
+import useAuth from "../../hooks/useAuth";
 import UsersList from "../UsersList/UsersList";
 
 const Wrapper = styled.div`
@@ -14,11 +19,6 @@ const Header = styled.header`
   height: 56px;
   margin: 22px 0 10px 0;
 `;
-const Img = styled.img`
-  width: 56px;
-  height: 56px;
-  border-radius: 150px;
-`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,10 +26,11 @@ const Container = styled.div`
   width: 100%;
   margin-left: 20px;
 `;
-const UserName = styled.div`
+const UserName = styled(Link)`
   font-size: 14px;
   font-weight: 600;
   color: black;
+  text-decoration: none;
 `;
 const UserFullName = styled.div`
   font-size: 14px;
@@ -56,7 +57,21 @@ interface IUsersList {
   userImg: string;
 }
 
+interface IUserData {
+  userName: string;
+  userFullName: string;
+  logo?: string;
+  storiesActive?: boolean;
+}
+
 export default function Aside() {
+  const abortController = new AbortController();
+  const { signal } = abortController;
+  const [auth] = useAuth();
+  const [userData, setUserData] = useState<IUserData>({
+    userName: "",
+    userFullName: "",
+  });
   const [userList, setUserList] = useState<IUsersList[]>([
     {
       id: "1",
@@ -90,18 +105,50 @@ export default function Aside() {
     },
   ]);
 
+  const getUserAuthData = () => {
+    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
+      const newUserData: IUserData = objectToArray(res, false)[0];
+      setUserData({
+        userName: newUserData.userName,
+        userFullName: newUserData.userFullName,
+        logo: newUserData.logo,
+        storiesActive: newUserData.storiesActive,
+      });
+    });
+  };
+
+  useEffect(() => {
+    getUserAuthData();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
   return (
     <Wrapper>
       <Header>
-        <Img src={userImg} />
+        <Link to="/profile/">
+          <UserLogo
+            src={userData.logo ?? userImg}
+            storiesActive={userData.storiesActive}
+            width="56px"
+            height="56px"
+          />
+        </Link>
         <Container>
-          <UserName>user1234</UserName>
-          <UserFullName>user user</UserFullName>
+          <UserName to="/profile/">{userData.userName}</UserName>
+          <UserFullName>{userData.userFullName}</UserFullName>
         </Container>
       </Header>
       <Info>Propozycje dla Ciebie</Info>
       <ProposedUsers>
-        <UsersList usersListData={userList} />
+        <UsersList
+          usersListData={userList}
+          textInUser="Zobacz profil"
+          userImgSize="32px"
+          fontSize="12px"
+        />
       </ProposedUsers>
     </Wrapper>
   );
