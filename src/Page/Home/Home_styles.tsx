@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   display: grid;
   height: fit-content;
   grid-template-columns: minmax(0, 1fr) 614px 300px minmax(0, 1fr);
-  grid-template-rows: 435px 125px 6fr;
+  grid-template-rows: 360px 125px 6fr;
   grid-column-gap: 28px;
   grid-template-areas:
     ". content asideContainer ."

@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { DescriptionPost } from "../../GlobalStyle/GlobalStyle";
 
 export const PostContainer = styled.article`
   display: flex;
@@ -70,25 +69,4 @@ export const Content = styled.section`
 
 export const ContainerOptions = styled.div`
   width: 100%;
-`;
-
-const heightHeader = "70px";
-const heightContainerOptions = "160px";
-export const CommentsContainer = styled.section`
-  box-sizing: border-box;
-  width: 100%;
-  height: ${({ postImg }: { postImg?: boolean }) =>
-    postImg
-      ? `calc(100% - ${heightHeader} - ${heightContainerOptions})`
-      : `calc(100% - ${heightHeader} - ${heightContainerOptions} + 54px)`};
-  padding: 16px;
-  border-top: 1px solid lightgray;
-  overflow-y: auto;
-  ::-webkit-scrollbar {
-    width: 0;
-  }
-`;
-
-export const DescriptionPostPage = styled(DescriptionPost)`
-  padding: 0;
 `;

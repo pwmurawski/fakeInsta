@@ -14,10 +14,20 @@ import {
   LinkPost,
 } from "../../../GlobalStyle/GlobalStyle";
 import modifyDate from "../../../helpers/modifyDate";
+import useAuth from "../../../hooks/useAuth";
+import objectToArray from "../../../helpers/objectToArray";
+import Fetch from "../../../helpers/Fetch/Fetch";
+
+interface IUserData {
+  serFullName: string;
+  userId: string;
+  userName: string;
+  logo?: string;
+  storiesActive?: boolean;
+}
 
 interface IPostProps {
   id: string;
-  comments?: string[];
   description: string;
   img: string;
   likes?: string[];
@@ -34,7 +44,6 @@ interface IPostProps {
 
 const defaultProps = {
   likes: [],
-  comments: [],
 };
 
 export default function Post({
@@ -42,13 +51,41 @@ export default function Post({
   img,
   likes,
   description,
-  comments,
   location,
   date,
   user,
 }: IPostProps) {
   const { pathname } = useLocation();
+  const [auth] = useAuth();
   const [likesData, setLikesData] = useState<string[]>();
+
+  const onAddNewComment = (
+    newContent: string,
+    setNewContent: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    Fetch(`users/${auth?.userId}.json`, {}, (res) => {
+      const userAuthData: IUserData = objectToArray(res, false)[0];
+
+      if (auth?.userId) {
+        Fetch(`comments/${id}.json`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user: {
+              userId: auth.userId,
+              userName: userAuthData.userName,
+              userLogo: userAuthData.logo,
+              storiesActive: userAuthData.storiesActive,
+            },
+            content: newContent,
+          }),
+        });
+        setNewContent("");
+      }
+    });
+  };
 
   useEffect(() => {
     if (likes?.length !== 0) {
@@ -63,7 +100,7 @@ export default function Post({
         userId={user.userId}
         location={location}
         userLogo={user.logo ?? userLogo}
-        storiesActive={user.storiesActive ?? false}
+        storiesActive={user.storiesActive}
       />
       <Img src={img} />
       <Content>
@@ -85,11 +122,11 @@ export default function Post({
             state={{ background: pathname }}
             color="gray"
           >
-            Zobacz komentarze: {comments?.length}
+            Zobacz komentarze
           </LinkPost>
         </CommentsLink>
         <TimeContainer>{modifyDate(date)}</TimeContainer>
-        <PostAddComment />
+        <PostAddComment onAddNewComment={onAddNewComment} />
       </Content>
     </Wrapper>
   );

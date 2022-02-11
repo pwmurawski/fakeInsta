@@ -4,18 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   Content,
   Img,
-  CommentsContainer,
   ContainerOptions,
   ImgContainer,
   PostContainer,
-  DescriptionPostPage,
 } from "./Post_styles";
 import {
   LikeContainer,
   TimeContainer,
-  TextDesc,
-  UserNameDesc,
-  UserLogo,
   ModalWindowWrapper,
   ExitBtnModalWindow,
 } from "../../GlobalStyle/GlobalStyle";
@@ -23,13 +18,14 @@ import userLogo from "../../assets/user.jpg";
 import PostHeader from "../../components/Posts/Post/PostHeader/PostHeader";
 import PostOptions from "../../components/Posts/Post/PostOptions/PostOptions";
 import PostAddComment from "../../components/Posts/Post/PostAddComment/PostAddComment";
-import Comments from "../../components/Posts/Post/Comments/Comments";
 import Modal from "../../hoc/Modal";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import modifyDate from "../../helpers/modifyDate";
 import ExitSvg from "../../components/SvgIcon/AddNewMessage_SvgIcon";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
+import CommentsSpace from "../../components/CommentsSpace/CommentsSpace";
+import useAuth from "../../hooks/useAuth";
 
 interface IUserData {
   serFullName: string;
@@ -45,15 +41,17 @@ interface IPostData {
   date: string;
   location: string;
   likes?: string[];
-  comments?: {
-    id: string;
-    user: {
-      userName: string;
-      userLogo: string;
-      storiesActive?: boolean;
-    };
-    content: string;
-  }[];
+}
+
+interface ICommentData {
+  id: string;
+  user: {
+    userId: string;
+    userName: string;
+    userLogo?: string;
+    storiesActive?: boolean;
+  };
+  content: string;
 }
 
 function Post() {
@@ -61,6 +59,7 @@ function Post() {
   const { signal } = abortController;
   const { userId, postId, postImg } = useParams();
   const navigate = useNavigate();
+  const [auth] = useAuth();
   const [loading, setLoading] = useState(true);
   const [imgFullScreen, setImgFullScreen] = useState(false);
   const [likesData, setLikesData] = useState<string[]>();
@@ -69,7 +68,6 @@ function Post() {
     desc: "",
     date: "",
     likes: [],
-    comments: [],
     location: "",
   });
   const [userData, setUserData] = useState<IUserData>({
@@ -79,11 +77,28 @@ function Post() {
     logo: "",
     storiesActive: false,
   });
+  const [userAuthData, setUserAuthData] = useState<IUserData>({
+    serFullName: "",
+    userId: "",
+    userName: "",
+    logo: "",
+    storiesActive: false,
+  });
+  const [commentsData, setCommentsData] = useState<ICommentData[]>([
+    {
+      id: "",
+      user: {
+        userId: "",
+        userName: "",
+      },
+      content: "",
+    },
+  ]);
 
   const getUserData = () => {
     Fetch(`users/${userId}.json`, { signal }, (res) => {
-      const user: IUserData[] = objectToArray(res, false);
-      setUserData(user[0]);
+      const user: IUserData = objectToArray(res, false)[0];
+      setUserData(user);
     });
   };
 
@@ -96,9 +111,69 @@ function Post() {
     });
   };
 
+  const getUserAuthData = () => {
+    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
+      const userAuth: IUserData = objectToArray(res, false)[0];
+      setUserAuthData(userAuth);
+    });
+  };
+
+  const getCommentsData = () => {
+    Fetch(`comments/${postId}.json`, { signal }, (res) => {
+      const newCommentsData: ICommentData[] = objectToArray(res);
+      setCommentsData(newCommentsData);
+    });
+  };
+
+  const onAddNewComment = (
+    newContent: string,
+    setNewContent: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    if (auth?.userId) {
+      Fetch(
+        `comments/${postId}.json`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user: {
+              userId: auth.userId,
+              userName: userAuthData.userName,
+              userLogo: userAuthData.logo,
+              storiesActive: userAuthData.storiesActive,
+            },
+            content: newContent,
+          }),
+        },
+        (res) => {
+          if (res) {
+            setCommentsData([
+              ...commentsData,
+              {
+                id: res.name,
+                user: {
+                  userId: auth.userId,
+                  userName: userAuthData.userName,
+                  userLogo: userAuthData.logo,
+                  storiesActive: userAuthData.storiesActive,
+                },
+                content: newContent,
+              },
+            ]);
+          }
+          setNewContent("");
+        }
+      );
+    }
+  };
+
   useEffect(() => {
     getUserData();
     getPostData();
+    getUserAuthData();
+    getCommentsData();
 
     return () => {
       abortController.abort();
@@ -147,21 +222,12 @@ function Post() {
                   userLogo={userData.logo ?? userLogo}
                   storiesActive={userData.storiesActive}
                 />
-                <CommentsContainer postImg={postImg === "true"}>
-                  <DescriptionPostPage>
-                    <UserLogo
-                      width="32px"
-                      height="32px"
-                      storiesActive={userData.storiesActive}
-                      src={userData.logo ?? userLogo}
-                    />
-                    <TextDesc>
-                      <UserNameDesc>{userData.userName}</UserNameDesc>{" "}
-                      {postData.desc}
-                    </TextDesc>
-                  </DescriptionPostPage>
-                  <Comments comments={postData.comments ?? []} />
-                </CommentsContainer>
+                <CommentsSpace
+                  postImg={postImg}
+                  userData={userData}
+                  postDesc={postData.desc}
+                  commentsData={commentsData}
+                />
                 <ContainerOptions>
                   {postImg === "true" ? (
                     <PostOptions
@@ -176,8 +242,8 @@ function Post() {
                     Liczba polubień: {likesData?.length ?? 0}
                   </LikeContainer>
                   <TimeContainer>{modifyDate(postData.date)}</TimeContainer>
-                  <PostAddComment />
                 </ContainerOptions>
+                <PostAddComment onAddNewComment={onAddNewComment} />
               </Content>
             </PostContainer>
           )}

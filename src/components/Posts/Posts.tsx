@@ -3,7 +3,6 @@ import Post from "./Post/Post";
 interface IPostsProps {
   postsData: {
     id: string;
-    comments?: string[];
     desc: string;
     img: string;
     likes?: string[];
@@ -29,7 +28,6 @@ export default function Posts({ postsData }: IPostsProps) {
           img={post.img}
           likes={post.likes}
           description={post.desc}
-          comments={post.comments}
           location={post.location}
           date={post.date}
           user={post.user}

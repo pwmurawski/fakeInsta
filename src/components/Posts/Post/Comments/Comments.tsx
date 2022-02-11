@@ -4,8 +4,9 @@ interface ICommentsProps {
   comments: {
     id: string;
     user: {
+      userId: string;
       userName: string;
-      userLogo: string;
+      userLogo?: string;
       storiesActive?: boolean;
     };
     content: string;
