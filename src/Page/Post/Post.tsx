@@ -112,10 +112,12 @@ function Post() {
   };
 
   const getUserAuthData = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-      const userAuth: IUserData = objectToArray(res, false)[0];
-      setUserAuthData(userAuth);
-    });
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const userAuth: IUserData = objectToArray(res, false)[0];
+        setUserAuthData(userAuth);
+      });
+    }
   };
 
   const getCommentsData = () => {
@@ -129,7 +131,7 @@ function Post() {
     newContent: string,
     setNewContent: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    if (auth?.userId) {
+    if (auth) {
       Fetch(
         `comments/${postId}.json`,
         {

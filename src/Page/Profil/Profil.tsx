@@ -80,18 +80,22 @@ export default function Profil() {
   };
 
   const getUserAuthData = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-      const userAuthData: IUserAuthData[] = objectToArray(res, false);
-      setUserData(userAuthData[0]);
-    });
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const userAuthData: IUserAuthData[] = objectToArray(res, false);
+        setUserData(userAuthData[0]);
+      });
+    }
   };
 
   const getPostsData = () => {
-    Fetch(`posts/${auth?.userId}.json`, { signal }, (res) => {
-      const posts: IPostsData[] = objectToArray(res);
-      setPostsData(posts);
-      setLoading(false);
-    });
+    if (auth) {
+      Fetch(`posts/${auth.userId}.json`, { signal }, (res) => {
+        const posts: IPostsData[] = objectToArray(res);
+        setPostsData(posts);
+        setLoading(false);
+      });
+    }
   };
 
   const getSavedPosts = () => {

@@ -132,10 +132,12 @@ export default function UserProfil() {
   };
 
   const getUserAuthData = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-      const user: IUserAuthData[] = objectToArray(res);
-      setUserAuthData({ id: user[0].id, usersWatched: user[0].usersWatched });
-    });
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const user: IUserAuthData[] = objectToArray(res);
+        setUserAuthData({ id: user[0].id, usersWatched: user[0].usersWatched });
+      });
+    }
   };
 
   const getUserData = () => {
@@ -154,36 +156,40 @@ export default function UserProfil() {
   };
 
   const addToWatchedUsers = () => {
-    Fetch(
-      `users/${auth?.userId}/${userAuthData.id}/usersWatched.json`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+    if (auth) {
+      Fetch(
+        `users/${auth.userId}/${userAuthData.id}/usersWatched.json`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify([...(userAuthData.usersWatched ?? []), userId]),
         },
-        body: JSON.stringify([...(userAuthData.usersWatched ?? []), userId]),
-      },
-      (res) => {
-        setUserAuthData({ ...userAuthData, usersWatched: res });
-      }
-    );
+        (res) => {
+          setUserAuthData({ ...userAuthData, usersWatched: res });
+        }
+      );
+    }
   };
 
   const deleteToWatchedUsers = () => {
     const delUserWatch = userAuthData.usersWatched?.filter((e) => e !== userId);
-    Fetch(
-      `users/${auth?.userId}/${userAuthData.id}/usersWatched.json`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+    if (auth) {
+      Fetch(
+        `users/${auth.userId}/${userAuthData.id}/usersWatched.json`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(delUserWatch),
         },
-        body: JSON.stringify(delUserWatch),
-      },
-      (res) => {
-        setUserAuthData({ ...userAuthData, usersWatched: res });
-      }
-    );
+        (res) => {
+          setUserAuthData({ ...userAuthData, usersWatched: res });
+        }
+      );
+    }
   };
 
   useEffect(() => {
@@ -248,7 +254,7 @@ export default function UserProfil() {
           postsData={postsData}
           postsTaggedData={postsTaggedData}
           loading={loading}
-          savedPageDisabled
+          profileUserNotAuth
         />
       </ProfilContainer>
     </Wrapper>

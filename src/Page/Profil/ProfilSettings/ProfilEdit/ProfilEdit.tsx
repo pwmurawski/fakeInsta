@@ -88,30 +88,32 @@ export default function ProfilEdit({
       },
       body: JSON.stringify({ ...userData, id: undefined }),
     });
-    FetchAuth(
-      "accounts:update",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    if (auth) {
+      FetchAuth(
+        "accounts:update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: auth.token,
+            email: userData.email,
+            returnSecureToken: false,
+          }),
         },
-        body: JSON.stringify({
-          idToken: auth?.token,
-          email: userData.email,
-          returnSecureToken: false,
-        }),
-      },
-      (res) => {
-        setAuth(true, {
-          email: res.email,
-          token: res.idToken,
-          userId: res.localId,
-        });
-        if (res.error) {
-          setError(res.error.errors[0].message);
+        (res) => {
+          setAuth(true, {
+            email: res.email,
+            token: res.idToken,
+            userId: res.localId,
+          });
+          if (res.error) {
+            setError(res.error.errors[0].message);
+          }
         }
-      }
-    );
+      );
+    }
   };
 
   return (

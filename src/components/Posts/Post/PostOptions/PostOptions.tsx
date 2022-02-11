@@ -28,9 +28,9 @@ interface IPostOptionsProps {
 
 const defaultProps = {
   commentBtnOff: false,
-  postId: undefined,
-  userId: undefined,
-  likesData: [],
+  postId: null,
+  userId: null,
+  likesData: null,
 };
 
 export default function PostOptions({
@@ -49,18 +49,20 @@ export default function PostOptions({
   });
 
   const getUserAuthData = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-      const newUserAuthData: IUserAuthData = objectToArray(res)[0];
-      setUserAuthData({
-        id: newUserAuthData.id,
-        savedPosts: newUserAuthData.savedPosts,
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const newUserAuthData: IUserAuthData = objectToArray(res)[0];
+        setUserAuthData({
+          id: newUserAuthData.id,
+          savedPosts: newUserAuthData.savedPosts,
+        });
       });
-    });
+    }
   };
 
   const likeHandler = () => {
-    if (!likesData?.includes(auth?.userId ?? "")) {
-      if (userId && postId) {
+    if (userId && postId && auth) {
+      if (!likesData?.includes(auth.userId)) {
         Fetch(
           `posts/${userId}/${postId}/likes.json`,
           {
@@ -69,81 +71,83 @@ export default function PostOptions({
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify([...(likesData ?? []), auth?.userId]),
+            body: JSON.stringify([...(likesData ?? []), auth.userId]),
+          },
+          (res) => {
+            setLikesData(res);
+          }
+        );
+      } else {
+        Fetch(
+          `posts/${userId}/${postId}/likes.json`,
+          {
+            method: "PUT",
+            signal,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(likesData.filter((id) => id !== auth.userId)),
           },
           (res) => {
             setLikesData(res);
           }
         );
       }
-    } else {
-      Fetch(
-        `posts/${userId}/${postId}/likes.json`,
-        {
-          method: "PUT",
-          signal,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(likesData?.filter((id) => id !== auth?.userId)),
-        },
-        (res) => {
-          setLikesData(res);
-        }
-      );
     }
   };
 
   const savedHandler = () => {
-    if (!userAuthData.savedPosts?.includes(postId ?? "")) {
-      Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-        const newUserAuthData: IUserAuthData = objectToArray(res)[0];
+    if (postId && auth) {
+      if (!userAuthData.savedPosts?.includes(postId)) {
+        Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+          const newUserAuthData: IUserAuthData = objectToArray(res)[0];
 
-        Fetch(
-          `users/${auth?.userId}/${userAuthData.id}/savedPosts.json`,
-          {
-            method: "PUT",
-            signal,
-            headers: {
-              "Content-Type": "application/json",
+          Fetch(
+            `users/${auth.userId}/${userAuthData.id}/savedPosts.json`,
+            {
+              method: "PUT",
+              signal,
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify([
+                ...(newUserAuthData.savedPosts ?? []),
+                postId,
+              ]),
             },
-            body: JSON.stringify([
-              ...(newUserAuthData.savedPosts ?? []),
-              postId,
-            ]),
-          },
-          (resp) => {
-            setUserAuthData({
-              ...userAuthData,
-              savedPosts: resp,
-            });
-          }
-        );
-      });
-    } else {
-      Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-        const newUserAuthData: IUserAuthData = objectToArray(res)[0];
+            (resp) => {
+              setUserAuthData({
+                ...userAuthData,
+                savedPosts: resp,
+              });
+            }
+          );
+        });
+      } else {
+        Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+          const newUserAuthData: IUserAuthData = objectToArray(res)[0];
 
-        Fetch(
-          `users/${auth?.userId}/${userAuthData.id}/savedPosts.json`,
-          {
-            method: "PUT",
-            signal,
-            headers: {
-              "Content-Type": "application/json",
+          Fetch(
+            `users/${auth.userId}/${userAuthData.id}/savedPosts.json`,
+            {
+              method: "PUT",
+              signal,
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(
+                newUserAuthData.savedPosts?.filter((e) => e !== postId)
+              ),
             },
-            body: JSON.stringify(
-              newUserAuthData.savedPosts?.filter((e) => e !== postId)
-            ),
-          },
-          (resp) => {
-            setUserAuthData({
-              ...userAuthData,
-              savedPosts: resp,
-            });
-          }
-        );
-      });
+            (resp) => {
+              setUserAuthData({
+                ...userAuthData,
+                savedPosts: resp,
+              });
+            }
+          );
+        });
+      }
     }
   };
 
@@ -158,7 +162,11 @@ export default function PostOptions({
   return (
     <Options>
       <Btn onClick={likeHandler}>
-        {likesData?.includes(auth?.userId ?? "") ? <NotLikeSvg /> : <LikeSvg />}
+        {likesData?.includes(auth?.userId ?? "null") ? (
+          <NotLikeSvg />
+        ) : (
+          <LikeSvg />
+        )}
       </Btn>
       <Btn>
         {commentBtnOff ? (

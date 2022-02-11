@@ -188,30 +188,34 @@ function DetailsNewPost() {
   });
 
   const getUserAuth = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-      const user: IUserAuth[] = objectToArray(res);
-      setNewPostData({
-        ...newPostData,
-        user: {
-          userFullName: user[0].userFullName,
-          userId: user[0].userId,
-          userName: user[0].userName,
-          logo: user[0].logo,
-          storiesActive: user[0].storiesActive,
-        },
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const user: IUserAuth[] = objectToArray(res);
+        setNewPostData({
+          ...newPostData,
+          user: {
+            userFullName: user[0].userFullName,
+            userId: user[0].userId,
+            userName: user[0].userName,
+            logo: user[0].logo,
+            storiesActive: user[0].storiesActive,
+          },
+        });
       });
-    });
+    }
   };
 
   const createNewPost = () => {
-    Fetch(`posts/${auth?.userId}.json`, {
-      method: "POST",
-      signal,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPostData),
-    });
+    if (auth) {
+      Fetch(`posts/${auth.userId}.json`, {
+        method: "POST",
+        signal,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPostData),
+      });
+    }
   };
 
   useEffect(() => {

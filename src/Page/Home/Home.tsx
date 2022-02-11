@@ -44,35 +44,39 @@ export default function Home() {
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
 
   const getPostsAuthUser = () => {
-    Fetch(`posts/${auth?.userId}.json`, { signal }, (res) => {
-      const posts: IPostsData[] = objectToArray(res);
-      setPostsData(posts);
-      setGetPostsIsComplete(true);
-      setLoading(false);
-    });
+    if (auth) {
+      Fetch(`posts/${auth.userId}.json`, { signal }, (res) => {
+        const posts: IPostsData[] = objectToArray(res);
+        setPostsData(posts);
+        setGetPostsIsComplete(true);
+        setLoading(false);
+      });
+    }
   };
 
   const getPostsWatchedUsers = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal }, (resp) => {
-      const { usersWatched }: { usersWatched: string[] } =
-        objectToArray(resp)[0];
-      setNumberWatchedUser(usersWatched.length);
-      setLoading(true);
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal }, (resp) => {
+        const { usersWatched }: { usersWatched: string[] } =
+          objectToArray(resp)[0];
+        setNumberWatchedUser(usersWatched.length);
+        setLoading(true);
 
-      Fetch("posts.json", { signal }, (res) => {
-        const posts = objectToArray(res, false).flatMap((e) =>
-          objectToArray(e)
-        );
-        const newPostsDataWatchedUsers: IPostsData[][] = [];
-        usersWatched?.forEach((idUserWatched) => {
-          newPostsDataWatchedUsers.push(
-            posts.filter((post) => post.user.userId === idUserWatched)
+        Fetch("posts.json", { signal }, (res) => {
+          const posts = objectToArray(res, false).flatMap((e) =>
+            objectToArray(e)
           );
+          const newPostsDataWatchedUsers: IPostsData[][] = [];
+          usersWatched?.forEach((idUserWatched) => {
+            newPostsDataWatchedUsers.push(
+              posts.filter((post) => post.user.userId === idUserWatched)
+            );
+          });
+          setPostsData([...postsData, ...newPostsDataWatchedUsers.flat()]);
+          setLoading(false);
         });
-        setPostsData([...postsData, ...newPostsDataWatchedUsers.flat()]);
-        setLoading(false);
       });
-    });
+    }
   };
 
   useEffect(() => {

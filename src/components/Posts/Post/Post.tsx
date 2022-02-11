@@ -63,10 +63,10 @@ export default function Post({
     newContent: string,
     setNewContent: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    Fetch(`users/${auth?.userId}.json`, {}, (res) => {
-      const userAuthData: IUserData = objectToArray(res, false)[0];
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, {}, (res) => {
+        const userAuthData: IUserData = objectToArray(res, false)[0];
 
-      if (auth?.userId) {
         Fetch(`comments/${id}.json`, {
           method: "POST",
           headers: {
@@ -83,8 +83,8 @@ export default function Post({
           }),
         });
         setNewContent("");
-      }
-    });
+      });
+    }
   };
 
   useEffect(() => {

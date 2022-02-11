@@ -114,16 +114,18 @@ export default function ProfilSettings() {
   });
 
   const getUserAuthData = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal: s }, (res) => {
-      const newUserData: IUserAuthData[] = objectToArray(res);
-      setUserData({
-        ...newUserData[0],
-        website: newUserData[0].website ?? userData.website,
-        bio: newUserData[0].bio ?? userData.bio,
-        number: newUserData[0].number ?? userData.number,
-        sex: newUserData[0].sex ?? userData.sex,
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal: s }, (res) => {
+        const newUserData: IUserAuthData[] = objectToArray(res);
+        setUserData({
+          ...newUserData[0],
+          website: newUserData[0].website ?? userData.website,
+          bio: newUserData[0].bio ?? userData.bio,
+          number: newUserData[0].number ?? userData.number,
+          sex: newUserData[0].sex ?? userData.sex,
+        });
       });
-    });
+    }
   };
 
   useEffect(() => {

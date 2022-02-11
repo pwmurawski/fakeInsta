@@ -106,15 +106,17 @@ export default function Aside() {
   ]);
 
   const getUserAuthData = () => {
-    Fetch(`users/${auth?.userId}.json`, { signal }, (res) => {
-      const newUserData: IUserData = objectToArray(res, false)[0];
-      setUserData({
-        userName: newUserData.userName,
-        userFullName: newUserData.userFullName,
-        logo: newUserData.logo,
-        storiesActive: newUserData.storiesActive,
+    if (auth) {
+      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const newUserData: IUserData = objectToArray(res, false)[0];
+        setUserData({
+          userName: newUserData.userName,
+          userFullName: newUserData.userFullName,
+          logo: newUserData.logo,
+          storiesActive: newUserData.storiesActive,
+        });
       });
-    });
+    }
   };
 
   useEffect(() => {

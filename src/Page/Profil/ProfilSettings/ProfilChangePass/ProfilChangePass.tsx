@@ -30,28 +30,30 @@ export default function ProfilChangePass({ user }: IProfilChangePassProps) {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    FetchAuth(
-      "accounts:update",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    if (auth) {
+      FetchAuth(
+        "accounts:update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: auth.token,
+            password: newPass,
+            returnSecureToken: false,
+          }),
         },
-        body: JSON.stringify({
-          idToken: auth?.token,
-          password: newPass,
-          returnSecureToken: false,
-        }),
-      },
-      (res) => {
-        setAuth(true, {
-          email: res.email,
-          token: res.idToken,
-          userId: res.localId,
-        });
-        console.log(res);
-      }
-    );
+        (res) => {
+          setAuth(true, {
+            email: res.email,
+            token: res.idToken,
+            userId: res.localId,
+          });
+          // console.log(res);
+        }
+      );
+    }
   };
 
   return (
