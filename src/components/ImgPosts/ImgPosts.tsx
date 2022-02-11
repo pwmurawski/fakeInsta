@@ -46,7 +46,6 @@ export default function ImgPosts({ postsData, customLayOut }: IImgPostsProps) {
           userId={post.user.userId}
           img={post.img}
           likes={post.likes}
-          comments={post.comments}
           customLayOut={customLayOut}
         />
       ))}
