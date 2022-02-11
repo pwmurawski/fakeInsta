@@ -25,12 +25,26 @@ const Desc = styled.span`
   font-size: 14px;
 `;
 
-export default function NoMyPosts() {
+const defaultProps = {
+  profileUserNotAuth: false,
+};
+
+export default function NoMyPosts({
+  profileUserNotAuth,
+}: {
+  profileUserNotAuth?: boolean;
+}) {
   return (
     <Wrapper>
       <Img src={noMyPostsImg} />
-      <H1>Twoje posty</H1>
-      <Desc>Tutaj pojawią się posty dodane przez ciebie.</Desc>
+      <H1>{profileUserNotAuth ? "Posty użytokwnika" : "Twoje posty"}</H1>
+      <Desc>
+        {profileUserNotAuth
+          ? "Brak postów."
+          : "Tutaj pojawią się posty dodane przez ciebie."}
+      </Desc>
     </Wrapper>
   );
 }
+
+NoMyPosts.defaultProps = defaultProps;

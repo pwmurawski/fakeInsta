@@ -25,12 +25,30 @@ const Desc = styled.span`
   font-size: 14px;
 `;
 
-export default function NoTaggedPosts() {
+const defaultProps = {
+  profileUserNotAuth: false,
+};
+
+export default function NoTaggedPosts({
+  profileUserNotAuth,
+}: {
+  profileUserNotAuth?: boolean;
+}) {
   return (
     <Wrapper>
       <Img src={noTaggedPostsImg} />
-      <H1>Zdjęcia, na których jesteś</H1>
-      <Desc>Jeżeli ktoś oznaczy Cię na zdjęciach, pojawią się one tutaj.</Desc>
+      <H1>
+        {profileUserNotAuth
+          ? "Zdjęcia, na których został oznaczony użytkownik"
+          : "Zdjęcia, na których jesteś"}
+      </H1>
+      <Desc>
+        {profileUserNotAuth
+          ? "Jeżeli ktoś oznaczy użytkownika na zdjęciach, pojawią się one tutaj."
+          : "Jeżeli ktoś oznaczy Cię na zdjęciach, pojawią się one tutaj."}
+      </Desc>
     </Wrapper>
   );
 }
+
+NoTaggedPosts.defaultProps = defaultProps;

@@ -36,11 +36,11 @@ interface IUserProfileRoutesProps {
   loadingSaved?: boolean;
   loadingTagged?: boolean;
   background: string | undefined;
-  savedPageDisabled?: boolean;
+  profileUserNotAuth?: boolean;
 }
 
 const defaultProps = {
-  savedPageDisabled: false,
+  profileUserNotAuth: false,
   postsSavedData: [{}],
   loadingSaved: false,
   loadingTagged: false,
@@ -54,7 +54,7 @@ export default function UserProfileRoutes({
   loadingSaved,
   loadingTagged,
   background,
-  savedPageDisabled,
+  profileUserNotAuth,
 }: IUserProfileRoutesProps) {
   return (
     <Routes location={background}>
@@ -73,14 +73,14 @@ export default function UserProfileRoutes({
                     )}
                   />
                 ) : (
-                  <NoMyPosts />
+                  <NoMyPosts profileUserNotAuth={profileUserNotAuth} />
                 )}
               </>
             )}
           </>
         }
       />
-      {savedPageDisabled ? null : (
+      {profileUserNotAuth ? null : (
         <Route
           path="saved"
           element={
@@ -116,7 +116,7 @@ export default function UserProfileRoutes({
                 {postsTaggedData.length !== 0 ? (
                   <ImgPosts postsData={postsTaggedData} />
                 ) : (
-                  <NoTaggedPosts />
+                  <NoTaggedPosts profileUserNotAuth={profileUserNotAuth} />
                 )}
               </>
             )}
