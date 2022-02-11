@@ -193,18 +193,25 @@ export default function UserProfil() {
   };
 
   useEffect(() => {
-    if (userId === auth?.userId) navigate("/profile/");
     window.addEventListener("resize", resizeHandler);
-
     getUserAuthData();
+
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (userId === auth?.userId) navigate("/profile/");
+
+    setLoading(true);
     getUserData();
     getPostsData();
 
     return () => {
-      window.removeEventListener("resize", resizeHandler);
       abortController.abort();
     };
-  }, []);
+  }, [userId]);
 
   return (
     <Wrapper>

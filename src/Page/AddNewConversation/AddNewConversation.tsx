@@ -8,7 +8,6 @@ import {
 } from "../../GlobalStyle/GlobalStyle";
 import Modal from "../../hoc/Modal";
 import UsersList from "../../components/UsersList/UsersList";
-import userImg from "../../assets/user.jpg";
 
 const AddNewMessageContainer = styled.section`
   display: flex;
@@ -62,16 +61,14 @@ function AddNewMessage() {
   const navigate = useNavigate();
   const [usersListData, setUsersListData] = useState([
     {
-      id: "1",
+      userId: "1",
       userName: "kowjan",
       userFullName: "Jan Kowalski",
-      userImg,
     },
     {
-      id: "2",
+      userId: "2",
       userName: "nowak123",
       userFullName: "Adam Nowak",
-      userImg,
     },
   ]);
 
@@ -96,7 +93,7 @@ function AddNewMessage() {
           <Title>Nowa wiadomość</Title>
           <AddLink to="/direct/t/100/">Dalej</AddLink>
         </Header>
-        <UsersList usersListData={usersListData} />
+        <UsersList usersListData={usersListData} offLink />
       </AddNewMessageContainer>
     </ModalWindowWrapper>
   );

@@ -51,10 +51,10 @@ const ProposedUsers = styled.div`
 `;
 
 interface IUsersList {
-  id: string;
+  userId: string;
   userName: string;
   userFullName: string;
-  userImg: string;
+  userImg?: string;
 }
 
 interface IUserData {
@@ -74,34 +74,29 @@ export default function Aside() {
   });
   const [userList, setUserList] = useState<IUsersList[]>([
     {
-      id: "1",
+      userId: "1",
       userName: "user1",
       userFullName: "user1 user1",
-      userImg,
     },
     {
-      id: "2",
+      userId: "2",
       userName: "user2",
       userFullName: "user2 user2",
-      userImg,
     },
     {
-      id: "3",
+      userId: "3",
       userName: "user3",
       userFullName: "user3 user3",
-      userImg,
     },
     {
-      id: "4",
+      userId: "4",
       userName: "user4",
       userFullName: "user4 user4",
-      userImg,
     },
     {
-      id: "5",
+      userId: "5",
       userName: "user5",
       userFullName: "user5 user5",
-      userImg,
     },
   ]);
 
@@ -150,6 +145,7 @@ export default function Aside() {
           textInUser="Zobacz profil"
           userImgSize="32px"
           fontSize="12px"
+          offLink
         />
       </ProposedUsers>
     </Wrapper>
