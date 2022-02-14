@@ -70,8 +70,8 @@ export default function SearchBox({
     },
   ]);
 
-  const userInListOnClick = (isClick: boolean) => {
-    setSearchBoxActive(!isClick);
+  const userInListOnClick = () => {
+    setSearchBoxActive(false);
   };
 
   const searchFilter = (): IUsersData[] => {

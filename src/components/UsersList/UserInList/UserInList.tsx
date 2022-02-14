@@ -56,7 +56,7 @@ interface IUserInListProps {
   userImgSize?: string;
   fontSize?: string;
   offLink?: boolean;
-  userInListOnClick?: (isClick: boolean) => void;
+  userInListOnClick?: () => void;
 }
 
 const defaultProps = {
@@ -83,7 +83,7 @@ export default function UserInList({
     <Container
       to={offLink ? "" : `/u/${userId}/`}
       onClick={() => {
-        if (userInListOnClick) userInListOnClick(true);
+        if (userInListOnClick) userInListOnClick();
       }}
     >
       <UserImg
