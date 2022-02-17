@@ -28,9 +28,11 @@ export default function UserProfilePagesLinks({
 }) {
   return (
     <Container>
-      <Option url={baseUrl} text="POSTY" />
-      {savedPageDisabled ? null : <Option url="saved/" text="ZAPISANE" />}
-      <Option url="tagged/" text="Z OZNACZENIEM" />
+      <Option url={baseUrl} text="POSTY" icon="post" />
+      {savedPageDisabled ? null : (
+        <Option url="saved/" text="ZAPISANE" icon="save" />
+      )}
+      <Option url="tagged/" text="Z OZNACZENIEM" icon="tagg" />
     </Container>
   );
 }
