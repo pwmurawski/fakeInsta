@@ -98,13 +98,11 @@ export default function ProfileHeaderButtons({
           {userAuthWatched?.includes(userId ?? "") ? (
             <>
               <AlreadyWatchedUserBtn>Wyślij wiadomość</AlreadyWatchedUserBtn>
-              {/* deleteToWatchedUsers */}
               <AlreadyWatchedUserBtn onClick={onUnFollow}>
                 Przestań obserwować
               </AlreadyWatchedUserBtn>
             </>
           ) : (
-            // addToWatchedUsers
             <FollowUserBtn onClick={onFollow}>Obserwuj</FollowUserBtn>
           )}
         </>

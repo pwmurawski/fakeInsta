@@ -2,10 +2,8 @@ import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { useState } from "react";
 import ExitSvg from "../../../components/SvgIcon/AddNewMessage_SvgIcon";
-import {
-  ExitBtnModalWindow,
-  ModalWindowWrapper,
-} from "../../../GlobalStyle/GlobalStyle";
+import { ModalWindowWrapper } from "../../../GlobalStyle/GlobalStyle";
+import ExitBtnModalWindow from "../../../components/ExitBtnModalWindow/ExitBtnModalWindow";
 import Modal from "../../../hoc/Modal";
 import UsersList from "../../../components/UsersList/UsersList";
 
@@ -78,9 +76,7 @@ function AddNewMessage() {
         navigate(-1);
       }}
     >
-      <ExitBtnModalWindow>
-        <ExitSvg color="white" width="25" height="25" />
-      </ExitBtnModalWindow>
+      <ExitBtnModalWindow />
       <AddNewMessageContainer onClick={(e) => e.stopPropagation()}>
         <Header>
           <ExitBtn

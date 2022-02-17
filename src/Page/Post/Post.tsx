@@ -2,12 +2,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Img, PostContainer } from "./Post_styles";
-import {
-  ModalWindowWrapper,
-  ExitBtnModalWindow,
-} from "../../GlobalStyle/GlobalStyle";
+import { ModalWindowWrapper } from "../../GlobalStyle/GlobalStyle";
+import ExitBtnModalWindow from "../../components/ExitBtnModalWindow/ExitBtnModalWindow";
 import Modal from "../../hoc/Modal";
-import ExitSvg from "../../components/SvgIcon/AddNewMessage_SvgIcon";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 import PostImg from "../../components/Posts/Post/PostImg/PostImg";
 import Fetch from "../../helpers/Fetch/Fetch";
@@ -58,9 +55,7 @@ function Post() {
         navigate(-1);
       }}
     >
-      <ExitBtnModalWindow>
-        <ExitSvg color="white" width="25" height="25" />
-      </ExitBtnModalWindow>
+      <ExitBtnModalWindow />
       {imgFullScreen ? (
         <Img
           onClick={(e) => {

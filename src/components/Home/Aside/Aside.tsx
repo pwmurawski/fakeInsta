@@ -1,41 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-import userImg from "../../../assets/user.jpg";
-import { UserLogo } from "../../../GlobalStyle/GlobalStyle";
 import Fetch from "../../../helpers/Fetch/Fetch";
 import objectToArray from "../../../helpers/objectToArray";
 import useAuth from "../../../hooks/useAuth";
 import UsersList from "../../UsersList/UsersList";
+import AsideHeader from "./AsideHeader/AsideHeader";
 
 const Wrapper = styled.div`
   position: fixed;
   width: 300px;
-`;
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 56px;
-  margin: 22px 0 10px 0;
-`;
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  margin-left: 20px;
-`;
-const UserName = styled(Link)`
-  font-size: 14px;
-  font-weight: 600;
-  color: black;
-  text-decoration: none;
-`;
-const UserFullName = styled.div`
-  font-size: 14px;
-  color: gray;
-  font-weight: 400;
 `;
 const Info = styled.div`
   box-sizing: border-box;
@@ -124,20 +97,7 @@ export default function Aside() {
 
   return (
     <Wrapper>
-      <Header>
-        <Link to="/profile/">
-          <UserLogo
-            src={userData.logo ?? userImg}
-            storiesActive={userData.storiesActive}
-            width="56px"
-            height="56px"
-          />
-        </Link>
-        <Container>
-          <UserName to="/profile/">{userData.userName}</UserName>
-          <UserFullName>{userData.userFullName}</UserFullName>
-        </Container>
-      </Header>
+      <AsideHeader userData={userData} />
       <Info>Propozycje dla Ciebie</Info>
       <ProposedUsers>
         <UsersList

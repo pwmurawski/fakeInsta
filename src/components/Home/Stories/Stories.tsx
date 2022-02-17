@@ -1,23 +1,84 @@
 import { useEffect, useRef, useState } from "react";
-import userImg from "../../../assets/user.jpg";
 import nextImg from "../../../assets/next .png";
 import {
   Wrapper,
-  Story,
-  StoryIcon,
-  UserName,
   NextBtn,
   NextBtnIcon,
   StoryContainer,
   PrevBtn,
   PrevBtnIcon,
 } from "./Stories_style";
+import StoryMap from "./StoryMap/StoryMap";
+
+interface IStoriesData {
+  id: string;
+  userName: string;
+  userLogo?: string;
+}
 
 export default function Stories() {
+  const storyContainerRef = useRef<HTMLUListElement>(null);
   const [storiesScroll, setStoriesScroll] = useState(0);
   const [nextBtnMounted, setNextBtnMounted] = useState(true);
   const [prevBtnMounted, setPrevBtnMounted] = useState(false);
-  const storyContainerRef = useRef<HTMLUListElement>(null);
+  const [storiesData, setStoriesData] = useState<IStoriesData[]>([
+    {
+      id: "1",
+      userName: "User1",
+    },
+    {
+      id: "2",
+      userName: "User2",
+    },
+    {
+      id: "3",
+      userName: "User3",
+    },
+    {
+      id: "4",
+      userName: "User4",
+    },
+    {
+      id: "5",
+      userName: "User5",
+    },
+    {
+      id: "6",
+      userName: "User6",
+    },
+    {
+      id: "7",
+      userName: "User7",
+    },
+    {
+      id: "8",
+      userName: "User8",
+    },
+    {
+      id: "9",
+      userName: "User9",
+    },
+    {
+      id: "10",
+      userName: "User10",
+    },
+    {
+      id: "11",
+      userName: "User11",
+    },
+    {
+      id: "12",
+      userName: "User12",
+    },
+    {
+      id: "13",
+      userName: "User13",
+    },
+    {
+      id: "14",
+      userName: "User14",
+    },
+  ]);
 
   const nextBtnHandler = () => {
     const storiesClientWidth = storyContainerRef.current?.clientWidth ?? 0;
@@ -65,106 +126,7 @@ export default function Stories() {
   return (
     <Wrapper>
       <StoryContainer ref={storyContainerRef} scroll={-storiesScroll}>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User1</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User2</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User3</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User4</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User5</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User6</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User7</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User8</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User9</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User10</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User11</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User12</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User13</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User14</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User15</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User16</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User17</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User18</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User19</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User20</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User21</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User22</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User23</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User24</UserName>
-        </Story>
-        <Story>
-          <StoryIcon src={userImg} />
-          <UserName>User25</UserName>
-        </Story>
+        <StoryMap storiesData={storiesData} />
       </StoryContainer>
       {prevBtnMounted ? (
         <PrevBtn onClick={prevBtnHandler}>

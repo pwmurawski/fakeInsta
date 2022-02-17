@@ -95,17 +95,6 @@ export const ModalWindowWrapper = styled.section`
   }
 `;
 
-export const ExitBtnModalWindow = styled.button`
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: fit-content;
-  height: fit-content;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-`;
-
 export const HeaderCreatePost = styled.header`
   display: flex;
   justify-content: ${({ justify }: { justify?: string }) =>

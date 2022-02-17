@@ -24,29 +24,6 @@ export const StoryContainer = styled.ul`
   transform: translateX(${({ scroll }: { scroll: number }) => scroll ?? 0}px);
 `;
 
-export const Story = styled.li`
-  box-sizing: border-box;
-  width: 80px;
-  height: 100%;
-  padding: 0 4px;
-  list-style: none;
-`;
-
-export const StoryIcon = styled.img`
-  box-sizing: border-box;
-  margin: 0 3px;
-  width: 66px;
-  height: 66px;
-  border: 2px solid violet;
-  border-radius: 150px;
-`;
-
-export const UserName = styled.div`
-  text-align: center;
-  font-size: 12px;
-  overflow: hidden;
-`;
-
 export const Btn = styled.button`
   --height: 29px;
   background: transparent;
