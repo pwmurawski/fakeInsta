@@ -142,7 +142,6 @@ export default function Profil() {
         <ProfileHeader
           userData={userAuthData}
           postsData={postsData}
-          auth={auth}
           isMediaMatches={isMediaMatches}
         />
         {isMediaMatches ? (

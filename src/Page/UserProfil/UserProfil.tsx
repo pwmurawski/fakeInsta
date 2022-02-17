@@ -180,7 +180,6 @@ export default function UserProfil() {
           userData={userData}
           userAuthWatched={userAuthData.usersWatched}
           postsData={postsData}
-          auth={auth}
           isMediaMatches={isMediaMatches}
           profileUserNotAuth
           userId={userId}

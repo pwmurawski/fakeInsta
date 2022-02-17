@@ -39,17 +39,10 @@ interface IUserAuthData {
   website?: string;
 }
 
-interface ISetAuth {
-  email: string;
-  token: string;
-  userId: string;
-}
-
 interface IProfileHeaderProps {
   userData: IUserAuthData;
   postsData: IPostsData[];
   isMediaMatches: boolean;
-  auth: ISetAuth | null;
   profileUserNotAuth?: boolean;
   userAuthWatched?: string[];
   userId?: string;
@@ -69,7 +62,6 @@ export default function ProfileHeader({
   userData,
   postsData,
   isMediaMatches,
-  auth,
   profileUserNotAuth,
   userAuthWatched,
   userId,
@@ -78,7 +70,7 @@ export default function ProfileHeader({
 }: IProfileHeaderProps) {
   return (
     <Header>
-      <ProfileHeaderUserImg userData={userData} auth={auth} />
+      <ProfileHeaderUserImg userData={userData} />
       <ProfileHeaderContent
         userData={userData}
         userAuthWatched={userAuthWatched}

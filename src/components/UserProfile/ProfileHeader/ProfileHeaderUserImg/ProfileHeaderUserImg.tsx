@@ -26,39 +26,22 @@ const UserImg = styled.div`
     margin-right: 28px;
   }
 `;
-interface IUserAuthData {
-  email: string;
-  userFullName: string;
+interface IUserData {
   userId: string;
-  userName: string;
   logo?: string;
-  usersWatched?: string[];
   storiesActive?: boolean;
-  savedPosts?: string[];
-  bio?: string;
-  website?: string;
-}
-
-interface ISetAuth {
-  email: string;
-  token: string;
-  userId: string;
 }
 
 interface IProfileHeaderUserImgProps {
-  userData: IUserAuthData;
-  auth: ISetAuth | null;
+  userData: IUserData;
 }
 
 export default function ProfileHeaderUserImg({
   userData,
-  auth,
 }: IProfileHeaderUserImgProps) {
   return (
     <UserImg>
-      <Link
-        to={userData.storiesActive ? `/stories/${auth?.userId}/` : "/profile/"}
-      >
+      <Link to={userData.storiesActive ? `/stories/${userData.userId}/` : "./"}>
         <Img
           storiesActive={userData.storiesActive}
           src={userData.logo ?? userImg}
