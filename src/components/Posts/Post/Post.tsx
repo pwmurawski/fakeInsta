@@ -2,9 +2,9 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import userLogo from "../../../assets/user.jpg";
 import { Wrapper, Img, Content, CommentsLink } from "./Post_styles";
-import PostHeader from "./PostHeader/PostHeader";
-import PostOptions from "./PostOptions/PostOptions";
-import PostAddComment from "./PostAddComment/PostAddComment";
+import PostHeader from "./PostContent/PostHeader/PostHeader";
+import PostOptions from "./PostContent/PostOptions/PostOptions";
+import PostAddComment from "./PostContent/PostAddComment/PostAddComment";
 import {
   LikeContainer,
   TimeContainer,

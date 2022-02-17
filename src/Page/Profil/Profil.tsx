@@ -1,24 +1,30 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-import { useLocation, Link } from "react-router-dom";
+import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {
-  Wrapper,
-  User,
-  ContentHeader,
-  Header,
-  Img,
-  ProfilContainer,
-  UserEditLink,
-  UserImg,
-  UserName,
-} from "./Profil_styles";
-import userImg from "../../assets/user.jpg";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
-import UserInfo from "../../components/UserInfo/UserInfo";
-import UserProfilePagesLinks from "../../components/UserProfilePagesLinks/UserProfilePagesLinks";
-import UserProfileRoutes from "../../components/UserProfileRoutes/UserProfileRoutes";
+import UserInfo from "../../components/UserProfile/UserInfo/UserInfo";
+import UserProfilePagesLinks from "../../components/UserProfile/UserProfilePagesLinks/UserProfilePagesLinks";
+import UserProfileRoutes from "../../components/UserProfile/UserProfileRoutes/UserProfileRoutes";
+import ProfileHeader from "../../components/UserProfile/ProfileHeader/ProfileHeader";
+
+const Wrapper = styled.section`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  height: fit-content;
+`;
+const ProfilContainer = styled.section`
+  box-sizing: border-box;
+  max-width: 935px;
+  width: 100%;
+  padding: 0 20px;
+  @media (max-width: 735px) {
+    padding: 0;
+  }
+`;
 
 interface ILocationState {
   state?: {
@@ -64,7 +70,7 @@ export default function Profil() {
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
   const [postsSavedData, setPostsSavedData] = useState<IPostsData[]>([]);
   const [postsTaggedData, setPostsTaggedData] = useState([]);
-  const [userData, setUserData] = useState<IUserAuthData>({
+  const [userAuthData, setUserAuthData] = useState<IUserAuthData>({
     email: "",
     userFullName: "",
     userId: "",
@@ -82,8 +88,8 @@ export default function Profil() {
   const getUserAuthData = () => {
     if (auth) {
       Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
-        const userAuthData: IUserAuthData[] = objectToArray(res, false);
-        setUserData(userAuthData[0]);
+        const userData: IUserAuthData[] = objectToArray(res, false);
+        setUserAuthData(userData[0]);
       });
     }
   };
@@ -102,7 +108,7 @@ export default function Profil() {
     Fetch("posts.json", { signal }, (res) => {
       const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
       const newSavedPosts: IPostsData[][] = [];
-      userData.savedPosts?.forEach((idSavedPost) => {
+      userAuthData.savedPosts?.forEach((idSavedPost) => {
         newSavedPosts.push(posts.filter((post) => post.id === idSavedPost));
       });
       setPostsSavedData([...postsSavedData, ...newSavedPosts.flat()]);
@@ -123,43 +129,28 @@ export default function Profil() {
   }, []);
 
   useEffect(() => {
-    if (userData.savedPosts) {
+    if (userAuthData.savedPosts) {
       getSavedPosts();
-    } else if (userData.userId) {
+    } else if (userAuthData.userId) {
       setLoadingSaved(false);
     }
-  }, [userData.userId]);
+  }, [userAuthData.userId]);
 
   return (
     <Wrapper>
       <ProfilContainer>
-        <Header>
-          <UserImg>
-            <Link
-              to={
-                userData.storiesActive
-                  ? `/stories/${auth?.userId}/`
-                  : "/profile/"
-              }
-            >
-              <Img
-                storiesActive={userData.storiesActive}
-                src={userData.logo ?? userImg}
-              />
-            </Link>
-          </UserImg>
-          <ContentHeader>
-            <User>
-              <UserName>{userData.userName}</UserName>
-              <UserEditLink to="/accounts/edit/">Edytuj profil</UserEditLink>
-            </User>
-            {isMediaMatches ? null : (
-              <UserInfo userData={userData} postsData={postsData} />
-            )}
-          </ContentHeader>
-        </Header>
+        <ProfileHeader
+          userData={userAuthData}
+          postsData={postsData}
+          auth={auth}
+          isMediaMatches={isMediaMatches}
+        />
         {isMediaMatches ? (
-          <UserInfo columnReverse userData={userData} postsData={postsData} />
+          <UserInfo
+            columnReverse
+            userData={userAuthData}
+            postsData={postsData}
+          />
         ) : null}
         <UserProfilePagesLinks baseUrl="/profile/" />
         <UserProfileRoutes

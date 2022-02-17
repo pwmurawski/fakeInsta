@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export const PostContainer = styled.article`
   display: flex;
@@ -30,43 +30,4 @@ export const Img = styled.img`
   max-height: 100%;
   height: auto;
   cursor: pointer;
-`;
-export const ImgContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  background-color: black;
-  @media (max-width: 760px) {
-    flex: 1;
-  }
-  ${({ postImg }: { postImg?: boolean }) =>
-    postImg &&
-    css`
-      @media (max-width: 760px) {
-        display: none;
-      }
-    `}
-`;
-export const Content = styled.section`
-  min-width: 404px;
-  height: 100%;
-  position: relative;
-  @media (max-width: 760px) {
-    flex: 2;
-    min-width: 0;
-  }
-  ${({ postImg }: { postImg?: boolean }) =>
-    postImg &&
-    css`
-      @media (max-width: 760px) {
-        max-width: 100%;
-        width: 100%;
-        min-width: 0;
-      }
-    `}
-`;
-
-export const ContainerOptions = styled.div`
-  width: 100%;
 `;

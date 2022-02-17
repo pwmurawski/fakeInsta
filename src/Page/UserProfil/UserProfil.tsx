@@ -1,68 +1,28 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  Wrapper,
-  User,
-  ContentHeader,
-  Header,
-  Img,
-  ProfilContainer,
-  UserImg,
-  UserName,
-} from "../Profil/Profil_styles";
-import userImg from "../../assets/user.jpg";
 import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
-import UserInfo from "../../components/UserInfo/UserInfo";
-import UserProfilePagesLinks from "../../components/UserProfilePagesLinks/UserProfilePagesLinks";
-import UserProfileRoutes from "../../components/UserProfileRoutes/UserProfileRoutes";
+import UserInfo from "../../components/UserProfile/UserInfo/UserInfo";
+import UserProfilePagesLinks from "../../components/UserProfile/UserProfilePagesLinks/UserProfilePagesLinks";
+import UserProfileRoutes from "../../components/UserProfile/UserProfileRoutes/UserProfileRoutes";
+import ProfileHeader from "../../components/UserProfile/ProfileHeader/ProfileHeader";
 
-const FollowUserBtn = styled.button`
-  box-sizing: border-box;
-  width: 111px;
-  height: 30px;
-  padding: 0px 24px;
-  margin-left: 20px;
-  background-color: #0095f6;
-  border: 0;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 600;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-
-  @media (max-width: 735px) {
-    max-width: 250px;
-    width: 100%;
-    margin: 0;
-  }
+const Wrapper = styled.section`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  height: fit-content;
 `;
-
-const AlreadyWatchedUserBtn = styled(FollowUserBtn)`
-  background-color: transparent;
-  width: 134px;
-  padding: 5px 9px;
-  color: black;
-  border: 1px solid lightgray;
-
-  :last-of-type {
-    font-size: 11px;
-    padding: 0;
-  }
-
+const ProfilContainer = styled.section`
+  box-sizing: border-box;
+  max-width: 935px;
+  width: 100%;
+  padding: 0 20px;
   @media (max-width: 735px) {
-    max-width: 250px;
-    width: 100%;
-    margin: 0;
-    margin-top: 2px;
-    :last-of-type {
-      margin-top: 2px;
-    }
+    padding: 0;
   }
 `;
 
@@ -216,42 +176,17 @@ export default function UserProfil() {
   return (
     <Wrapper>
       <ProfilContainer>
-        <Header>
-          <UserImg>
-            <Link
-              to={
-                userData.storiesActive ? `/stories/${userId}/` : `/u/${userId}/`
-              }
-            >
-              <Img
-                storiesActive={userData.storiesActive}
-                src={userData.logo ?? userImg}
-              />
-            </Link>
-          </UserImg>
-          <ContentHeader>
-            <User>
-              <UserName>{userData.userName}</UserName>
-              {userAuthData.usersWatched?.includes(userId ?? "") ? (
-                <>
-                  <AlreadyWatchedUserBtn>
-                    Wyślij wiadomość
-                  </AlreadyWatchedUserBtn>
-                  <AlreadyWatchedUserBtn onClick={deleteToWatchedUsers}>
-                    Przestań obserwować
-                  </AlreadyWatchedUserBtn>
-                </>
-              ) : (
-                <FollowUserBtn onClick={addToWatchedUsers}>
-                  Obserwuj
-                </FollowUserBtn>
-              )}
-            </User>
-            {isMediaMatches ? null : (
-              <UserInfo userData={userData} postsData={postsData} />
-            )}
-          </ContentHeader>
-        </Header>
+        <ProfileHeader
+          userData={userData}
+          userAuthWatched={userAuthData.usersWatched}
+          postsData={postsData}
+          auth={auth}
+          isMediaMatches={isMediaMatches}
+          profileUserNotAuth
+          userId={userId}
+          onFollow={addToWatchedUsers}
+          onUnFollow={deleteToWatchedUsers}
+        />
         {isMediaMatches ? (
           <UserInfo columnReverse userData={userData} postsData={postsData} />
         ) : null}

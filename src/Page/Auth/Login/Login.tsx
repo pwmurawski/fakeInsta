@@ -3,50 +3,19 @@ import {
   WrapperAuth,
   AuthSection,
   AuthContainer,
-  AuthForm,
-  AuthFormInput,
-  AuthFormSubmitBtn,
   Logo,
   AltOption,
   AuthLinkStyle,
 } from "../../../GlobalStyle/GlobalStyle";
 import logo from "../../../assets/logo.png";
-import FetchAuth from "../../../helpers/Fetch/FetchAuth";
-import useAuth from "../../../hooks/useAuth";
-import ErrorInfo from "../../../components/ErrorInfo/ErrorInfo";
+import ErrorInfo from "../../../components/Auth/ErrorInfo/ErrorInfo";
+import FormLogin from "../../../components/Auth/FormLogin/FormLogin";
 
 export default function Login() {
-  const [auth, setAuth] = useAuth();
   const [error, setError] = useState("");
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    FetchAuth(
-      "accounts:signInWithPassword",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      },
-      (res) => {
-        if (!res.error) {
-          setAuth(true, {
-            email: res.email,
-            token: res.idToken,
-            userId: res.localId,
-          });
-        } else {
-          setError(res.error.errors[0].message);
-        }
-      }
-    );
+  const errorHandler = (newError: string) => {
+    setError(newError);
   };
 
   return (
@@ -54,23 +23,7 @@ export default function Login() {
       <AuthSection>
         <AuthContainer>
           <Logo src={logo} alt="insta" />
-          <AuthForm onSubmit={submit}>
-            <AuthFormInput
-              type="email"
-              placeholder="Adres e-mail"
-              onChange={(e) =>
-                setLoginData({ ...loginData, email: e.target.value })
-              }
-            />
-            <AuthFormInput
-              type="password"
-              placeholder="Hasło"
-              onChange={(e) =>
-                setLoginData({ ...loginData, password: e.target.value })
-              }
-            />
-            <AuthFormSubmitBtn type="submit">Zaloguj się</AuthFormSubmitBtn>
-          </AuthForm>
+          <FormLogin onError={errorHandler} />
           <ErrorInfo error={error} />
         </AuthContainer>
         <AltOption>

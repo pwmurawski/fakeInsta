@@ -1,7 +1,7 @@
 import { ReactChild } from "react";
 import { Link } from "react-router-dom";
 import logoImg from "../../../assets/logo2.png";
-import SearchBar from "../../SearchBar/SearchBar";
+import SearchBar from "../../Search/SearchBar/SearchBar";
 import { Wrapper, Logo, Menu, Search } from "./Header_styles";
 
 interface IHeaderProps {
