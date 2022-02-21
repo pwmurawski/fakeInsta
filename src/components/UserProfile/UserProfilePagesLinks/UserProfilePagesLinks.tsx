@@ -1,5 +1,10 @@
 import styled from "styled-components";
 import Option from "./Option/Option";
+import {
+  PostsSvg,
+  SavedSvg,
+  TaggedSvg,
+} from "../../SvgIcon/ProfilPage_SvgIcon";
 
 const Container = styled.section`
   box-sizing: border-box;
@@ -28,11 +33,11 @@ export default function UserProfilePagesLinks({
 }) {
   return (
     <Container>
-      <Option url={baseUrl} text="POSTY" icon="post" />
+      <Option url={baseUrl} text="POSTY" SvgIcon={PostsSvg} />
       {savedPageDisabled ? null : (
-        <Option url="saved/" text="ZAPISANE" icon="save" />
+        <Option url="saved/" text="ZAPISANE" SvgIcon={SavedSvg} />
       )}
-      <Option url="tagged/" text="Z OZNACZENIEM" icon="tagg" />
+      <Option url="tagged/" text="Z OZNACZENIEM" SvgIcon={TaggedSvg} />
     </Container>
   );
 }

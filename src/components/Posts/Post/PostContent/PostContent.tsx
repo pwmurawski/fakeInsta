@@ -17,6 +17,7 @@ import useAuth from "../../../../hooks/useAuth";
 
 const Content = styled.section`
   min-width: 404px;
+  width: 404px;
   height: 100%;
   position: relative;
   @media (max-width: 760px) {

@@ -27,7 +27,6 @@ const DescriptionPostPage = styled(DescriptionPost)`
   padding: 0;
 `;
 const TextDesc = styled.p`
-  max-width: 320px;
   width: 100%;
   margin: 0 0 0 15px;
   font-size: 14px;

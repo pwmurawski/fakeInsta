@@ -1,10 +1,6 @@
+/* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import {
-  PostsSvg,
-  SavedSvg,
-  TaggedSvg,
-} from "../../../SvgIcon/ProfilPage_SvgIcon";
 
 const OptionsLink = styled(NavLink)`
   box-sizing: border-box;
@@ -49,7 +45,6 @@ const Svg = styled.div`
   width: 12px;
   height: 12px;
   padding-bottom: 1px;
-
   @media (max-width: 735px) {
     width: 24px;
     height: 24px;
@@ -59,24 +54,16 @@ const Svg = styled.div`
 interface IOptionProps {
   url: string;
   text: string;
-  icon: string;
+  SvgIcon: ({ color }: { color: string | undefined }) => JSX.Element;
 }
 
-export default function Option({ url, text, icon }: IOptionProps) {
+export default function Option({ url, text, SvgIcon }: IOptionProps) {
   return (
     <OptionsLink to={url}>
       {({ isActive }) => (
         <>
           <Svg>
-            {icon === "post" && (
-              <PostsSvg color={isActive ? "#262626" : undefined} />
-            )}
-            {icon === "save" && (
-              <SavedSvg color={isActive ? "#262626" : undefined} />
-            )}
-            {icon === "tagg" && (
-              <TaggedSvg color={isActive ? "#262626" : undefined} />
-            )}
+            <SvgIcon color={isActive ? "#262626" : undefined} />
           </Svg>
           <OptionsLinkText>{text}</OptionsLinkText>
         </>
