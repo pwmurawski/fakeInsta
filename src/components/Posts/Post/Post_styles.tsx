@@ -6,7 +6,7 @@ export const Wrapper = styled.article`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: max-content;
+  height: fit-content;
   margin-bottom: 24px;
   background-color: white;
   border: 1px solid lightgray;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Fetch from "../../../helpers/Fetch/Fetch";
 import objectToArray from "../../../helpers/objectToArray";
+import searchFilter from "../../../helpers/searchFilter";
 import UsersList from "../../UsersList/UsersList";
 
 const Wrapper = styled.section`
@@ -74,15 +75,6 @@ export default function SearchBox({
     setSearchBoxActive(false);
   };
 
-  const searchFilter = (): IUsersData[] => {
-    const newUserData = usersData.filter(
-      (user) =>
-        user.userName.toLowerCase().includes(term.toLowerCase()) ||
-        user.userFullName.toLowerCase().includes(term.toLowerCase())
-    );
-    return newUserData;
-  };
-
   const getUsersData = () => {
     Fetch("users.json", { signal }, (res) => {
       const users: IUsersData[] = objectToArray(res, false).flatMap((e) =>
@@ -106,7 +98,7 @@ export default function SearchBox({
         <Arrow />
         <SearchBoxContainer>
           <UsersList
-            usersListData={searchFilter()}
+            usersListData={searchFilter(term, usersData)}
             userInListOnClick={userInListOnClick}
           />
         </SearchBoxContainer>

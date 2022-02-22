@@ -39,7 +39,6 @@ export default function Home() {
   const { signal } = abortController;
   const [auth] = useAuth();
   const [loading, setLoading] = useState(true);
-  const [getPostsIsComplete, setGetPostsIsComplete] = useState(false);
   const [numberWatchedUser, setNumberWatchedUser] = useState(0);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
 
@@ -47,8 +46,7 @@ export default function Home() {
     if (auth) {
       Fetch(`posts/${auth.userId}.json`, { signal }, (res) => {
         const posts: IPostsData[] = objectToArray(res);
-        setPostsData(posts);
-        setGetPostsIsComplete(true);
+        setPostsData((prev) => [...prev, ...posts]);
         setLoading(false);
       });
     }
@@ -72,7 +70,7 @@ export default function Home() {
               posts.filter((post) => post.user.userId === idUserWatched)
             );
           });
-          setPostsData([...postsData, ...newPostsDataWatchedUsers.flat()]);
+          setPostsData((prev) => [...prev, ...newPostsDataWatchedUsers.flat()]);
           setLoading(false);
         });
       });
@@ -81,19 +79,12 @@ export default function Home() {
 
   useEffect(() => {
     getPostsAuthUser();
+    getPostsWatchedUsers();
 
     return () => {
       abortController.abort();
     };
   }, []);
-
-  useEffect(() => {
-    if (getPostsIsComplete) getPostsWatchedUsers();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [getPostsIsComplete]);
 
   return (
     <Wrapper>
