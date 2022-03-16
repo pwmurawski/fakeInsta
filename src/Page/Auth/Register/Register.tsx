@@ -41,7 +41,7 @@ export default function Register() {
             Zarejestruj się, aby przeglądać zdjęcia i filmy znajomych.
           </Info>
           <FormRegister onError={errorHandler} />
-          <ErrorInfo error={error} register />
+          <ErrorInfo error={error} />
           <Desc>
             Rejestrując się, akceptujesz Regulamin. Informacje o tym, jak
             zbieramy, wykorzystujemy i udostępniamy Twoje dane, zawierają nasze

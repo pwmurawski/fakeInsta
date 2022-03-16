@@ -10,49 +10,53 @@ const Error = styled.section`
 
 interface IErrorInfoProps {
   error: string;
-  register?: boolean;
 }
 
-const defaultProps = {
-  register: false,
-};
+export default function ErrorInfo({ error }: IErrorInfoProps) {
+  const errors = [
+    {
+      name: "ERR_USERNAME",
+      value:
+        "Imię, nazwisko i nazwa użytkownika musi mieć przynajmniej 3 znaki.",
+    },
+    { name: "INVALID_EMAIL", value: "Email nie może być pusty." },
+    { name: "MISSING_EMAIL", value: "Email nie może być pusty." },
+    {
+      name: "EMAIL_EXISTS",
+      value: "Adres email jest używany na innym koncie.",
+    },
+    {
+      name: "MISSING_PASSWORD",
+      value: "Hasło nie może być puste.",
+    },
+    {
+      name: "WEAK_PASSWORD",
+      value: "Hasło powinno mieć co najmniej 6 znaków.",
+    },
+    {
+      name: "EMAIL_NOT_FOUND",
+      value:
+        "Wprowadzony email nie należy do konta. Sprawdź swoj email i spróbuj ponownie.",
+    },
+    {
+      name: "INVALID_PASSWORD",
+      value:
+        "Niestety wprowadzone hasło jest nieprawidłowe. Sprawdź poprawność wpisanego hasła.",
+    },
+    {
+      name: "TOO_MANY_ATTEMPTS_TRY_LATER",
+      value:
+        "Dostęp do tego konta został tymczasowo wyłączony z powodu wielu nieudanych prób logowania. Spróbuj ponownie później.",
+    },
+  ];
 
-export default function ErrorInfo({ error, register }: IErrorInfoProps) {
-  return (
-    <>
-      {register ? (
-        <Error>
-          {error === "ERR_USERNAME"
-            ? "Imię, nazwisko i nazwa użytkownika musi mieć przynajmniej 3 znaki."
-            : null}
-          {error === "INVALID_EMAIL" || error === "MISSING_EMAIL"
-            ? "Email nie może być pusty."
-            : null}
-          {error === "EMAIL_EXISTS"
-            ? "Adres email jest używany na innym koncie."
-            : null}
-          {error === "MISSING_PASSWORD" ? "Hasło nie może być puste." : null}
-          {error.includes("WEAK_PASSWORD")
-            ? "Hasło powinno mieć co najmniej 6 znaków."
-            : null}
-        </Error>
-      ) : (
-        <Error>
-          {error === "INVALID_EMAIL" ? "Email nie może być pusty." : null}
-          {error === "EMAIL_NOT_FOUND"
-            ? "Wprowadzony email nie należy do konta. Sprawdź swoj email i spróbuj ponownie."
-            : null}
-          {error === "MISSING_PASSWORD" ? "Hasło nie może być puste." : null}
-          {error === "INVALID_PASSWORD"
-            ? "Niestety wprowadzone hasło jest nieprawidłowe. Sprawdź poprawność wpisanego hasła."
-            : null}
-          {error.includes("TOO_MANY_ATTEMPTS_TRY_LATER")
-            ? "Dostęp do tego konta został tymczasowo wyłączony z powodu wielu nieudanych prób logowania. Spróbuj ponownie później. "
-            : null}
-        </Error>
-      )}
-    </>
-  );
+  let displayError = null;
+  if (error) {
+    displayError = errors.filter(({ name }) => name.includes(error))[0].value;
+    if (!displayError.length) {
+      displayError = error;
+    }
+  } else return null;
+
+  return <Error>{displayError}</Error>;
 }
-
-ErrorInfo.defaultProps = defaultProps;
