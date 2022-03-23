@@ -4,9 +4,9 @@ Uruchamia aplikację w trybie deweloperskim
 http://localhost:3000
 
 Live
-https://insta-f.web.app
+https://instadatabase-1.web.app
 
-https://insta-f.firebaseapp.com
+https://instadatabase-1.firebaseapp.com
 
 email: admin@admin.com
 hasło: admin21
