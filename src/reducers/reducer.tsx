@@ -1,23 +1,23 @@
-interface ISetAuth {
+export interface IUser {
   email: string;
   token: string;
   userId: string;
 }
 
-interface IState {
-  user: ISetAuth | null;
-}
-
 interface ILoginAction {
   type: "login";
-  user: ISetAuth;
+  user: IUser;
 }
 
 interface ILogoutAction {
   type: "logout";
 }
 
-type Action = ILoginAction | ILogoutAction;
+export interface IState {
+  user: IUser | null;
+}
+
+export type Action = ILoginAction | ILogoutAction;
 
 export const reducer = (state: IState, action: Action) => {
   switch (action.type) {

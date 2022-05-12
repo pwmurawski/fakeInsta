@@ -1,15 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-
-interface ISetAuth {
-  email: string;
-  token: string;
-  userId: string;
-}
+import { IUser } from "../reducers/reducer";
 
 interface AuthContext {
-  user: ISetAuth | null;
-  login: (user: ISetAuth) => void;
+  user: IUser | null;
+  login: (user: IUser) => void;
   logout: () => void;
 }
 

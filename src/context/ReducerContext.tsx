@@ -1,25 +1,8 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
-
-interface ISetAuth {
-  email: string;
-  token: string;
-  userId: string;
-}
-
-interface ILoginAction {
-  type: "login";
-  user: ISetAuth;
-}
-
-interface ILogoutAction {
-  type: "logout";
-}
-
-type Action = ILoginAction | ILogoutAction;
+import { IState, Action } from "../reducers/reducer";
 
 interface IReducerContext {
-  state: object;
+  state: IState;
   dispatch: React.Dispatch<Action>;
 }
 

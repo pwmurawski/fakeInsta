@@ -17,9 +17,8 @@ import sortPostsByDate from "../../helpers/sortPostsByDate";
 import NoWatchedUsers from "../../components/InfoLackPosts/NoWatchedUsers/NoWatchedUsers";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 
-interface IPostsData {
+export interface IPostsData {
   id: string;
-  comments?: string[];
   desc: string;
   img: string;
   likes?: string[];

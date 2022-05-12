@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useMemo, useReducer } from "react";
-import { reducer, initialState } from "./reducer";
+import { reducer, initialState, IUser } from "./reducers/reducer";
 import Layout from "./components/Layout/Layout";
 import Header from "./components/Layout/Header/Header";
 import Menu from "./components/Layout/Menu/Menu";
@@ -28,12 +28,6 @@ interface ILocationState {
   };
 }
 
-interface ISetAuth {
-  email: string;
-  token: string;
-  userId: string;
-}
-
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const location = useLocation() as ILocationState;
@@ -48,7 +42,7 @@ export default function App() {
   const authMemo = useMemo(
     () => ({
       user: state.user,
-      login: (user: ISetAuth) => dispatch({ type: "login", user }),
+      login: (user: IUser) => dispatch({ type: "login", user }),
       logout: () => dispatch({ type: "logout" }),
     }),
     [state, dispatch]
@@ -61,11 +55,13 @@ export default function App() {
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
+
   const header = (
     <Header>
       <Menu />
     </Header>
   );
+
   const content = (
     <Routes location={background}>
       <Route path="/" element={<Home />} />

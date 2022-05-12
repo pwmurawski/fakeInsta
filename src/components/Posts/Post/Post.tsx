@@ -17,6 +17,7 @@ import modifyDate from "../../../helpers/modifyDate";
 import useAuth from "../../../hooks/useAuth";
 import objectToArray from "../../../helpers/objectToArray";
 import Fetch from "../../../helpers/Fetch/Fetch";
+import { IPostsData } from "../../../Page/Home/Home";
 
 interface IUserData {
   serFullName: string;
@@ -24,22 +25,6 @@ interface IUserData {
   userName: string;
   logo?: string;
   storiesActive?: boolean;
-}
-
-interface IPostProps {
-  id: string;
-  description: string;
-  img: string;
-  likes?: string[];
-  location: string;
-  date: string;
-  user: {
-    userFullName: string;
-    userId: string;
-    userName: string;
-    logo?: string;
-    storiesActive?: boolean;
-  };
 }
 
 const defaultProps = {
@@ -50,11 +35,11 @@ export default function Post({
   id,
   img,
   likes,
-  description,
+  desc,
   location,
   date,
   user,
-}: IPostProps) {
+}: IPostsData) {
   const { pathname } = useLocation();
   const [auth] = useAuth();
   const [likesData, setLikesData] = useState<string[]>();
@@ -113,7 +98,7 @@ export default function Post({
         <LikeContainer>Liczba polubień: {likesData?.length ?? 0}</LikeContainer>
         <DescriptionPost>
           <TextDesc>
-            <UserNameDesc>{user.userName}</UserNameDesc> {description}
+            <UserNameDesc>{user.userName}</UserNameDesc> {desc}
           </TextDesc>
         </DescriptionPost>
         <CommentsLink>

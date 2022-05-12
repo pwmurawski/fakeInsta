@@ -1,21 +1,8 @@
+import { IPostsData } from "../../Page/Home/Home";
 import Post from "./Post/Post";
 
 interface IPostsProps {
-  postsData: {
-    id: string;
-    desc: string;
-    img: string;
-    likes?: string[];
-    location: string;
-    date: string;
-    user: {
-      userFullName: string;
-      userId: string;
-      userName: string;
-      logo?: string;
-      storiesActive?: boolean;
-    };
-  }[];
+  postsData: IPostsData[];
 }
 
 export default function Posts({ postsData }: IPostsProps) {
@@ -27,7 +14,7 @@ export default function Posts({ postsData }: IPostsProps) {
           id={post.id}
           img={post.img}
           likes={post.likes}
-          description={post.desc}
+          desc={post.desc}
           location={post.location}
           date={post.date}
           user={post.user}
