@@ -7,9 +7,9 @@ import {
   AuthFormSubmitBtn,
 } from "../../../GlobalStyle/GlobalStyle";
 import useAuth from "../../../hooks/useAuth";
-import Fetch from "../../../api/fetchApi/fetchApi";
 import { fetchAuthRegister } from "../../../api/authQuery";
 import { IFormRegisterProps } from "../../../interfaces/interfaces";
+import { fetchCreateUserData } from "../../../api/userQuery";
 
 export default function FormRegister({ onError }: IFormRegisterProps) {
   const navigate = useNavigate();
@@ -36,16 +36,10 @@ export default function FormRegister({ onError }: IFormRegisterProps) {
             token: res.idToken,
             userId: res.localId,
           });
-          Fetch(`users/${res.localId}.json`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...userData,
-              email: res.email,
-              userId: res.localId,
-            }),
+          fetchCreateUserData(res.localId, {
+            ...userData,
+            email: res.email,
+            userId: res.localId,
           });
           navigate("/");
         } else {

@@ -15,10 +15,10 @@ import {
   SubmitBtn,
 } from "../../../../GlobalStyle/GlobalStyle";
 import userLogo from "../../../../assets/user.jpg";
-import Fetch from "../../../../api/fetchApi/fetchApi";
 import useAuth from "../../../../hooks/useAuth";
 import { fetchAuthEditAccountData } from "../../../../api/authQuery";
 import { IProfilEditProps } from "../../../../interfaces/interfaces";
+import { fetchEditUserData } from "../../../../api/userQuery";
 
 const InputArea = styled.textarea`
   box-sizing: border-box;
@@ -64,13 +64,11 @@ export default function ProfilEdit({
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    Fetch(`users/${userData.userId}/${userData.id}.json`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...userData, id: undefined }),
+    fetchEditUserData(userData.userId, userData.id, {
+      ...userData,
+      id: undefined,
     });
+
     if (auth) {
       const res = await fetchAuthEditAccountData({
         idToken: auth.token,

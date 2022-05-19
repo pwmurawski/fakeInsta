@@ -508,3 +508,10 @@ export interface IUserAuthDataUserProfil {
 export interface IPostsDataSort {
   date: string;
 }
+
+export interface ICreateUserData {
+  email: string;
+  userId: string;
+  userFullName: string;
+  userName: string;
+}
