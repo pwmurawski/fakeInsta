@@ -1,9 +1,5 @@
-import { IPostsData } from "../../Page/Home/Home";
+import { IPostsProps } from "../../interfaces/interfaces";
 import Post from "./Post/Post";
-
-interface IPostsProps {
-  postsData: IPostsData[];
-}
 
 export default function Posts({ postsData }: IPostsProps) {
   return (

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import styled from "styled-components";
+import { IErrorInfoProps } from "../../../interfaces/interfaces";
 
 const Error = styled.section`
   font-size: 13px;
@@ -7,10 +8,6 @@ const Error = styled.section`
   padding: 10px 40px;
   color: red;
 `;
-
-interface IErrorInfoProps {
-  error: string;
-}
 
 export default function ErrorInfo({ error }: IErrorInfoProps) {
   const errors = [

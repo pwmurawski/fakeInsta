@@ -10,28 +10,14 @@ import Posts from "../../components/Posts/Posts";
 import Stories from "../../components/Home/Stories/Stories";
 import Footer from "../../components/Layout/Footer/Footer";
 import Aside from "../../components/Home/Aside/Aside";
-import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
 import sortPostsByDate from "../../helpers/sortPostsByDate";
 import NoWatchedUsers from "../../components/InfoLackPosts/NoWatchedUsers/NoWatchedUsers";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
-
-export interface IPostsData {
-  id: string;
-  desc: string;
-  img: string;
-  likes?: string[];
-  location: string;
-  date: string;
-  user: {
-    userFullName: string;
-    userId: string;
-    userName: string;
-    logo?: string;
-    storiesActive?: boolean;
-  };
-}
+import { fetchPosts, fetchUserPosts } from "../../api/postQuery";
+import { fetchUser } from "../../api/userQuery";
+import { IPostsData } from "../../interfaces/interfaces";
 
 export default function Home() {
   const abortController = new AbortController();
@@ -41,25 +27,29 @@ export default function Home() {
   const [numberWatchedUser, setNumberWatchedUser] = useState(0);
   const [postsData, setPostsData] = useState<IPostsData[]>([]);
 
-  const getPostsAuthUser = () => {
+  const getPostsAuthUser = async () => {
     if (auth) {
-      Fetch(`posts/${auth.userId}.json`, { signal }, (res) => {
+      const res = await fetchUserPosts(auth.userId, signal);
+
+      if (res) {
         const posts: IPostsData[] = objectToArray(res);
         setPostsData((prev) => [...prev, ...posts]);
         setLoading(false);
-      });
+      }
     }
   };
 
-  const getPostsWatchedUsers = () => {
+  const getPostsWatchedUsers = async () => {
     if (auth) {
-      Fetch(`users/${auth.userId}.json`, { signal }, (resp) => {
-        const { usersWatched }: { usersWatched: string[] } =
+      const resp = await fetchUser(auth.userId, signal);
+      if (resp) {
+        const { usersWatched }: { usersWatched?: string[] } =
           objectToArray(resp)[0];
-        setNumberWatchedUser(usersWatched.length);
+        setNumberWatchedUser(usersWatched?.length ?? 0);
         setLoading(true);
 
-        Fetch("posts.json", { signal }, (res) => {
+        const res = await fetchPosts(signal);
+        if (res) {
           const posts = objectToArray(res, false).flatMap((e) =>
             objectToArray(e)
           );
@@ -71,8 +61,8 @@ export default function Home() {
           });
           setPostsData((prev) => [...prev, ...newPostsDataWatchedUsers.flat()]);
           setLoading(false);
-        });
-      });
+        }
+      }
     }
   };
 

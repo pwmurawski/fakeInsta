@@ -1,3 +1,5 @@
+import { ISvgProps } from "../../interfaces/interfaces";
+
 export function SelectImgSvg() {
   return (
     <svg
@@ -78,19 +80,13 @@ export function LocationSvg() {
   );
 }
 
-interface IEmoticonSvgProps {
-  color?: string;
-  width?: string;
-  height?: string;
-}
-
 const defaultProps = {
   color: "#8e8e8e",
   width: " 20",
   height: " 20",
 };
 
-export function EmoticonSvg({ color, width, height }: IEmoticonSvgProps) {
+export function EmoticonSvg({ color, width, height }: ISvgProps) {
   return (
     <svg
       aria-label="Emoji"

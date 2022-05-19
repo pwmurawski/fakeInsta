@@ -15,12 +15,7 @@ import {
   H2,
   Input,
 } from "./SelectImgNewPost_styles";
-
-interface ILocationState {
-  state?: {
-    background: string;
-  };
-}
+import { ILocationState } from "../../../interfaces/interfaces";
 
 function SelectImgNewPost() {
   const inputRef = useRef<HTMLInputElement>(null);

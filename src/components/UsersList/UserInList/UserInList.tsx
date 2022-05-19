@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import userLogo from "../../../assets/user.jpg";
+import { IUserInListProps } from "../../../interfaces/interfaces";
 
 const Container = styled(Link)`
   display: flex;
@@ -46,18 +47,6 @@ const UserText = styled.p`
   font-size: 12px;
   color: #0095f6;
 `;
-
-interface IUserInListProps {
-  userId: string;
-  userName: string;
-  userFullName: string;
-  userImg?: string;
-  textInUser?: string;
-  userImgSize?: string;
-  fontSize?: string;
-  offLink?: boolean;
-  userInListOnClick?: () => void;
-}
 
 const defaultProps = {
   textInUser: null,

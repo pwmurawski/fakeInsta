@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { UserLogo } from "../../../../../../GlobalStyle/GlobalStyle";
 import userImg from "../../../../../../assets/user.jpg";
+import { IHeaderConContentProps } from "../../../../../../interfaces/interfaces";
 
 const Header = styled.header`
   box-sizing: border-box;
@@ -20,11 +21,6 @@ const UserName = styled.div`
   font-size: 16px;
   font-weight: 600;
 `;
-
-interface IHeaderConContentProps {
-  userName: string;
-  userLogo?: string;
-}
 
 const defaultProps = {
   userLogo: null,

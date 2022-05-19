@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import Fetch from "../../../helpers/Fetch/Fetch";
+import { fetchUser } from "../../../api/userQuery";
 import objectToArray from "../../../helpers/objectToArray";
 import useAuth from "../../../hooks/useAuth";
+import { IUserData, IUsersList } from "../../../interfaces/interfaces";
 import UsersList from "../../UsersList/UsersList";
 import AsideHeader from "./AsideHeader/AsideHeader";
 
@@ -22,20 +23,6 @@ const ProposedUsers = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
-interface IUsersList {
-  userId: string;
-  userName: string;
-  userFullName: string;
-  userImg?: string;
-}
-
-interface IUserData {
-  userName: string;
-  userFullName: string;
-  logo?: string;
-  storiesActive?: boolean;
-}
 
 export default function Aside() {
   const abortController = new AbortController();
@@ -73,9 +60,10 @@ export default function Aside() {
     },
   ]);
 
-  const getUserAuthData = () => {
+  const getUserAuthData = async () => {
     if (auth) {
-      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+      const res = await fetchUser(auth.userId, signal);
+      if (res) {
         const newUserData: IUserData = objectToArray(res, false)[0];
         setUserData({
           userName: newUserData.userName,
@@ -83,7 +71,7 @@ export default function Aside() {
           logo: newUserData.logo,
           storiesActive: newUserData.storiesActive,
         });
-      });
+      }
     }
   };
 

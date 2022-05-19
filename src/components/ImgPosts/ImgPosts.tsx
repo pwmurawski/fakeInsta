@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { IImgPostsProps } from "../../interfaces/interfaces";
 import ImgPost from "./ImgPost/ImgPost";
 
 const ImgPostsContainer = styled.section`
@@ -18,19 +19,6 @@ const ImgPostsContainer = styled.section`
     margin-bottom: 2px;
   }
 `;
-
-interface IImgPostsProps {
-  postsData: {
-    id: string;
-    img: string;
-    likes?: string[];
-    comments?: string[];
-    user: {
-      userId: string;
-    };
-  }[];
-  customLayOut?: boolean;
-}
 
 const defaultProps = {
   customLayOut: undefined,

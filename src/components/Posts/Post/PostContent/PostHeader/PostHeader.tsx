@@ -8,14 +8,7 @@ import {
 } from "./PostHeader_styles";
 import { Btn, UserLogo } from "../../../../../GlobalStyle/GlobalStyle";
 import OptionsSvg from "../../../../SvgIcon/PostHeader_SvgIcon";
-
-interface IPostHeaderProps {
-  userName: string;
-  userLogo: string;
-  userId?: string;
-  location: string;
-  storiesActive?: boolean;
-}
+import { IPostHeaderProps } from "../../../../../interfaces/interfaces";
 
 const defaultProps = {
   storiesActive: undefined,

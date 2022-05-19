@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { IProfileHeaderProps } from "../../../interfaces/interfaces";
 import ProfileHeaderContent from "./ProfileHeaderContent/ProfileHeaderContent";
 import ProfileHeaderUserImg from "./ProfileHeaderUserImg/ProfileHeaderUserImg";
 
@@ -14,41 +15,6 @@ const Header = styled.header`
     height: fit-content;
   }
 `;
-
-interface IPostsData {
-  id: string;
-  img: string;
-  likes?: string[];
-  comments?: string[];
-  date: string;
-  user: {
-    userId: string;
-  };
-}
-
-interface IUserAuthData {
-  email: string;
-  userFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  usersWatched?: string[];
-  storiesActive?: boolean;
-  savedPosts?: string[];
-  bio?: string;
-  website?: string;
-}
-
-interface IProfileHeaderProps {
-  userData: IUserAuthData;
-  postsData: IPostsData[];
-  isMediaMatches: boolean;
-  profileUserNotAuth?: boolean;
-  userAuthWatched?: string[];
-  userId?: string;
-  onFollow?: () => void;
-  onUnFollow?: () => void;
-}
 
 const defaultProps = {
   profileUserNotAuth: false,

@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { IProfileHeaderButtonsProps } from "../../../../interfaces/interfaces";
 
 const FollowUserBtn = styled.button`
   box-sizing: border-box;
@@ -67,14 +68,6 @@ const UserEditLink = styled(Link)`
     margin: 0;
   }
 `;
-
-interface IProfileHeaderButtonsProps {
-  profileUserNotAuth?: boolean;
-  userAuthWatched?: string[];
-  userId?: string;
-  onFollow?: () => void;
-  onUnFollow?: () => void;
-}
 
 const defaultProps = {
   profileUserNotAuth: false,

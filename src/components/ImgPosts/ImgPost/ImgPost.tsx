@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { IImgPostProps } from "../../../interfaces/interfaces";
 import ImgPostHover from "./ImgPostHover/ImgPostHover";
 
 const ImgContainer = styled.section`
@@ -38,14 +39,6 @@ const ImgPostContainer = styled.article`
       }
     `}
 `;
-
-interface IImgPostProps {
-  id: string;
-  img: string;
-  likes?: string[];
-  userId: string;
-  customLayOut?: boolean;
-}
 
 const defaultProps = {
   customLayOut: undefined,

@@ -1,9 +1,4 @@
-interface IUsersData {
-  userId: string;
-  userName: string;
-  userFullName: string;
-  userImg?: string;
-}
+import { IUsersData } from "../interfaces/interfaces";
 
 const searchFilter = (term: string, usersData: IUsersData[]): IUsersData[] => {
   const newUserData = usersData.filter(

@@ -1,13 +1,19 @@
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import useAuth from "../../hooks/useAuth";
 import UserInfo from "../../components/UserProfile/UserInfo/UserInfo";
 import UserProfilePagesLinks from "../../components/UserProfile/UserProfilePagesLinks/UserProfilePagesLinks";
 import UserProfileRoutes from "../../components/UserProfile/UserProfileRoutes/UserProfileRoutes";
 import ProfileHeader from "../../components/UserProfile/ProfileHeader/ProfileHeader";
+import { fetchUser } from "../../api/userQuery";
+import { fetchPosts, fetchUserPosts } from "../../api/postQuery";
+import {
+  ILocationState,
+  IPostsDataProfile,
+  IUserAuthDataProfile,
+} from "../../interfaces/interfaces";
 
 const Wrapper = styled.section`
   display: flex;
@@ -26,36 +32,6 @@ const ProfilContainer = styled.section`
   }
 `;
 
-interface ILocationState {
-  state?: {
-    background: string;
-  };
-}
-
-interface IPostsData {
-  id: string;
-  img: string;
-  likes?: string[];
-  comments?: string[];
-  date: string;
-  user: {
-    userId: string;
-  };
-}
-
-interface IUserAuthData {
-  email: string;
-  userFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  usersWatched?: string[];
-  storiesActive?: boolean;
-  savedPosts?: string[];
-  bio?: string;
-  website?: string;
-}
-
 export default function Profil() {
   const abortController = new AbortController();
   const { signal } = abortController;
@@ -67,10 +43,10 @@ export default function Profil() {
   const [loading, setLoading] = useState(true);
   const [loadingSaved, setLoadingSaved] = useState(true);
   const [loadingTagged, setLoadingTagged] = useState(false);
-  const [postsData, setPostsData] = useState<IPostsData[]>([]);
-  const [postsSavedData, setPostsSavedData] = useState<IPostsData[]>([]);
+  const [postsData, setPostsData] = useState<IPostsDataProfile[]>([]);
+  const [postsSavedData, setPostsSavedData] = useState<IPostsDataProfile[]>([]);
   const [postsTaggedData, setPostsTaggedData] = useState([]);
-  const [userAuthData, setUserAuthData] = useState<IUserAuthData>({
+  const [userAuthData, setUserAuthData] = useState<IUserAuthDataProfile>({
     email: "",
     userFullName: "",
     userId: "",
@@ -85,35 +61,35 @@ export default function Profil() {
     }
   };
 
-  const getUserAuthData = () => {
+  const getUserAuthData = async () => {
     if (auth) {
-      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
-        const userData: IUserAuthData[] = objectToArray(res, false);
+      const res = await fetchUser(auth.userId, signal);
+      if (res) {
+        const userData: IUserAuthDataProfile[] = objectToArray(res, false);
         setUserAuthData(userData[0]);
-      });
+      }
     }
   };
 
-  const getPostsData = () => {
+  const getPostsData = async () => {
     if (auth) {
-      Fetch(`posts/${auth.userId}.json`, { signal }, (res) => {
-        const posts: IPostsData[] = objectToArray(res);
-        setPostsData(posts);
-        setLoading(false);
-      });
+      const res = await fetchUserPosts(auth.userId, signal);
+      const posts: IPostsDataProfile[] = objectToArray(res);
+      setPostsData(posts);
+      setLoading(false);
     }
   };
 
-  const getSavedPosts = () => {
-    Fetch("posts.json", { signal }, (res) => {
-      const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
-      const newSavedPosts: IPostsData[][] = [];
-      userAuthData.savedPosts?.forEach((idSavedPost) => {
-        newSavedPosts.push(posts.filter((post) => post.id === idSavedPost));
-      });
-      setPostsSavedData([...postsSavedData, ...newSavedPosts.flat()]);
-      setLoadingSaved(false);
+  const getSavedPosts = async () => {
+    const res = await fetchPosts(signal);
+
+    const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
+    const newSavedPosts: IPostsDataProfile[][] = [];
+    userAuthData.savedPosts?.forEach((idSavedPost) => {
+      newSavedPosts.push(posts.filter((post) => post.id === idSavedPost));
     });
+    setPostsSavedData([...postsSavedData, ...newSavedPosts.flat()]);
+    setLoadingSaved(false);
   };
 
   useEffect(() => {

@@ -1,17 +1,5 @@
+import { ICommentsProps } from "../../../../../interfaces/interfaces";
 import Comment from "./Comment/Comment";
-
-interface ICommentsProps {
-  comments: {
-    id: string;
-    user: {
-      userId: string;
-      userName: string;
-      userLogo?: string;
-      storiesActive?: boolean;
-    };
-    content: string;
-  }[];
-}
 
 export default function Comments({ comments }: ICommentsProps) {
   return (

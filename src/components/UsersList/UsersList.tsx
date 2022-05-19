@@ -1,19 +1,6 @@
 /* eslint-disable no-unused-vars */
+import { IUsersListProps } from "../../interfaces/interfaces";
 import UserInList from "./UserInList/UserInList";
-
-interface IUsersListProps {
-  usersListData: {
-    userId: string;
-    userName: string;
-    userFullName: string;
-    userImg?: string;
-  }[];
-  textInUser?: string;
-  userImgSize?: string;
-  fontSize?: string;
-  offLink?: boolean;
-  userInListOnClick?: () => void;
-}
 
 const defaultProps = {
   textInUser: null,

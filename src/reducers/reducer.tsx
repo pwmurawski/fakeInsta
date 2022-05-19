@@ -1,23 +1,4 @@
-export interface IUser {
-  email: string;
-  token: string;
-  userId: string;
-}
-
-interface ILoginAction {
-  type: "login";
-  user: IUser;
-}
-
-interface ILogoutAction {
-  type: "logout";
-}
-
-export interface IState {
-  user: IUser | null;
-}
-
-export type Action = ILoginAction | ILogoutAction;
+import { IState, Action } from "../interfaces/interfaces";
 
 export const reducer = (state: IState, action: Action) => {
   switch (action.type) {

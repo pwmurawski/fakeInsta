@@ -16,16 +16,9 @@ import {
 import modifyDate from "../../../helpers/modifyDate";
 import useAuth from "../../../hooks/useAuth";
 import objectToArray from "../../../helpers/objectToArray";
-import Fetch from "../../../helpers/Fetch/Fetch";
-import { IPostsData } from "../../../Page/Home/Home";
-
-interface IUserData {
-  serFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  storiesActive?: boolean;
-}
+import { fetchAddComment } from "../../../api/commentQuery";
+import { fetchUser } from "../../../api/userQuery";
+import { IPostsData, IUserData } from "../../../interfaces/interfaces";
 
 const defaultProps = {
   likes: [],
@@ -44,31 +37,26 @@ export default function Post({
   const [auth] = useAuth();
   const [likesData, setLikesData] = useState<string[]>();
 
-  const onAddNewComment = (
+  const onAddNewComment = async (
     newContent: string,
     setNewContent: React.Dispatch<React.SetStateAction<string>>
   ) => {
     if (auth) {
-      Fetch(`users/${auth.userId}.json`, {}, (res) => {
+      const res = await fetchUser(auth.userId);
+      if (res) {
         const userAuthData: IUserData = objectToArray(res, false)[0];
 
-        Fetch(`comments/${id}.json`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        fetchAddComment(id, {
+          user: {
+            userId: auth.userId,
+            userName: userAuthData.userName,
+            userLogo: userAuthData.logo,
+            storiesActive: userAuthData.storiesActive,
           },
-          body: JSON.stringify({
-            user: {
-              userId: auth.userId,
-              userName: userAuthData.userName,
-              userLogo: userAuthData.logo,
-              storiesActive: userAuthData.storiesActive,
-            },
-            content: newContent,
-          }),
+          content: newContent,
         });
-        setNewContent("");
-      });
+      }
+      setNewContent("");
     }
   };
 

@@ -11,9 +11,18 @@ import PostOptions from "./PostOptions/PostOptions";
 import PostAddComment from "./PostAddComment/PostAddComment";
 import modifyDate from "../../../../helpers/modifyDate";
 import CommentsSpace from "./CommentsSpace/CommentsSpace";
-import Fetch from "../../../../helpers/Fetch/Fetch";
 import objectToArray from "../../../../helpers/objectToArray";
 import useAuth from "../../../../hooks/useAuth";
+import {
+  fetchAddComment,
+  fetchCommentsPost,
+} from "../../../../api/commentQuery";
+import { fetchUser } from "../../../../api/userQuery";
+import {
+  IPostData2,
+  IUserData,
+  ICommentData,
+} from "../../../../interfaces/interfaces";
 
 const Content = styled.section`
   min-width: 404px;
@@ -38,104 +47,56 @@ const ContainerOptions = styled.div`
   width: 100%;
 `;
 
-interface IUserData {
-  serFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  storiesActive?: boolean;
-}
-
-interface ICommentData {
-  id: string;
-  user: {
-    userId: string;
-    userName: string;
-    userLogo?: string;
-    storiesActive?: boolean;
-  };
-  content: string;
-}
-
-interface IPostData {
-  desc: string;
-  date: string;
-  location: string;
-  likes?: string[];
-}
-
-export default function PostContent({ postData }: { postData: IPostData }) {
+export default function PostContent({ postData }: { postData: IPostData2 }) {
   const abortController = new AbortController();
   const { signal } = abortController;
   const { userId, postId, postImg } = useParams();
   const [auth] = useAuth();
   const [likesData, setLikesData] = useState<string[]>();
   const [userData, setUserData] = useState<IUserData>({
-    serFullName: "",
+    userFullName: "",
     userId: "",
     userName: "",
     logo: "",
     storiesActive: false,
   });
   const [userAuthData, setUserAuthData] = useState<IUserData>({
-    serFullName: "",
+    userFullName: "",
     userId: "",
     userName: "",
     logo: "",
     storiesActive: false,
   });
-  const [commentsData, setCommentsData] = useState<ICommentData[]>([
-    {
-      id: "",
-      user: {
-        userId: "",
-        userName: "",
-      },
-      content: "",
-    },
-  ]);
+  const [commentsData, setCommentsData] = useState<ICommentData[]>([]);
 
-  const onAddNewComment = (
+  const onAddNewComment = async (
     newContent: string,
     setNewContent: React.Dispatch<React.SetStateAction<string>>
   ) => {
     if (auth) {
-      Fetch(
-        `comments/${postId}.json`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user: {
-              userId: auth.userId,
-              userName: userAuthData.userName,
-              userLogo: userAuthData.logo,
-              storiesActive: userAuthData.storiesActive,
-            },
-            content: newContent,
-          }),
+      const commentData = {
+        user: {
+          userId: auth.userId,
+          userName: userAuthData.userName,
+          userLogo: userAuthData.logo,
+          storiesActive: userAuthData.storiesActive,
         },
-        (res) => {
-          if (res) {
-            setCommentsData([
-              ...commentsData,
-              {
-                id: res.name,
-                user: {
-                  userId: auth.userId,
-                  userName: userAuthData.userName,
-                  userLogo: userAuthData.logo,
-                  storiesActive: userAuthData.storiesActive,
-                },
-                content: newContent,
-              },
-            ]);
-          }
-          setNewContent("");
+        content: newContent,
+      };
+
+      if (postId) {
+        const res = await fetchAddComment(postId, commentData);
+        if (res) {
+          setCommentsData([
+            ...commentsData,
+            {
+              id: res.name,
+              ...commentData,
+            },
+          ]);
         }
-      );
+        setNewContent("");
+      }
     }
   };
 
@@ -143,27 +104,34 @@ export default function PostContent({ postData }: { postData: IPostData }) {
     setLikesData(postData.likes);
   };
 
-  const getUserData = () => {
-    Fetch(`users/${userId}.json`, { signal }, (res) => {
-      const user: IUserData = objectToArray(res, false)[0];
-      setUserData(user);
-    });
-  };
-
-  const getUserAuthData = () => {
-    if (auth) {
-      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
-        const userAuth: IUserData = objectToArray(res, false)[0];
-        setUserAuthData(userAuth);
-      });
+  const getUserData = async () => {
+    if (userId) {
+      const res = await fetchUser(userId, signal);
+      if (res) {
+        const user: IUserData = objectToArray(res, false)[0];
+        setUserData(user);
+      }
     }
   };
 
-  const getCommentsData = () => {
-    Fetch(`comments/${postId}.json`, { signal }, (res) => {
-      const newCommentsData: ICommentData[] = objectToArray(res);
-      setCommentsData(newCommentsData);
-    });
+  const getUserAuthData = async () => {
+    if (auth) {
+      const res = await fetchUser(auth.userId, signal);
+      if (res) {
+        const userAuth: IUserData = objectToArray(res, false)[0];
+        setUserAuthData(userAuth);
+      }
+    }
+  };
+
+  const getCommentsData = async () => {
+    if (postId) {
+      const res = await fetchCommentsPost(postId, signal);
+      if (res) {
+        const newCommentsData: ICommentData[] = objectToArray(res);
+        setCommentsData(newCommentsData);
+      }
+    }
   };
 
   useEffect(() => {

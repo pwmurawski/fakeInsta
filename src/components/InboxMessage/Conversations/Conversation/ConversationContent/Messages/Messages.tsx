@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import userImg from "../../../../../../assets/user.jpg";
+import { IMessagesProps } from "../../../../../../interfaces/interfaces";
 
 const MessageContainer = styled.div`
   display: flex;
@@ -30,22 +31,6 @@ const YourMessage = styled(Message)`
   align-self: flex-end;
   background-color: lightgray;
 `;
-
-interface IMessagesProps {
-  messagesData: (
-    | {
-        id: number;
-        text: string;
-        your?: undefined;
-      }
-    | {
-        id: number;
-        your: boolean;
-        text: string;
-      }
-  )[];
-  userLogo?: string;
-}
 
 const defaultProps = {
   userLogo: null,

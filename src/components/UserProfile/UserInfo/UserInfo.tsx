@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { IUserInfoProps } from "../../../interfaces/interfaces";
 
 const Wrapper = styled.section`
   display: flex;
@@ -62,30 +63,6 @@ const Website = styled.a`
   text-decoration: none;
   cursor: pointer;
 `;
-
-interface IUserData {
-  userFullName: string;
-  usersWatched?: string[];
-  bio?: string;
-  website?: string;
-}
-
-interface IPostsData {
-  id: string;
-  img: string;
-  likes?: string[];
-  comments?: string[];
-  date: string;
-  user: {
-    userId: string;
-  };
-}
-
-interface IUserInfoProps {
-  userData: IUserData;
-  postsData: IPostsData[];
-  columnReverse?: boolean;
-}
 
 const defaultProps = {
   columnReverse: false,

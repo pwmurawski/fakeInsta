@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import userImg from "../../../../assets/user.jpg";
 import { UserLogo } from "../../../../GlobalStyle/GlobalStyle";
+import { IProfileHeaderUserImgProps } from "../../../../interfaces/interfaces";
 
 const Img = styled(UserLogo)`
   width: 150px;
@@ -26,15 +27,6 @@ const UserImg = styled.div`
     margin-right: 28px;
   }
 `;
-interface IUserData {
-  userId: string;
-  logo?: string;
-  storiesActive?: boolean;
-}
-
-interface IProfileHeaderUserImgProps {
-  userData: IUserData;
-}
 
 export default function ProfileHeaderUserImg({
   userData,

@@ -4,8 +4,13 @@ import { useEffect, useState } from "react";
 import ProfilEdit from "./ProfilEdit/ProfilEdit";
 import ProfilChangePass from "./ProfilChangePass/ProfilChangePass";
 import useAuth from "../../../hooks/useAuth";
-import Fetch from "../../../helpers/Fetch/Fetch";
 import objectToArray from "../../../helpers/objectToArray";
+import { fetchUser } from "../../../api/userQuery";
+import {
+  ILocationState,
+  IUserDataProfileSet,
+  IUserAuthDataProfileSet,
+} from "../../../interfaces/interfaces";
 
 const Wrapper = styled.section`
   display: flex;
@@ -63,44 +68,13 @@ const NavLinkStyleOff = styled(NavLink)`
   }
 `;
 
-interface ILocationState {
-  state?: {
-    background: string;
-  };
-}
-
-interface IUserAuthData {
-  id: string;
-  email: string;
-  userFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  website?: string;
-  bio?: string;
-  number?: string;
-  sex?: string;
-}
-interface IUserData {
-  id: string;
-  email: string;
-  userFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  website: string;
-  bio: string;
-  number: string;
-  sex: string;
-}
-
 export default function ProfilSettings() {
   const abortController = new AbortController();
-  const s = abortController.signal;
+  const { signal } = abortController;
   const { state } = useLocation() as ILocationState;
   const background = state?.background;
   const [auth] = useAuth();
-  const [userData, setUserData] = useState<IUserData>({
+  const [userData, setUserData] = useState<IUserDataProfileSet>({
     id: "",
     email: "",
     userFullName: "",
@@ -113,10 +87,11 @@ export default function ProfilSettings() {
     sex: "",
   });
 
-  const getUserAuthData = () => {
+  const getUserAuthData = async () => {
     if (auth) {
-      Fetch(`users/${auth.userId}.json`, { signal: s }, (res) => {
-        const newUserData: IUserAuthData[] = objectToArray(res);
+      const res = await fetchUser(auth.userId, signal);
+      if (res) {
+        const newUserData: IUserAuthDataProfileSet[] = objectToArray(res);
         setUserData({
           ...newUserData[0],
           website: newUserData[0].website ?? userData.website,
@@ -124,7 +99,7 @@ export default function ProfilSettings() {
           number: newUserData[0].number ?? userData.number,
           sex: newUserData[0].sex ?? userData.sex,
         });
-      });
+      }
     }
   };
 

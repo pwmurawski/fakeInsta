@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import Fetch from "../../../helpers/Fetch/Fetch";
+import { fetchUsers } from "../../../api/userQuery";
 import objectToArray from "../../../helpers/objectToArray";
 import searchFilter from "../../../helpers/searchFilter";
+import { ISearchBoxProps, IUsersData } from "../../../interfaces/interfaces";
 import UsersList from "../../UsersList/UsersList";
 
 const Wrapper = styled.section`
@@ -30,7 +31,7 @@ const SearchBoxContainer = styled.section`
   display: flex;
   flex-direction: column;
   width: 375px;
-  height: 365px;
+  height: fit-content;
   border-radius: 6px;
   background-color: white;
   font-size: 14px;
@@ -44,18 +45,6 @@ const HiddenSearchBox = styled.div`
   height: 100vh;
   z-index: 1;
 `;
-
-interface IUsersData {
-  userId: string;
-  userName: string;
-  userFullName: string;
-  userImg?: string;
-}
-
-interface ISearchBoxProps {
-  term: string;
-  setSearchBoxActive: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
 export default function SearchBox({
   term,
@@ -75,13 +64,14 @@ export default function SearchBox({
     setSearchBoxActive(false);
   };
 
-  const getUsersData = () => {
-    Fetch("users.json", { signal }, (res) => {
+  const getUsersData = async () => {
+    const res = await fetchUsers(signal);
+    if (res) {
       const users: IUsersData[] = objectToArray(res, false).flatMap((e) =>
         objectToArray(e)
       );
       setUsersData(users);
-    });
+    }
   };
 
   useEffect(() => {

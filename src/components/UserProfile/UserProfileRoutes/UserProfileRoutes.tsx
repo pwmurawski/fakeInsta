@@ -7,6 +7,7 @@ import NoSavedPosts from "../../InfoLackPosts/NoSavedPosts/NoSavedPosts";
 import NoTaggedPosts from "../../InfoLackPosts/NoTaggedPosts/NoTaggedPosts";
 import NoMyPosts from "../../InfoLackPosts/NoMyPosts/NoMyPosts";
 import LoadingIcon from "../../UI/LoadingIcon/LoadingIcon";
+import { IUserProfileRoutesProps } from "../../../interfaces/interfaces";
 
 export const SavedPostsInfo = styled.p`
   box-sizing: border-box;
@@ -16,28 +17,6 @@ export const SavedPostsInfo = styled.p`
   font-size: 12px;
   color: gray;
 `;
-
-interface IPostsData {
-  id: string;
-  img: string;
-  likes?: string[];
-  comments?: string[];
-  date: string;
-  user: {
-    userId: string;
-  };
-}
-
-interface IUserProfileRoutesProps {
-  postsData: IPostsData[];
-  postsSavedData?: IPostsData[];
-  postsTaggedData: IPostsData[];
-  loading: boolean;
-  loadingSaved?: boolean;
-  loadingTagged?: boolean;
-  background: string | undefined;
-  profileUserNotAuth?: boolean;
-}
 
 const defaultProps = {
   profileUserNotAuth: false,

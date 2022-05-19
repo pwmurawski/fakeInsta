@@ -1,15 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import { ReactElement } from "react";
 import useAuth from "../../hooks/useAuth";
+import { ILayoutProps } from "../../interfaces/interfaces";
 import { Wrapper, Header, Content, FooterContainer } from "./Layout_styles";
-
-interface ILayoutProps {
-  auth: ReactElement;
-  header: ReactElement;
-  content: ReactElement;
-  footer: ReactElement;
-  modals: ReactElement;
-}
 
 export default function Layout({
   auth,

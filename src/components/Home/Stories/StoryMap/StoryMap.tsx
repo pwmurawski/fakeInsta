@@ -1,10 +1,5 @@
+import { IStoriesData } from "../../../../interfaces/interfaces";
 import Story from "../Story/Story";
-
-interface IStoriesData {
-  id: string;
-  userName: string;
-  userLogo?: string;
-}
 
 export default function StoryMap({
   storiesData,

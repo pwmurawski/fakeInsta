@@ -6,6 +6,7 @@ import {
 } from "../../../../../GlobalStyle/GlobalStyle";
 import userLogo from "../../../../../assets/user.jpg";
 import Comments from "../Comments/Comments";
+import { ICommentsSpaceProps } from "../../../../../interfaces/interfaces";
 
 const heightHeader = "70px";
 const heightContainerOptions = "160px";
@@ -32,32 +33,6 @@ const TextDesc = styled.p`
   font-size: 14px;
   word-wrap: break-word;
 `;
-
-interface IUserData {
-  serFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  storiesActive?: boolean;
-}
-
-interface ICommentData {
-  id: string;
-  user: {
-    userId: string;
-    userName: string;
-    userLogo?: string;
-    storiesActive?: boolean;
-  };
-  content: string;
-}
-
-interface ICommentsSpaceProps {
-  postImg?: string;
-  userData: IUserData;
-  postDesc: string;
-  commentsData: ICommentData[];
-}
 
 const defaultProps = {
   postImg: null,

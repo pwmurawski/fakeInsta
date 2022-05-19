@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { NotLikeSvg } from "../../../SvgIcon/PostOptions_SvgIcon";
+import { IImgPostHoverProps } from "../../../../interfaces/interfaces";
 
 const Hover = styled(Link)`
   position: absolute;
@@ -23,12 +24,6 @@ const LikeHover = styled.p`
   margin: 0 0 5px 15px;
   font-size: 20px;
 `;
-
-interface IImgPostHoverProps {
-  userId: string;
-  id: string;
-  likes?: string[];
-}
 
 const defaultProps = {
   likes: null,

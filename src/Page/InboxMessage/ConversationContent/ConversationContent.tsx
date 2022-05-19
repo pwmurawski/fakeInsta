@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Messages from "../../../components/InboxMessage/Conversations/Conversation/ConversationContent/Messages/Messages";
 import AddMessage from "../../../components/InboxMessage/Conversations/Conversation/ConversationContent/AddMessage/AddMessage";
 import HeaderConContent from "../../../components/InboxMessage/Conversations/Conversation/ConversationContent/HeaderConContent/HeaderConContent";
+import { IMessagesData } from "../../../interfaces/interfaces";
 
 const Container = styled.section`
   flex: 1;
@@ -28,23 +29,6 @@ const Content = styled.section`
   height: fit-content;
   padding: 20px 20px 0;
 `;
-
-interface IMessagesData {
-  userName: string;
-  userImg?: string;
-  messages: (
-    | {
-        id: number;
-        text: string;
-        your?: undefined;
-      }
-    | {
-        id: number;
-        your: boolean;
-        text: string;
-      }
-  )[];
-}
 
 export default function ConversationContent() {
   const containerContentRef = useRef<HTMLDivElement | null>(null);

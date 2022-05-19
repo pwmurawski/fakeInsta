@@ -7,6 +7,7 @@ import {
   SwitchAccountSvg,
 } from "../../../SvgIcon/ProfilMenu_SvgIcon";
 import useAuth from "../../../../hooks/useAuth";
+import { IProfilMenuProps } from "../../../../interfaces/interfaces";
 
 const HiddenProfilMenu = styled.div`
   position: fixed;
@@ -74,10 +75,6 @@ const Svg = styled.section`
   margin-top: 5px;
   margin-right: 12px;
 `;
-
-interface IProfilMenuProps {
-  setProfilMenu: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
 export default function ProfilMenu({ setProfilMenu }: IProfilMenuProps) {
   const [auth, setAuth] = useAuth();

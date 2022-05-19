@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import styled from "styled-components";
 import UserInfo from "../../../../components/UserProfile/UserInfo/UserInfo";
+import { IProfileHeaderContentProps } from "../../../../interfaces/interfaces";
 import ProfileHeaderButtons from "../ProfileHeaderButtons/ProfileHeaderButtons";
 
 const ContentHeader = styled.div`
@@ -30,41 +31,6 @@ const UserName = styled.h2`
     margin-bottom: 12px;
   }
 `;
-
-interface IPostsData {
-  id: string;
-  img: string;
-  likes?: string[];
-  comments?: string[];
-  date: string;
-  user: {
-    userId: string;
-  };
-}
-
-interface IUserAuthData {
-  email: string;
-  userFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  usersWatched?: string[];
-  storiesActive?: boolean;
-  savedPosts?: string[];
-  bio?: string;
-  website?: string;
-}
-
-interface IProfileHeaderContentProps {
-  userData: IUserAuthData;
-  postsData: IPostsData[];
-  isMediaMatches: boolean;
-  profileUserNotAuth?: boolean;
-  userAuthWatched?: string[];
-  userId?: string;
-  onFollow?: () => void;
-  onUnFollow?: () => void;
-}
 
 const defaultProps = {
   profileUserNotAuth: false,

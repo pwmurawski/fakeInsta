@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import userImg from "../../../../assets/user.jpg";
 import { UserLogo } from "../../../../GlobalStyle/GlobalStyle";
+import { IUserData } from "../../../../interfaces/interfaces";
 
 const Header = styled.header`
   display: flex;
@@ -28,13 +29,6 @@ const UserFullName = styled.div`
   color: gray;
   font-weight: 400;
 `;
-
-interface IUserData {
-  userName: string;
-  userFullName: string;
-  logo?: string;
-  storiesActive?: boolean;
-}
 
 export default function AsideHeader({ userData }: { userData: IUserData }) {
   return (

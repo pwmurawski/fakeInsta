@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import ConversationContent from "./ConversationContent/ConversationContent";
 import AddConversationInfo from "../../components/InboxMessage/AddConversationInfo/AddConversationInfo";
 import ConversationList from "../../components/InboxMessage/ConversationList/ConversationList";
+import { ILocationState } from "../../interfaces/interfaces";
 
 const Wrapper = styled.section`
   display: flex;
@@ -23,12 +24,6 @@ const InboxContainer = styled.section`
     margin: 0;
   }
 `;
-
-interface ILocationState {
-  state?: {
-    background: string;
-  };
-}
 
 export default function InboxMessage() {
   const { state } = useLocation() as ILocationState;

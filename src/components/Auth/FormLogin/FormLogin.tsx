@@ -5,12 +5,9 @@ import {
   AuthFormInput,
   AuthFormSubmitBtn,
 } from "../../../GlobalStyle/GlobalStyle";
-import FetchAuth from "../../../helpers/Fetch/FetchAuth";
 import useAuth from "../../../hooks/useAuth";
-
-interface IFormLoginProps {
-  onError: (error: string) => void;
-}
+import { fetchAuthLogin } from "../../../api/authQuery";
+import { IFormLoginProps } from "../../../interfaces/interfaces";
 
 export default function FormLogin({ onError }: IFormLoginProps) {
   const [auth, setAuth] = useAuth();
@@ -19,30 +16,21 @@ export default function FormLogin({ onError }: IFormLoginProps) {
     password: "",
   });
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    FetchAuth(
-      "accounts:signInWithPassword",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      },
-      (res) => {
-        if (!res.error) {
-          setAuth(true, {
-            email: res.email,
-            token: res.idToken,
-            userId: res.localId,
-          });
-        } else {
-          onError(res.error.errors[0].message);
-        }
+    const res = await fetchAuthLogin(loginData);
+    if (res) {
+      if (!res.error) {
+        setAuth(true, {
+          email: res.email,
+          token: res.idToken,
+          userId: res.localId,
+        });
+      } else {
+        onError(res.error.errors[0].message);
       }
-    );
+    }
   };
 
   return (

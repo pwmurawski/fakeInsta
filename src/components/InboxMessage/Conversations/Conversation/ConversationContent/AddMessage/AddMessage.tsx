@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { EmoticonSvg } from "../../../../../SvgIcon/CreateNewPost_SvgIcon";
 import ImgSvg from "../../../../../SvgIcon/Message_SvgIcon";
+import { IAddMessageProps } from "../../../../../../interfaces/interfaces";
 
 const AddMessageCon = styled.div`
   box-sizing: border-box;
@@ -55,10 +56,6 @@ const BtnSend = styled.button`
   font-weight: 600;
   cursor: pointer;
 `;
-
-interface IAddMessageProps {
-  onNewMessage: (newMessage: string) => void;
-}
 
 export default function AddMessage({ onNewMessage }: IAddMessageProps) {
   const [newMessageData, setNewMessageData] = useState("");

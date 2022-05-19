@@ -15,9 +15,10 @@ import {
   SubmitBtn,
 } from "../../../../GlobalStyle/GlobalStyle";
 import userLogo from "../../../../assets/user.jpg";
-import Fetch from "../../../../helpers/Fetch/Fetch";
-import FetchAuth from "../../../../helpers/Fetch/FetchAuth";
+import Fetch from "../../../../api/fetchApi/fetchApi";
 import useAuth from "../../../../hooks/useAuth";
+import { fetchAuthEditAccountData } from "../../../../api/authQuery";
+import { IProfilEditProps } from "../../../../interfaces/interfaces";
 
 const InputArea = styled.textarea`
   box-sizing: border-box;
@@ -53,24 +54,6 @@ const Error = styled.p`
   color: red;
 `;
 
-interface IUserData {
-  id: string;
-  email: string;
-  userFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  website: string;
-  bio: string;
-  number: string;
-  sex: string;
-}
-
-interface IProfilEditProps {
-  userData: IUserData;
-  setUserData: React.Dispatch<React.SetStateAction<IUserData>>;
-}
-
 export default function ProfilEdit({
   userData,
   setUserData,
@@ -78,7 +61,7 @@ export default function ProfilEdit({
   const [auth, setAuth] = useAuth();
   const [error, setError] = useState("");
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     Fetch(`users/${userData.userId}/${userData.id}.json`, {
@@ -89,30 +72,22 @@ export default function ProfilEdit({
       body: JSON.stringify({ ...userData, id: undefined }),
     });
     if (auth) {
-      FetchAuth(
-        "accounts:update",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idToken: auth.token,
-            email: userData.email,
-            returnSecureToken: false,
-          }),
-        },
-        (res) => {
-          setAuth(true, {
-            email: res.email,
-            token: res.idToken,
-            userId: res.localId,
-          });
-          if (res.error) {
-            setError(res.error.errors[0].message);
-          }
+      const res = await fetchAuthEditAccountData({
+        idToken: auth.token,
+        email: userData.email,
+        returnSecureToken: false,
+      });
+
+      if (res) {
+        setAuth(true, {
+          email: res.email,
+          token: res.idToken,
+          userId: res.localId,
+        });
+        if (res.error) {
+          setError(res.error.errors[0].message);
         }
-      );
+      }
     }
   };
 

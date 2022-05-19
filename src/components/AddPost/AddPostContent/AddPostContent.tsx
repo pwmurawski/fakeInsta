@@ -5,6 +5,7 @@ import {
   EmoticonSvg,
 } from "../../../components/SvgIcon/CreateNewPost_SvgIcon";
 import userImg from "../../../assets/user.jpg";
+import { IAddPostContentProps } from "../../../interfaces/interfaces";
 
 const Content = styled.section`
   display: flex;
@@ -77,25 +78,6 @@ const NumberChar = styled.div`
   font-size: 12px;
   color: lightgray;
 `;
-
-interface IPostData {
-  img: string | undefined;
-  desc: string;
-  location: string;
-  date: Date;
-  user: {
-    userFullName: string;
-    userId: string;
-    userName: string;
-    logo?: string;
-    storiesActive?: boolean;
-  };
-}
-
-interface IAddPostContentProps {
-  newPostData: IPostData;
-  setNewPostData: React.Dispatch<React.SetStateAction<IPostData>>;
-}
 
 export default function AddPostContent({
   newPostData,

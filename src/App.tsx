@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useMemo, useReducer } from "react";
-import { reducer, initialState, IUser } from "./reducers/reducer";
+import { reducer, initialState } from "./reducers/reducer";
 import Layout from "./components/Layout/Layout";
 import Header from "./components/Layout/Header/Header";
 import Menu from "./components/Layout/Menu/Menu";
@@ -21,12 +21,7 @@ import Register from "./Page/Auth/Register/Register";
 import ReducerContext from "./context/ReducerContext";
 import AuthContext from "./context/AuthContext";
 import UserProfil from "./Page/UserProfil/UserProfil";
-
-interface ILocationState {
-  state?: {
-    background: string;
-  };
-}
+import { ILocationState, IUser } from "./interfaces/interfaces";
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);

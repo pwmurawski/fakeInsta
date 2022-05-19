@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import styled, { css } from "styled-components";
+import { IPostImgProps } from "../../../../interfaces/interfaces";
 
 const ImgContainer = styled.div`
   display: flex;
@@ -24,12 +25,6 @@ const Img = styled.img`
   height: auto;
   cursor: pointer;
 `;
-
-interface IPostImgProps {
-  image: string;
-  postImg?: string;
-  onClick: () => void;
-}
 
 const defaultProps = {
   postImg: null,

@@ -1,8 +1,4 @@
-interface IExitSvgProps {
-  color?: string;
-  width?: string;
-  height?: string;
-}
+import { ISvgProps } from "../../interfaces/interfaces";
 
 const defaultProps = {
   color: "#262626",
@@ -10,7 +6,7 @@ const defaultProps = {
   height: "18",
 };
 
-export default function ExitSvg({ color, width, height }: IExitSvgProps) {
+export default function ExitSvg({ color, width, height }: ISvgProps) {
   return (
     <svg
       aria-label="Zamknij"

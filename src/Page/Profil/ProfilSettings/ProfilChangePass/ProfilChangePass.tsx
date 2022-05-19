@@ -14,45 +14,30 @@ import {
 } from "../../../../GlobalStyle/GlobalStyle";
 import userLogo from "../../../../assets/user.jpg";
 import useAuth from "../../../../hooks/useAuth";
-import FetchAuth from "../../../../helpers/Fetch/FetchAuth";
-
-interface IProfilChangePassProps {
-  user: {
-    userName: string;
-    logo?: string;
-  };
-}
+import { fetchAuthEditAccountData } from "../../../../api/authQuery";
+import { IProfilChangePassProps } from "../../../../interfaces/interfaces";
 
 export default function ProfilChangePass({ user }: IProfilChangePassProps) {
   const [auth, setAuth] = useAuth();
   const [newPass, setNewPass] = useState("");
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (auth) {
-      FetchAuth(
-        "accounts:update",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idToken: auth.token,
-            password: newPass,
-            returnSecureToken: false,
-          }),
-        },
-        (res) => {
-          setAuth(true, {
-            email: res.email,
-            token: res.idToken,
-            userId: res.localId,
-          });
-          // console.log(res);
-        }
-      );
+      const res = await fetchAuthEditAccountData({
+        idToken: auth.token,
+        password: newPass,
+        returnSecureToken: false,
+      });
+
+      if (res) {
+        setAuth(true, {
+          email: res.email,
+          token: res.idToken,
+          userId: res.localId,
+        });
+      }
     }
   };
 

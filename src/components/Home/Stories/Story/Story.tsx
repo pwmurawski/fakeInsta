@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import userImg from "../../../../assets/user.jpg";
+import { IStoryProps } from "../../../../interfaces/interfaces";
 
 const Container = styled.li`
   box-sizing: border-box;
@@ -21,11 +22,6 @@ const UserName = styled.div`
   font-size: 12px;
   overflow: hidden;
 `;
-
-interface IStoryProps {
-  userName: string;
-  userLogo?: string;
-}
 
 const defaultProps = {
   userLogo: null,

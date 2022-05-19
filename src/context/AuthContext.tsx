@@ -1,13 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import { IUser } from "../reducers/reducer";
+import { IAuthContext } from "../interfaces/interfaces";
 
-interface AuthContext {
-  user: IUser | null;
-  login: (user: IUser) => void;
-  logout: () => void;
-}
-
-const AuthContext = React.createContext<AuthContext | null>(null);
+const AuthContext = React.createContext<IAuthContext | null>(null);
 
 export default AuthContext;

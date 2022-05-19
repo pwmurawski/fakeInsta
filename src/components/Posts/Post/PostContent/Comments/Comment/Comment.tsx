@@ -5,6 +5,7 @@ import {
   UserNameDesc,
 } from "../../../../../../GlobalStyle/GlobalStyle";
 import userLogo from "../../../../../../assets/user.jpg";
+import { ICommentProps } from "../../../../../../interfaces/interfaces";
 
 export const Wrapper = styled.article`
   box-sizing: border-box;
@@ -20,16 +21,6 @@ const Content = styled.p`
   font-size: 14px;
   word-wrap: break-word;
 `;
-
-interface ICommentProps {
-  user: {
-    userId: string;
-    userName: string;
-    userLogo?: string;
-    storiesActive?: boolean;
-  };
-  content: string;
-}
 
 export default function Comment({ user, content }: ICommentProps) {
   return (

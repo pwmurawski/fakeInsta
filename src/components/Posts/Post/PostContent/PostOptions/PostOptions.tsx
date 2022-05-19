@@ -10,21 +10,16 @@ import {
   SavedPostSvg,
 } from "../../../../SvgIcon/PostOptions_SvgIcon";
 import useAuth from "../../../../../hooks/useAuth";
-import Fetch from "../../../../../helpers/Fetch/Fetch";
 import objectToArray from "../../../../../helpers/objectToArray";
-
-interface IUserAuthData {
-  id: string;
-  savedPosts?: string[];
-}
-
-interface IPostOptionsProps {
-  postId?: string;
-  userId?: string;
-  likesData?: string[];
-  setLikesData: React.Dispatch<React.SetStateAction<string[] | undefined>>;
-  commentBtnOff?: boolean;
-}
+import { fetchUser } from "../../../../../api/userQuery";
+import {
+  fetchLikeHandlerePost,
+  fetchSavedPostHandler,
+} from "../../../../../api/postQuery";
+import {
+  IPostOptionsProps,
+  IUserAuthData,
+} from "../../../../../interfaces/interfaces";
 
 const defaultProps = {
   commentBtnOff: false,
@@ -48,105 +43,79 @@ export default function PostOptions({
     id: "",
   });
 
-  const getUserAuthData = () => {
+  const getUserAuthData = async () => {
     if (auth) {
-      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+      const res = await fetchUser(auth.userId, signal);
+      if (res) {
         const newUserAuthData: IUserAuthData = objectToArray(res)[0];
         setUserAuthData({
           id: newUserAuthData.id,
           savedPosts: newUserAuthData.savedPosts,
         });
-      });
-    }
-  };
-
-  const likeHandler = () => {
-    if (userId && postId && auth) {
-      if (!likesData?.includes(auth.userId)) {
-        Fetch(
-          `posts/${userId}/${postId}/likes.json`,
-          {
-            method: "PUT",
-            signal,
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify([...(likesData ?? []), auth.userId]),
-          },
-          (res) => {
-            setLikesData(res);
-          }
-        );
-      } else {
-        Fetch(
-          `posts/${userId}/${postId}/likes.json`,
-          {
-            method: "PUT",
-            signal,
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(likesData.filter((id) => id !== auth.userId)),
-          },
-          (res) => {
-            setLikesData(res);
-          }
-        );
       }
     }
   };
 
-  const savedHandler = () => {
+  const likeHandler = async () => {
+    if (userId && postId && auth) {
+      if (!likesData?.includes(auth.userId)) {
+        const res = await fetchLikeHandlerePost(
+          postId,
+          userId,
+          [...(likesData ?? []), auth.userId],
+          signal
+        );
+        if (res) {
+          setLikesData(res);
+        }
+      } else {
+        const res = await fetchLikeHandlerePost(
+          postId,
+          userId,
+          likesData.filter((id) => id !== auth.userId),
+          signal
+        );
+        setLikesData(res);
+      }
+    }
+  };
+
+  const savedHandler = async () => {
     if (postId && auth) {
       if (!userAuthData.savedPosts?.includes(postId)) {
-        Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const res = await fetchUser(auth.userId, signal);
+        if (res) {
           const newUserAuthData: IUserAuthData = objectToArray(res)[0];
 
-          Fetch(
-            `users/${auth.userId}/${userAuthData.id}/savedPosts.json`,
-            {
-              method: "PUT",
-              signal,
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify([
-                ...(newUserAuthData.savedPosts ?? []),
-                postId,
-              ]),
-            },
-            (resp) => {
-              setUserAuthData({
-                ...userAuthData,
-                savedPosts: resp,
-              });
-            }
+          const resp = await fetchSavedPostHandler(
+            auth.userId,
+            userAuthData.id,
+            [...(newUserAuthData.savedPosts ?? []), postId],
+            signal
           );
-        });
+          if (resp) {
+            setUserAuthData({
+              ...userAuthData,
+              savedPosts: resp,
+            });
+          }
+        }
       } else {
-        Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+        const res = await fetchUser(auth.userId, signal);
+        if (res) {
           const newUserAuthData: IUserAuthData = objectToArray(res)[0];
 
-          Fetch(
-            `users/${auth.userId}/${userAuthData.id}/savedPosts.json`,
-            {
-              method: "PUT",
-              signal,
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(
-                newUserAuthData.savedPosts?.filter((e) => e !== postId)
-              ),
-            },
-            (resp) => {
-              setUserAuthData({
-                ...userAuthData,
-                savedPosts: resp,
-              });
-            }
+          const resp = await fetchSavedPostHandler(
+            auth.userId,
+            userAuthData.id,
+            newUserAuthData.savedPosts?.filter((e) => e !== postId),
+            signal
           );
-        });
+          setUserAuthData({
+            ...userAuthData,
+            savedPosts: resp,
+          });
+        }
       }
     }
   };

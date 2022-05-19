@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Btn, HeaderCreatePost } from "../../../GlobalStyle/GlobalStyle";
 import { BackSvg } from "../../../components/SvgIcon/CreateNewPost_SvgIcon";
+import { IAddPostHeaderProps } from "../../../interfaces/interfaces";
 
 const ShareBtn = styled.button`
   justify-self: flex-start;
@@ -17,11 +18,6 @@ const H1 = styled.h1`
   font-weight: 600;
   margin: 0;
 `;
-
-interface IAddPostHeaderProps {
-  onClickShareBtn: () => void;
-  onClickBackBtn: () => void;
-}
 
 export default function AddPostHeader({
   onClickShareBtn,

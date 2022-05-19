@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { IConversationProps } from "../../../../interfaces/interfaces";
 
 const ConversationLink = styled(Link)`
   box-sizing: border-box;
@@ -31,12 +32,6 @@ const UserName = styled.div`
 const ActiveStatus = styled(UserName)`
   color: gray;
 `;
-
-interface IConversationProps {
-  id: number;
-  userName: string;
-  userImg: string;
-}
 
 export default function Conversation({
   id,

@@ -1,3 +1,5 @@
+import { ISvgProps } from "../../interfaces/interfaces";
+
 export function HomeSvg() {
   return (
     <svg
@@ -154,17 +156,12 @@ export function AddPostSvgActive() {
   );
 }
 
-interface IExploreSvgProps {
-  width?: string;
-  height?: string;
-}
-
 const defaultProps = {
   width: "24",
   height: "24",
 };
 
-export function ExploreSvg({ width, height }: IExploreSvgProps) {
+export function ExploreSvg({ width, height }: ISvgProps) {
   return (
     <svg
       aria-label="Znajdź osoby"

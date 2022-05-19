@@ -4,11 +4,17 @@ import { useEffect, useState } from "react";
 import { ModalWindowWrapper } from "../../../GlobalStyle/GlobalStyle";
 import Modal from "../../../hoc/Modal";
 import ExitBtnModalWindow from "../../../components/ExitBtnModalWindow/ExitBtnModalWindow";
-import Fetch from "../../../helpers/Fetch/Fetch";
 import useAuth from "../../../hooks/useAuth";
 import objectToArray from "../../../helpers/objectToArray";
 import AddPostHeader from "../../../components/AddPost/AddPostHeader/AddPostHeader";
 import AddPostContent from "../../../components/AddPost/AddPostContent/AddPostContent";
+import { fetchUser } from "../../../api/userQuery";
+import { fetchCreateNewPost } from "../../../api/postQuery";
+import {
+  ILocationStateNewPost,
+  IPostData,
+  IUserAuth,
+} from "../../../interfaces/interfaces";
 
 const NewPostContainer = styled.section`
   background-color: white;
@@ -44,39 +50,11 @@ const Img = styled.img`
   height: auto;
 `;
 
-interface ILocationState {
-  state?: {
-    uploadImg: string;
-  };
-}
-
-interface IUserAuth {
-  userFullName: string;
-  userId: string;
-  userName: string;
-  logo?: string;
-  storiesActive?: boolean;
-}
-
-interface IPostData {
-  img: string | undefined;
-  desc: string;
-  location: string;
-  date: Date;
-  user: {
-    userFullName: string;
-    userId: string;
-    userName: string;
-    logo?: string;
-    storiesActive?: boolean;
-  };
-}
-
 function DetailsNewPost() {
   const abortController = new AbortController();
   const { signal } = abortController;
   const navigate = useNavigate();
-  const { state } = useLocation() as ILocationState;
+  const { state } = useLocation() as ILocationStateNewPost;
   const [auth] = useAuth();
   const actualTime = new Date();
   const [newPostData, setNewPostData] = useState<IPostData>({
@@ -91,9 +69,11 @@ function DetailsNewPost() {
     },
   });
 
-  const getUserAuth = () => {
+  const getUserAuth = async () => {
     if (auth) {
-      Fetch(`users/${auth.userId}.json`, { signal }, (res) => {
+      const res = await fetchUser(auth.userId, signal);
+
+      if (res) {
         const user: IUserAuth[] = objectToArray(res);
         setNewPostData({
           ...newPostData,
@@ -105,20 +85,13 @@ function DetailsNewPost() {
             storiesActive: user[0].storiesActive,
           },
         });
-      });
+      }
     }
   };
 
   const createNewPost = () => {
     if (auth) {
-      Fetch(`posts/${auth.userId}.json`, {
-        method: "POST",
-        signal,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newPostData),
-      });
+      fetchCreateNewPost(auth.userId, newPostData, signal);
     }
   };
 

@@ -1,12 +1,5 @@
+import { IConversationsProps } from "../../../interfaces/interfaces";
 import Conversation from "./Conversation/Conversation";
-
-interface IConversationsProps {
-  conversationsData: {
-    id: number;
-    userName: string;
-    userImg: string;
-  }[];
-}
 
 export default function Conversations({
   conversationsData,

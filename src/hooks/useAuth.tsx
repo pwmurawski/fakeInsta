@@ -1,12 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
-
-interface ISetAuth {
-  email: string;
-  token: string;
-  userId: string;
-}
+import { ISetAuth } from "../interfaces/interfaces";
 
 export default function useAuth(): [
   auth: ISetAuth | null,

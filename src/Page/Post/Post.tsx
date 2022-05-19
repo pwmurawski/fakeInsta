@@ -7,16 +7,9 @@ import ExitBtnModalWindow from "../../components/ExitBtnModalWindow/ExitBtnModal
 import Modal from "../../hoc/Modal";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
 import PostImg from "../../components/Posts/Post/PostImg/PostImg";
-import Fetch from "../../helpers/Fetch/Fetch";
 import PostContent from "../../components/Posts/Post/PostContent/PostContent";
-
-interface IPostData {
-  img: string;
-  desc: string;
-  date: string;
-  location: string;
-  likes?: string[];
-}
+import { fetchPost } from "../../api/postQuery";
+import { IPostDataPost } from "../../interfaces/interfaces";
 
 function Post() {
   const abortController = new AbortController();
@@ -25,7 +18,7 @@ function Post() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [imgFullScreen, setImgFullScreen] = useState(false);
-  const [postData, setPostData] = useState<IPostData>({
+  const [postData, setPostData] = useState<IPostDataPost>({
     img: "",
     desc: "",
     date: "",
@@ -33,12 +26,15 @@ function Post() {
     location: "",
   });
 
-  const getPostData = () => {
-    Fetch(`posts/${userId}/${postId}.json`, { signal }, (res) => {
-      const post: IPostData = res;
-      setPostData(post);
-      setLoading(false);
-    });
+  const getPostData = async () => {
+    if (postId && userId) {
+      const res = await fetchPost(postId, userId, signal);
+      if (res) {
+        const post: IPostDataPost = res;
+        setPostData(post);
+        setLoading(false);
+      }
+    }
   };
 
   useEffect(() => {

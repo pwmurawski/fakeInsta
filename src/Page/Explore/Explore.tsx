@@ -2,10 +2,11 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
-import Fetch from "../../helpers/Fetch/Fetch";
 import objectToArray from "../../helpers/objectToArray";
 import sortPostsByDate from "../../helpers/sortPostsByDate";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
+import { fetchPosts } from "../../api/postQuery";
+import { IPostsDataProfile } from "../../interfaces/interfaces";
 
 const Wrapper = styled.section`
   display: flex;
@@ -22,29 +23,19 @@ const Container = styled.section`
   }
 `;
 
-interface IPostsData {
-  id: string;
-  img: string;
-  likes?: string[];
-  comments?: string[];
-  date: string;
-  user: {
-    userId: string;
-  };
-}
-
 export default function Explore() {
   const abortController = new AbortController();
   const { signal } = abortController;
   const [loading, setLoading] = useState(true);
-  const [postsData, setPostsData] = useState<IPostsData[]>([]);
+  const [postsData, setPostsData] = useState<IPostsDataProfile[]>([]);
 
-  const getPosts = () => {
-    Fetch("posts.json", { signal }, (res) => {
+  const getPosts = async () => {
+    const res = await fetchPosts(signal);
+    if (res) {
       const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
       setPostsData(posts);
       setLoading(false);
-    });
+    }
   };
 
   useEffect(() => {

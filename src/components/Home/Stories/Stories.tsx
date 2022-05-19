@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import nextImg from "../../../assets/next .png";
+import { IStoriesData } from "../../../interfaces/interfaces";
 import {
   Wrapper,
   NextBtn,
@@ -9,12 +10,6 @@ import {
   PrevBtnIcon,
 } from "./Stories_style";
 import StoryMap from "./StoryMap/StoryMap";
-
-interface IStoriesData {
-  id: string;
-  userName: string;
-  userLogo?: string;
-}
 
 export default function Stories() {
   const storyContainerRef = useRef<HTMLUListElement>(null);

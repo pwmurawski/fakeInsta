@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+import { IOptionProps } from "../../../../interfaces/interfaces";
 
 const OptionsLink = styled(NavLink)`
   box-sizing: border-box;
@@ -50,12 +51,6 @@ const Svg = styled.div`
     height: 24px;
   }
 `;
-
-interface IOptionProps {
-  url: string;
-  text: string;
-  SvgIcon: ({ color }: { color: string | undefined }) => JSX.Element;
-}
 
 export default function Option({ url, text, SvgIcon }: IOptionProps) {
   return (
