@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
-const objectToArray = (obj: any, addId?: boolean) => {
+const objectToArray = <T,>(obj: T, addId?: boolean) => {
   const arr = [];
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
