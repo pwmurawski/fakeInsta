@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   UserLogo,
   HeaderProfilSet,
@@ -13,33 +12,11 @@ import {
   SubmitBtn,
 } from "../../../../GlobalStyle/GlobalStyle";
 import userLogo from "../../../../assets/user.jpg";
-import useAuth from "../../../../hooks/useAuth";
-import { fetchAuthEditAccountData } from "../../../../api/authQuery";
 import { IProfilChangePassProps } from "../../../../interfaces/interfaces";
+import useChangePassword from "../../../../hooks/useChangePassword";
 
 export default function ProfilChangePass({ user }: IProfilChangePassProps) {
-  const [auth, setAuth] = useAuth();
-  const [newPass, setNewPass] = useState("");
-
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (auth) {
-      const res = await fetchAuthEditAccountData({
-        idToken: auth.token,
-        password: newPass,
-        returnSecureToken: false,
-      });
-
-      if (res) {
-        setAuth(true, {
-          email: res.email,
-          token: res.idToken,
-          userId: res.localId,
-        });
-      }
-    }
-  };
+  const [newPass, setNewPass, changePassword] = useChangePassword();
 
   return (
     <>
@@ -49,7 +26,7 @@ export default function ProfilChangePass({ user }: IProfilChangePassProps) {
           <UserName fontSize="24px">{user.userName}</UserName>
         </UserNameContainer>
       </HeaderProfilSet>
-      <Form onSubmit={submit}>
+      <Form onSubmit={changePassword}>
         <EditContainer>
           <Aside>
             <Label htmlFor="prepass">Poprzednie hasło</Label>

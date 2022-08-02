@@ -84,13 +84,13 @@ export default function UserInfo({
         </Stat>
         <Stat>
           Obserwowani:{" "}
-          <StatValue>{userData.usersWatched?.length ?? 0}</StatValue>
+          <StatValue>{userData?.usersWatched?.length ?? 0}</StatValue>
         </Stat>
       </UserStats>
       <UserInfoContainer>
-        <UserFullName>{userData.userFullName}</UserFullName>
-        <Bio>{userData.bio}</Bio>
-        <Website href={userData.website}>{userData.website}</Website>
+        <UserFullName>{userData?.userFullName}</UserFullName>
+        <Bio>{userData?.bio}</Bio>
+        <Website href={userData?.website}>{userData?.website}</Website>
       </UserInfoContainer>
     </Wrapper>
   );

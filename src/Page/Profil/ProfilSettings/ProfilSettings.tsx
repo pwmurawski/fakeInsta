@@ -1,16 +1,13 @@
 import { NavLink, Routes, Route, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
 import ProfilEdit from "./ProfilEdit/ProfilEdit";
 import ProfilChangePass from "./ProfilChangePass/ProfilChangePass";
-import useAuth from "../../../hooks/useAuth";
-import objectToArray from "../../../helpers/objectToArray";
-import { fetchUser } from "../../../api/userQuery";
 import {
   ILocationState,
   IUserDataProfileSet,
-  IUserAuthDataProfileSet,
 } from "../../../interfaces/interfaces";
+import useUserAuthData from "../../../hooks/useUserAuthData";
+import useEditProfil from "../../../hooks/useEditProfil";
 
 const Wrapper = styled.section`
   display: flex;
@@ -69,48 +66,13 @@ const NavLinkStyleOff = styled(NavLink)`
 `;
 
 export default function ProfilSettings() {
-  const abortController = new AbortController();
-  const { signal } = abortController;
   const { state } = useLocation() as ILocationState;
   const background = state?.background;
-  const [auth] = useAuth();
-  const [userData, setUserData] = useState<IUserDataProfileSet>({
-    id: "",
-    email: "",
-    userFullName: "",
-    userId: "",
-    userName: "",
-    logo: "",
-    website: "",
-    bio: "",
-    number: "",
-    sex: "",
-  });
+  const [userAuthData, setUserAuthData] =
+    useUserAuthData<IUserDataProfileSet>();
+  const [editProfil, error] = useEditProfil(setUserAuthData);
 
-  const getUserAuthData = async () => {
-    if (auth) {
-      const res = await fetchUser(auth.userId, signal);
-      if (res) {
-        const newUserData: IUserAuthDataProfileSet[] = objectToArray(res);
-        setUserData({
-          ...newUserData[0],
-          website: newUserData[0].website ?? userData.website,
-          bio: newUserData[0].bio ?? userData.bio,
-          number: newUserData[0].number ?? userData.number,
-          sex: newUserData[0].sex ?? userData.sex,
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    getUserAuthData();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
+  if (!userAuthData) return null;
   return (
     <Wrapper>
       <Container>
@@ -129,14 +91,21 @@ export default function ProfilSettings() {
             <Route
               path="edit"
               element={
-                <ProfilEdit userData={userData} setUserData={setUserData} />
+                <ProfilEdit
+                  defaultValue={userAuthData}
+                  onSubmit={editProfil}
+                  error={error}
+                />
               }
             />
             <Route
               path="password/change"
               element={
                 <ProfilChangePass
-                  user={{ userName: userData.userName, logo: userData.logo }}
+                  user={{
+                    userName: userAuthData.userName,
+                    logo: userAuthData.logo,
+                  }}
                 />
               }
             />

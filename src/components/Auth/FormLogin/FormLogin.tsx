@@ -5,36 +5,21 @@ import {
   AuthFormInput,
   AuthFormSubmitBtn,
 } from "../../../GlobalStyle/GlobalStyle";
-import useAuth from "../../../hooks/useAuth";
-import { fetchAuthLogin } from "../../../api/authQuery";
 import { IFormLoginProps } from "../../../interfaces/interfaces";
 
-export default function FormLogin({ onError }: IFormLoginProps) {
-  const [auth, setAuth] = useAuth();
+export default function FormLogin({ onSubmit }: IFormLoginProps) {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const res = await fetchAuthLogin(loginData);
-    if (res) {
-      if (!res.error) {
-        setAuth(true, {
-          email: res.email,
-          token: res.idToken,
-          userId: res.localId,
-        });
-      } else {
-        onError(res.error.errors[0].message);
-      }
-    }
-  };
-
   return (
-    <AuthForm onSubmit={submit}>
+    <AuthForm
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(loginData);
+      }}
+    >
       <AuthFormInput
         type="email"
         placeholder="Adres e-mail"

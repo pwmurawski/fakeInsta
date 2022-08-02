@@ -1,20 +1,11 @@
 import styled from "styled-components";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ModalWindowWrapper } from "../../../GlobalStyle/GlobalStyle";
 import Modal from "../../../hoc/Modal";
 import ExitBtnModalWindow from "../../../components/ExitBtnModalWindow/ExitBtnModalWindow";
-import useAuth from "../../../hooks/useAuth";
-import objectToArray from "../../../helpers/objectToArray";
 import AddPostHeader from "../../../components/AddPost/AddPostHeader/AddPostHeader";
 import AddPostContent from "../../../components/AddPost/AddPostContent/AddPostContent";
-import { fetchUser } from "../../../api/userQuery";
-import { fetchCreateNewPost } from "../../../api/postQuery";
-import {
-  ILocationStateNewPost,
-  IPostData,
-  IUserAuth,
-} from "../../../interfaces/interfaces";
+import useAddPost from "../../../hooks/useAddPost";
 
 const NewPostContainer = styled.section`
   background-color: white;
@@ -51,57 +42,8 @@ const Img = styled.img`
 `;
 
 function DetailsNewPost() {
-  const abortController = new AbortController();
-  const { signal } = abortController;
   const navigate = useNavigate();
-  const { state } = useLocation() as ILocationStateNewPost;
-  const [auth] = useAuth();
-  const actualTime = new Date();
-  const [newPostData, setNewPostData] = useState<IPostData>({
-    img: state?.uploadImg,
-    desc: "",
-    location: "",
-    date: actualTime,
-    user: {
-      userFullName: "",
-      userId: "",
-      userName: "",
-    },
-  });
-
-  const getUserAuth = async () => {
-    if (auth) {
-      const res = await fetchUser(auth.userId, signal);
-
-      if (res) {
-        const user: IUserAuth[] = objectToArray(res);
-        setNewPostData({
-          ...newPostData,
-          user: {
-            userFullName: user[0].userFullName,
-            userId: user[0].userId,
-            userName: user[0].userName,
-            logo: user[0].logo,
-            storiesActive: user[0].storiesActive,
-          },
-        });
-      }
-    }
-  };
-
-  const createNewPost = () => {
-    if (auth) {
-      fetchCreateNewPost(auth.userId, newPostData, signal);
-    }
-  };
-
-  useEffect(() => {
-    getUserAuth();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
+  const [newPostData, setNewPostData, addPost] = useAddPost();
 
   return (
     <ModalWindowWrapper
@@ -117,7 +59,7 @@ function DetailsNewPost() {
       >
         <AddPostHeader
           onClickShareBtn={() => {
-            createNewPost();
+            addPost();
             navigate(-2);
           }}
           onClickBackBtn={() => {
@@ -126,7 +68,7 @@ function DetailsNewPost() {
         />
         <Container>
           <ImgContainer>
-            <Img src={state?.uploadImg} />
+            <Img src={newPostData.img} />
           </ImgContainer>
           <AddPostContent
             newPostData={newPostData}

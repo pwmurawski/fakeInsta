@@ -31,6 +31,7 @@ const UserImg = styled.div`
 export default function ProfileHeaderUserImg({
   userData,
 }: IProfileHeaderUserImgProps) {
+  if (!userData) return null;
   return (
     <UserImg>
       <Link to={userData.storiesActive ? `/stories/${userData.userId}/` : "./"}>

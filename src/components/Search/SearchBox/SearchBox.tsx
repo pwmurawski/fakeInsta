@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchUsers } from "../../../api/userQuery";
-import objectToArray from "../../../helpers/objectToArray";
 import searchFilter from "../../../helpers/searchFilter";
-import { ISearchBoxProps, IUsersData } from "../../../interfaces/interfaces";
+import useAllUsers from "../../../hooks/useAllUsers";
+import { ISearchBoxProps } from "../../../interfaces/interfaces";
 import UsersList from "../../UsersList/UsersList";
 
 const Wrapper = styled.section`
@@ -50,37 +48,7 @@ export default function SearchBox({
   term,
   setSearchBoxActive,
 }: ISearchBoxProps) {
-  const abortController = new AbortController();
-  const { signal } = abortController;
-  const [usersData, setUsersData] = useState<IUsersData[]>([
-    {
-      userId: "",
-      userName: "",
-      userFullName: "",
-    },
-  ]);
-
-  const userInListOnClick = () => {
-    setSearchBoxActive(false);
-  };
-
-  const getUsersData = async () => {
-    const res = await fetchUsers(signal);
-    if (res) {
-      const users: IUsersData[] = objectToArray(res, false).flatMap((e) =>
-        objectToArray(e)
-      );
-      setUsersData(users);
-    }
-  };
-
-  useEffect(() => {
-    getUsersData();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
+  const usersData = useAllUsers();
 
   return (
     <>
@@ -89,7 +57,7 @@ export default function SearchBox({
         <SearchBoxContainer>
           <UsersList
             usersListData={searchFilter(term, usersData)}
-            userInListOnClick={userInListOnClick}
+            userInListOnClick={() => setSearchBoxActive(false)}
           />
         </SearchBoxContainer>
       </Wrapper>

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   WrapperAuth,
   AuthSection,
@@ -10,20 +9,17 @@ import {
 import logo from "../../../assets/logo.png";
 import ErrorInfo from "../../../components/Auth/ErrorInfo/ErrorInfo";
 import FormLogin from "../../../components/Auth/FormLogin/FormLogin";
+import useLogin from "../../../hooks/useLogin";
 
 export default function Login() {
-  const [error, setError] = useState("");
-
-  const errorHandler = (newError: string) => {
-    setError(newError);
-  };
+  const [login, error] = useLogin();
 
   return (
     <WrapperAuth>
       <AuthSection>
         <AuthContainer>
           <Logo src={logo} alt="insta" />
-          <FormLogin onError={errorHandler} />
+          <FormLogin onSubmit={login} />
           <ErrorInfo error={error} />
         </AuthContainer>
         <AltOption>

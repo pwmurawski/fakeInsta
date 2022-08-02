@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Messages from "../../../components/InboxMessage/Conversations/Conversation/ConversationContent/Messages/Messages";
 import AddMessage from "../../../components/InboxMessage/Conversations/Conversation/ConversationContent/AddMessage/AddMessage";
 import HeaderConContent from "../../../components/InboxMessage/Conversations/Conversation/ConversationContent/HeaderConContent/HeaderConContent";
-import { IMessagesData } from "../../../interfaces/interfaces";
+import useMessage from "../../../hooks/useMessage";
 
 const Container = styled.section`
   flex: 1;
@@ -31,56 +30,7 @@ const Content = styled.section`
 `;
 
 export default function ConversationContent() {
-  const containerContentRef = useRef<HTMLDivElement | null>(null);
-  const [messagesData, setMessagesData] = useState<IMessagesData>({
-    userName: "user",
-    messages: [
-      {
-        id: 1,
-        text: "message1",
-      },
-      {
-        id: 2,
-        your: true,
-        text: "message2",
-      },
-      {
-        id: 3,
-        your: true,
-        text: "message3",
-      },
-      {
-        id: 4,
-        text: "message4",
-      },
-    ],
-  });
-
-  const addNewMessage = (newMessage: string) => {
-    setMessagesData({
-      ...messagesData,
-      messages: [
-        ...messagesData.messages,
-        { id: Math.random(), your: true, text: newMessage },
-      ],
-    });
-  };
-
-  const scrollDownHandler = () => {
-    const heightScroll = containerContentRef.current?.scrollHeight;
-    const heightClient = containerContentRef.current?.clientHeight;
-    if (heightScroll && heightClient) {
-      if (heightScroll > heightClient) {
-        containerContentRef.current?.scrollTo({
-          top: heightScroll - heightClient,
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    scrollDownHandler();
-  }, [messagesData]);
+  const [messagesData, addMessage, containerContentRef] = useMessage();
 
   return (
     <Container>
@@ -96,7 +46,7 @@ export default function ConversationContent() {
           />
         </Content>
       </ContainerContent>
-      <AddMessage onNewMessage={addNewMessage} />
+      <AddMessage onNewMessage={addMessage} />
     </Container>
   );
 }

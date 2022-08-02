@@ -14,11 +14,8 @@ import {
   LinkPost,
 } from "../../../GlobalStyle/GlobalStyle";
 import modifyDate from "../../../helpers/modifyDate";
-import useAuth from "../../../hooks/useAuth";
-import objectToArray from "../../../helpers/objectToArray";
-import { fetchAddComment } from "../../../api/commentQuery";
-import { fetchUser } from "../../../api/userQuery";
-import { IPostsData, IUserData } from "../../../interfaces/interfaces";
+import { IPostsData } from "../../../interfaces/interfaces";
+import useAddComment from "../../../hooks/useAddComment";
 
 const defaultProps = {
   likes: [],
@@ -34,31 +31,8 @@ export default function Post({
   user,
 }: IPostsData) {
   const { pathname } = useLocation();
-  const [auth] = useAuth();
   const [likesData, setLikesData] = useState<string[]>();
-
-  const onAddNewComment = async (
-    newContent: string,
-    setNewContent: React.Dispatch<React.SetStateAction<string>>
-  ) => {
-    if (auth) {
-      const res = await fetchUser(auth.userId);
-      if (res) {
-        const userAuthData: IUserData = objectToArray(res, false)[0];
-
-        fetchAddComment(id, {
-          user: {
-            userId: auth.userId,
-            userName: userAuthData.userName,
-            userLogo: userAuthData.logo,
-            storiesActive: userAuthData.storiesActive,
-          },
-          content: newContent,
-        });
-      }
-      setNewContent("");
-    }
-  };
+  const addComment = useAddComment(id);
 
   useEffect(() => {
     if (likes?.length !== 0) {
@@ -99,7 +73,7 @@ export default function Post({
           </LinkPost>
         </CommentsLink>
         <TimeContainer>{modifyDate(date)}</TimeContainer>
-        <PostAddComment onAddNewComment={onAddNewComment} />
+        <PostAddComment onAddNewComment={addComment} />
       </Content>
     </Wrapper>
   );

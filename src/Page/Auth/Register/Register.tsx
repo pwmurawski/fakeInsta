@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { useState } from "react";
 import {
   WrapperAuth,
   AuthSection,
@@ -11,6 +10,7 @@ import {
 import logo from "../../../assets/logo.png";
 import ErrorInfo from "../../../components/Auth/ErrorInfo/ErrorInfo";
 import FormRegister from "../../../components/Auth/FormRegister/FormRegister";
+import useRegister from "../../../hooks/useRegister";
 
 const Info = styled.h2`
   text-align: center;
@@ -26,11 +26,7 @@ const Desc = styled.p`
 `;
 
 export default function Register() {
-  const [error, setError] = useState("");
-
-  const errorHandler = (newError: string) => {
-    setError(newError);
-  };
+  const [register, error] = useRegister();
 
   return (
     <WrapperAuth>
@@ -40,7 +36,7 @@ export default function Register() {
           <Info>
             Zarejestruj się, aby przeglądać zdjęcia i filmy znajomych.
           </Info>
-          <FormRegister onError={errorHandler} />
+          <FormRegister onSubmit={register} />
           <ErrorInfo error={error} />
           <Desc>
             Rejestrując się, akceptujesz Regulamin. Informacje o tym, jak

@@ -53,7 +53,7 @@ export default function ProfileHeaderContent({
   return (
     <ContentHeader>
       <User>
-        <UserName>{userData.userName}</UserName>
+        <UserName>{userData?.userName}</UserName>
         <ProfileHeaderButtons
           profileUserNotAuth={profileUserNotAuth}
           userAuthWatched={userAuthWatched}

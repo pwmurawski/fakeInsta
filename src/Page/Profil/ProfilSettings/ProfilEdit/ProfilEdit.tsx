@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   UserLogo,
   HeaderProfilSet,
@@ -15,10 +15,10 @@ import {
   SubmitBtn,
 } from "../../../../GlobalStyle/GlobalStyle";
 import userLogo from "../../../../assets/user.jpg";
-import useAuth from "../../../../hooks/useAuth";
-import { fetchAuthEditAccountData } from "../../../../api/authQuery";
-import { IProfilEditProps } from "../../../../interfaces/interfaces";
-import { fetchEditUserData } from "../../../../api/userQuery";
+import {
+  IProfilEditProps,
+  IUserDataProfileSet,
+} from "../../../../interfaces/interfaces";
 
 const InputArea = styled.textarea`
   box-sizing: border-box;
@@ -54,51 +54,44 @@ const Error = styled.p`
   color: red;
 `;
 
+const initForm = {
+  id: "",
+  email: "",
+  userFullName: "",
+  userId: "",
+  userName: "",
+  website: "",
+  bio: "",
+  number: "",
+  sex: "",
+};
+
 export default function ProfilEdit({
-  userData,
-  setUserData,
+  defaultValue,
+  onSubmit,
+  error,
 }: IProfilEditProps) {
-  const [auth, setAuth] = useAuth();
-  const [error, setError] = useState("");
+  const [form, setForm] = useState<IUserDataProfileSet>(initForm);
 
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    fetchEditUserData(userData.userId, userData.id, {
-      ...userData,
-      id: undefined,
-    });
-
-    if (auth) {
-      const res = await fetchAuthEditAccountData({
-        idToken: auth.token,
-        email: userData.email,
-        returnSecureToken: false,
-      });
-
-      if (res) {
-        setAuth(true, {
-          email: res.email,
-          token: res.idToken,
-          userId: res.localId,
-        });
-        if (res.error) {
-          setError(res.error.errors[0].message);
-        }
-      }
-    }
-  };
+  useEffect(() => {
+    if (defaultValue) setForm({ ...form, ...defaultValue });
+  }, [defaultValue]);
 
   return (
     <>
       <HeaderProfilSet>
-        <UserLogo width={38} height={38} src={userData.logo ?? userLogo} />
+        <UserLogo width={38} height={38} src={form?.logo ?? userLogo} />
         <UserNameContainer>
-          <UserName>{userData.userName}</UserName>
+          <UserName>{form.userName}</UserName>
           <EditUserImgBtn>Zmień zdjęcie profilowe</EditUserImgBtn>
         </UserNameContainer>
       </HeaderProfilSet>
-      <Form onSubmit={submit}>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(form);
+        }}
+      >
         <EditContainer>
           <Aside>
             <Label htmlFor="userFullName">Imię i nazwisko</Label>
@@ -107,9 +100,9 @@ export default function ProfilEdit({
             <Input
               id="userFullName"
               placeholder="Imię i nazwisko"
-              value={userData.userFullName}
+              value={form.userFullName}
               onChange={(e) =>
-                setUserData({ ...userData, userFullName: e.target.value })
+                setForm({ ...form, userFullName: e.target.value })
               }
             />
             <Description>
@@ -127,10 +120,8 @@ export default function ProfilEdit({
             <Input
               id="userName"
               placeholder="Nazwa użytkownika"
-              value={userData.userName}
-              onChange={(e) =>
-                setUserData({ ...userData, userName: e.target.value })
-              }
+              value={form.userName}
+              onChange={(e) => setForm({ ...form, userName: e.target.value })}
             />
             <Description>
               W większości przypadków będzie można zmienić nazwę użytkownika z
@@ -146,10 +137,8 @@ export default function ProfilEdit({
             <Input
               id="website"
               placeholder="Witryna internetowa"
-              value={userData.website}
-              onChange={(e) =>
-                setUserData({ ...userData, website: e.target.value })
-              }
+              value={form.website}
+              onChange={(e) => setForm({ ...form, website: e.target.value })}
             />
           </InputContainer>
         </EditContainer>
@@ -160,10 +149,8 @@ export default function ProfilEdit({
           <InputContainer>
             <InputArea
               id="bio"
-              value={userData.bio}
-              onChange={(e) =>
-                setUserData({ ...userData, bio: e.target.value })
-              }
+              value={form.bio}
+              onChange={(e) => setForm({ ...form, bio: e.target.value })}
             />
           </InputContainer>
         </EditContainer>
@@ -186,10 +173,8 @@ export default function ProfilEdit({
             <Input
               id="e-mail"
               placeholder="Adres e-mail"
-              value={userData.email}
-              onChange={(e) =>
-                setUserData({ ...userData, email: e.target.value })
-              }
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
           </InputContainer>
         </EditContainer>
@@ -201,10 +186,8 @@ export default function ProfilEdit({
             <Input
               id="num"
               placeholder="Numer telefonu"
-              value={userData.number}
-              onChange={(e) =>
-                setUserData({ ...userData, number: e.target.value })
-              }
+              value={form.number}
+              onChange={(e) => setForm({ ...form, number: e.target.value })}
             />
           </InputContainer>
         </EditContainer>
@@ -216,10 +199,8 @@ export default function ProfilEdit({
             <Input
               id="sex"
               placeholder="Płeć"
-              value={userData.sex}
-              onChange={(e) =>
-                setUserData({ ...userData, sex: e.target.value })
-              }
+              value={form.sex}
+              onChange={(e) => setForm({ ...form, sex: e.target.value })}
             />
           </InputContainer>
         </EditContainer>

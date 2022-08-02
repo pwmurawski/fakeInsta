@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { fetchUser } from "../../../api/userQuery";
-import objectToArray from "../../../helpers/objectToArray";
-import useAuth from "../../../hooks/useAuth";
+import useUserAuthData from "../../../hooks/useUserAuthData";
 import { IUserData, IUsersList } from "../../../interfaces/interfaces";
 import UsersList from "../../UsersList/UsersList";
 import AsideHeader from "./AsideHeader/AsideHeader";
@@ -25,13 +23,7 @@ const ProposedUsers = styled.div`
 `;
 
 export default function Aside() {
-  const abortController = new AbortController();
-  const { signal } = abortController;
-  const [auth] = useAuth();
-  const [userData, setUserData] = useState<IUserData>({
-    userName: "",
-    userFullName: "",
-  });
+  const [userData] = useUserAuthData<IUserData>();
   const [userList, setUserList] = useState<IUsersList[]>([
     {
       userId: "1",
@@ -59,29 +51,6 @@ export default function Aside() {
       userFullName: "user5 user5",
     },
   ]);
-
-  const getUserAuthData = async () => {
-    if (auth) {
-      const res = await fetchUser(auth.userId, signal);
-      if (res) {
-        const newUserData: IUserData = objectToArray(res, false)[0];
-        setUserData({
-          userName: newUserData.userName,
-          userFullName: newUserData.userFullName,
-          logo: newUserData.logo,
-          storiesActive: newUserData.storiesActive,
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    getUserAuthData();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
 
   return (
     <Wrapper>

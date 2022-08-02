@@ -84,26 +84,19 @@ export default function ProfileHeaderButtons({
   onFollow,
   onUnFollow,
 }: IProfileHeaderButtonsProps) {
-  return (
-    <>
-      {profileUserNotAuth ? (
-        <>
-          {userAuthWatched?.includes(userId ?? "") ? (
-            <>
-              <AlreadyWatchedUserBtn>Wyślij wiadomość</AlreadyWatchedUserBtn>
-              <AlreadyWatchedUserBtn onClick={onUnFollow}>
-                Przestań obserwować
-              </AlreadyWatchedUserBtn>
-            </>
-          ) : (
-            <FollowUserBtn onClick={onFollow}>Obserwuj</FollowUserBtn>
-          )}
-        </>
-      ) : (
-        <UserEditLink to="/accounts/edit/">Edytuj profil</UserEditLink>
-      )}
-    </>
-  );
+  if (!profileUserNotAuth)
+    return <UserEditLink to="/accounts/edit/">Edytuj profil</UserEditLink>;
+  if (userAuthWatched?.includes(userId ?? "")) {
+    return (
+      <>
+        <AlreadyWatchedUserBtn>Wyślij wiadomość</AlreadyWatchedUserBtn>
+        <AlreadyWatchedUserBtn onClick={onUnFollow}>
+          Przestań obserwować
+        </AlreadyWatchedUserBtn>
+      </>
+    );
+  }
+  return <FollowUserBtn onClick={onFollow}>Obserwuj</FollowUserBtn>;
 }
 
 ProfileHeaderButtons.defaultProps = defaultProps;

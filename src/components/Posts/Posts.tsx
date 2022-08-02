@@ -1,7 +1,9 @@
 import { IPostsProps } from "../../interfaces/interfaces";
+import NoWatchedUsers from "../InfoLackPosts/NoWatchedUsers/NoWatchedUsers";
 import Post from "./Post/Post";
 
 export default function Posts({ postsData }: IPostsProps) {
+  if (postsData.length === 0) return <NoWatchedUsers />;
   return (
     <>
       {postsData.map((post) => (

@@ -70,11 +70,11 @@ export interface IErrorInfoProps {
 }
 
 export interface IFormLoginProps {
-  onError: (error: string) => void;
+  onSubmit: (data: ILoginData) => void;
 }
 
 export interface IFormRegisterProps {
-  onError: (error: string) => void;
+  onSubmit: (data: IRegisterData, userData: IUserData) => void;
 }
 
 export interface IUsersList {
@@ -302,7 +302,7 @@ export interface IUserAuthDataProfile {
 }
 
 export interface IProfileHeaderProps {
-  userData: IUserAuthDataProfile;
+  userData: IUserAuthDataProfile | undefined;
   postsData: IPostsDataProfile[];
   isMediaMatches: boolean;
   profileUserNotAuth?: boolean;
@@ -321,7 +321,7 @@ export interface IProfileHeaderButtonsProps {
 }
 
 export interface IProfileHeaderContentProps {
-  userData: IUserAuthDataProfile;
+  userData: IUserAuthDataProfile | undefined;
   postsData: IPostsDataProfile[];
   isMediaMatches: boolean;
   profileUserNotAuth?: boolean;
@@ -332,7 +332,7 @@ export interface IProfileHeaderContentProps {
 }
 
 export interface IProfileHeaderUserImgProps {
-  userData: IUserData;
+  userData: IUserData | undefined;
 }
 
 export interface IUserInfoData {
@@ -343,7 +343,7 @@ export interface IUserInfoData {
 }
 
 export interface IUserInfoProps {
-  userData: IUserInfoData;
+  userData: IUserInfoData | undefined;
   postsData: IPostsDataProfile[];
   columnReverse?: boolean;
 }
@@ -484,8 +484,9 @@ export interface IProfilChangePassProps {
 }
 
 export interface IProfilEditProps {
-  userData: IUserDataProfileSet;
-  setUserData: React.Dispatch<React.SetStateAction<IUserDataProfileSet>>;
+  defaultValue?: IUserDataProfileSet;
+  onSubmit: (data: IUserDataProfileSet) => void;
+  error: string;
 }
 
 export interface IUserDataUserProfil {
@@ -502,6 +503,7 @@ export interface IUserDataUserProfil {
 
 export interface IUserAuthDataUserProfil {
   id: string;
+  userId: string;
   usersWatched?: string[];
 }
 

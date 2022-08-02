@@ -30,7 +30,12 @@ const UserFullName = styled.div`
   font-weight: 400;
 `;
 
-export default function AsideHeader({ userData }: { userData: IUserData }) {
+export default function AsideHeader({
+  userData,
+}: {
+  userData: IUserData | undefined;
+}) {
+  if (!userData) return null;
   return (
     <Header>
       <Link to="/profile/">

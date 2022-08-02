@@ -1,12 +1,8 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import styled from "styled-components";
-import { useEffect, useState } from "react";
 import ImgPosts from "../../components/ImgPosts/ImgPosts";
-import objectToArray from "../../helpers/objectToArray";
 import sortPostsByDate from "../../helpers/sortPostsByDate";
 import LoadingIcon from "../../components/UI/LoadingIcon/LoadingIcon";
-import { fetchPosts } from "../../api/postQuery";
-import { IPostsDataProfile } from "../../interfaces/interfaces";
+import useAllPosts from "../../hooks/useAllPosts";
 
 const Wrapper = styled.section`
   display: flex;
@@ -24,44 +20,19 @@ const Container = styled.section`
 `;
 
 export default function Explore() {
-  const abortController = new AbortController();
-  const { signal } = abortController;
-  const [loading, setLoading] = useState(true);
-  const [postsData, setPostsData] = useState<IPostsDataProfile[]>([]);
+  const [postsData, loading] = useAllPosts();
 
-  const getPosts = async () => {
-    const res = await fetchPosts(signal);
-    if (res) {
-      const posts = objectToArray(res, false).flatMap((e) => objectToArray(e));
-      setPostsData(posts);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getPosts();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
+  if (loading) return <LoadingIcon />;
   return (
-    <>
-      {loading ? (
-        <LoadingIcon />
-      ) : (
-        <Wrapper>
-          <Container>
-            <ImgPosts
-              postsData={postsData.sort((post1, post2) =>
-                sortPostsByDate(post1, post2)
-              )}
-              customLayOut
-            />
-          </Container>
-        </Wrapper>
-      )}
-    </>
+    <Wrapper>
+      <Container>
+        <ImgPosts
+          postsData={postsData.sort((post1, post2) =>
+            sortPostsByDate(post1, post2)
+          )}
+          customLayOut
+        />
+      </Container>
+    </Wrapper>
   );
 }
